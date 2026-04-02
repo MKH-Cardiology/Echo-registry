@@ -388,20 +388,29 @@ function showTab(name,btn){
 function onFileSelect(e) {
   var file = e.target.files[0];
   if (!file) return;
+  // Try without specifying encoding first - let browser detect
   var reader = new FileReader();
-  reader.onload = function(ev) { parseAndImport(ev.target.result); };
-  reader.readAsText(file, 'UTF-8');
+  reader.onload = function(ev) {
+    var raw = ev.target.result;
+    // Show first 200 chars for debugging
+    var preview = raw.substring(0, 200).replace(/[\r\n]/g, '|');
+    console.log('RAW CSV PREVIEW:', preview);
+    parseAndImport(raw);
+  };
+  reader.readAsText(file);
 }
 
 function parseAndImport(raw) {
   // Remove BOM
-  raw = raw.replace(/^\uFEFF/, '');
-  // Normalize line endings
+  if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+
+  // Normalize ALL line ending variants
   raw = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
-  // Parse all fields respecting quotes
+  // Parse CSV respecting quoted fields
   var rows = [];
   var row = [], field = '', inQ = false;
+
   for (var i = 0; i < raw.length; i++) {
     var c = raw[i];
     if (c === '"') {
@@ -411,72 +420,90 @@ function parseAndImport(raw) {
       row.push(field); field = '';
     } else if (c === '\n' && !inQ) {
       row.push(field); field = '';
-      rows.push(row); row = [];
+      if (row.some(function(f){return f.trim();})) rows.push(row);
+      row = [];
     } else {
       field += c;
     }
   }
-  if (field || row.length) { row.push(field); if(row.some(function(f){return f.trim();})) rows.push(row); }
+  if (row.length) { row.push(field); if(row.some(function(f){return f.trim();})) rows.push(row); }
 
-  if (rows.length < 2) { toast('CSV appears empty'); return; }
+  if (rows.length < 2) { toast('CSV empty — only '+rows.length+' rows found'); return; }
 
-  // Headers
+  // Clean and show headers
   var hdrs = rows[0].map(function(h){ return h.trim(); });
-  console.log('Headers:', hdrs);
+  var hdrStr = hdrs.slice(0,5).join(' | ');
+  toast('Headers: '+hdrStr);
+  console.log('All headers:', hdrs);
 
-  // Find columns
-  function col(names) {
-    for (var i=0;i<hdrs.length;i++) {
-      for (var j=0;j<names.length;j++) {
-        if (hdrs[i].toLowerCase().indexOf(names[j].toLowerCase())>=0) return i;
-      }
+  // Find columns by partial match
+  function col(name) {
+    for (var i=0; i<hdrs.length; i++) {
+      if (hdrs[i].toLowerCase().indexOf(name.toLowerCase()) >= 0) return i;
     }
     return -1;
   }
 
-  var cPID=col(['Patient ID']), cDate=col(['Exam date']), cType=col(['Exam type']), cStatus=col(['Exam status']);
-  var cPhysR=col(['Reading physician']), cPhysP=col(['Performing physician']), cAcc=col(['Accession No']);
+  var cPID=col('Patient'), cDate=col('date'), cType=col('type'), cStatus=col('status');
+  var cPhysR=col('Reading'), cPhysP=col('Performing'), cAcc=col('Accession');
 
-  console.log('Cols: PID='+cPID+' Date='+cDate+' Type='+cType+' Status='+cStatus);
+  setTimeout(function(){
+    toast('Cols: PID='+cPID+' Date='+cDate+' Type='+cType+' Status='+cStatus+' | Rows='+rows.length);
+  }, 4000);
 
-  // Debug: show sample values from first 5 data rows
-  var sample = [];
-  for (var si=1; si<Math.min(6,rows.length); si++) {
-    var sr = rows[si];
-    sample.push('status='+JSON.stringify((sr[cStatus]||'').trim())+' type='+JSON.stringify((sr[cType]||'').trim()));
-  }
-  console.log('Sample rows:', sample.join(' | '));
-  toast('Debug: '+sample[0]);
-
-  // Show what columns were found
-  toast('Cols found: PID='+cPID+' Status='+cStatus+' Type='+cType+' | Hdrs: '+hdrs.slice(0,4).join('|'));
-  if (cPID<0||cDate<0||cStatus<0) {
-    toast('MISSING cols: PID='+cPID+' Date='+cDate+' Status='+cStatus);
+  if (cPID < 0 || cDate < 0 || cStatus < 0) {
+    setTimeout(function(){toast('FAIL: Cannot find columns. PID='+cPID+' Date='+cDate+' Status='+cStatus);}, 4000);
     return;
   }
 
-  var list = [], skip = 0;
-  for (var i=1; i<rows.length; i++) {
-    var r = rows[i];
-    if (r.length < 4) continue;
-    var status = (r[cStatus]||'').trim();
-    var type   = (r[cType]||'').trim();
-    var pid    = (r[cPID]||'').replace(/[\s\n\r]+/g,'');
-    if (status.toLowerCase().indexOf('scan') < 0) { skip++; continue; }
-    // Accept TTE, TEE, or blank type (ViewPoint sometimes leaves type empty)
-    if (type && type !== 'TTE' && type !== 'TEE') { skip++; continue; }
-    if (!pid || pid.length < 3) { skip++; continue; }
-    var date = (r[cDate]||'').trim();
-    var phys = '';
-    if (cPhysR>=0) phys=(r[cPhysR]||'').trim();
-    if (!phys && cPhysP>=0) phys=(r[cPhysP]||'').trim();
-    var ind = cAcc>=0 ? (r[cAcc]||'').trim() : '';
-    list.push({ pid:pid, date:date, type:type, physician:phys, indication:ind, month:date?date.substring(0,2):'', importedAt:new Date().toISOString() });
+  // Show sample status/type from first data row
+  if (rows.length > 1) {
+    var r1 = rows[1];
+    setTimeout(function(){
+      toast('Row1: status='+JSON.stringify(r1[cStatus])+' type='+JSON.stringify(r1[cType]||''));
+    }, 8000);
   }
 
-  console.log('Found: '+list.length+' studies, skipped: '+skip);
-  if (!list.length) { toast('No completed TTE/TEE found. Skipped '+skip+' rows.'); return; }
-  toast('Found '+list.length+' studies — saving...');
+  var list = [], skip = 0;
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (!r || r.length < 3) { skip++; continue; }
+
+    var status = cStatus >= 0 ? (r[cStatus]||'').trim() : '';
+    var type   = cType >= 0 ? (r[cType]||'').trim() : '';
+    var pid    = cPID >= 0 ? (r[cPID]||'').replace(/[\s\n\r]+/g,'') : '';
+
+    // Accept any row that has "scan" in status
+    if (status.toLowerCase().indexOf('scan') < 0) { skip++; continue; }
+    // Accept TTE, TEE, or blank exam type
+    if (type !== '' && type !== 'TTE' && type !== 'TEE') { skip++; continue; }
+    // Need a valid patient ID
+    if (!pid || pid.length < 3) { skip++; continue; }
+
+    var date = cDate >= 0 ? (r[cDate]||'').trim() : '';
+    var phys = '';
+    if (cPhysR >= 0) phys = (r[cPhysR]||'').trim();
+    if (!phys && cPhysP >= 0) phys = (r[cPhysP]||'').trim();
+    var ind = cAcc >= 0 ? (r[cAcc]||'').trim() : '';
+
+    list.push({
+      pid: pid, date: date, type: type||'TTE',
+      physician: phys, indication: ind,
+      month: date ? date.substring(0,2) : '',
+      importedAt: new Date().toISOString()
+    });
+  }
+
+  setTimeout(function(){
+    toast('Result: '+list.length+' found, '+skip+' skipped');
+  }, 12000);
+
+  if (!list.length) {
+    setTimeout(function(){toast('ZERO found — check console for details');}, 12000);
+    return;
+  }
+
+  toast('Saving '+list.length+' studies...');
   batchSave(list);
 }
 

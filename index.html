@@ -376,12 +376,23 @@ var PAGE_SIZE = 25;
 var monthChartInst = null, typeChartInst = null;
 
 // ===== AUTH =====
+// Timeout fallback in case Firebase takes too long
+var authResolved = false;
+setTimeout(function() {
+  if (!authResolved) {
+    document.getElementById('pageLoading').style.display = 'none';
+    document.getElementById('pageLogin').style.display = 'flex';
+    document.body.style.background = '#6b0000';
+  }
+}, 5000);
+
 auth.onAuthStateChanged(function(user) {
+  authResolved = true;
   document.getElementById('pageLoading').style.display = 'none';
   if (user) {
     document.getElementById('pageLogin').style.display = 'none';
     document.getElementById('pageApp').style.display = 'block';
-    document.body.classList.remove('login-active');
+    document.body.style.background = '';
     loadFromFirebase();
   } else {
     document.getElementById('pageLogin').style.display = 'flex';

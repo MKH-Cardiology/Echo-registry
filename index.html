@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Echo Lab Registry — Mubarak Al-Kabeer</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -386,6 +389,15 @@ tbody td { padding: 12px 16px; color: var(--text); border-bottom: 1px solid #f1f
     <div class="import-card">
       <h3><i class="fa fa-file-csv" style="margin-right:8px"></i>Import ViewPoint CSV</h3>
       <p>Export from ViewPoint → Export query result → CSV with headers.<br>App automatically filters and saves to Firebase.</p>
+      
+      <div class="lf" style="margin: 20px auto; max-width: 300px; text-align: left;">
+        <label style="color: var(--accent);">Your CSV Date Format</label>
+        <select id="import-date-format" style="border-color: var(--accent);">
+          <option value="DD/MM/YYYY">DD/MM/YYYY (Kuwait Standard)</option>
+          <option value="MM/DD/YYYY">MM/DD/YYYY (US Format)</option>
+        </select>
+      </div>
+
       <input type="file" id="csvfile" accept=".csv" style="display:none" onchange="onFile(event)">
       <button class="import-btn" onclick="document.getElementById('csvfile').click()">
         <i class="fa fa-upload" style="margin-right:8px"></i>Choose CSV File
@@ -616,57 +628,23 @@ function normalizePhysicianName(name) {
   return cleaned;
 }
 
-// BULLETPROOF DATE PARSER (Fixes NaN sorting bugs, parses ALL ViewPoint formats)
+// BULLETPROOF DATE PARSER (Converts DD/MM/YYYY to integer for flawless sorting)
 function parseDateString(ds) {
   if (!ds) return 0;
-  
-  // 1. Strip time if present (e.g. "02/04/2026 14:30" -> "02/04/2026")
   var cleanStr = String(ds).trim().split(' ')[0]; 
-  
-  // 2. Handle text-based dates (e.g. "02-Apr-2026") safely via native Javascript parser
-  if (/[a-zA-Z]/.test(cleanStr)) {
-     var parsedNative = Date.parse(cleanStr);
-     if (!isNaN(parsedNative)) return parsedNative;
-  }
-  
-  // 3. Handle strictly numeric dates
   var parts = cleanStr.replace(/[\-\.]/g, '/').split('/');
-  if (parts.length === 3) {
-    var n0 = parseInt(parts[0], 10);
-    var n1 = parseInt(parts[1], 10);
-    var n2 = parseInt(parts[2], 10);
-    
-    // If it can't read the numbers, try one last fallback
-    if (isNaN(n0) || isNaN(n1) || isNaN(n2)) {
-        return Date.parse(ds) || 0;
-    }
-
-    var y, m, d;
-    
-    if (n0 > 1000) { 
-        // Format: YYYY/MM/DD
-        y = n0; m = n1 - 1; d = n2;
-    } else if (n2 > 1000) { 
-        // Format ends in Year
-        y = n2;
-        // Default to DD/MM/YYYY, but if the middle number is > 12, it must be MM/DD/YYYY
-        if (n1 > 12) { 
-            m = n0 - 1; d = n1; 
-        } else { 
-            d = n0; m = n1 - 1; 
-        }
-    } else {
-        // Fallback for 2-digit years (e.g., 02/04/26)
-        y = n2 + 2000;
-        if (n1 > 12) { m = n0 - 1; d = n1; }
-        else { d = n0; m = n1 - 1; }
-    }
-    
-    var resultTime = new Date(y, m, d).getTime();
-    return isNaN(resultTime) ? 0 : resultTime;
-  }
   
-  return Date.parse(ds) || 0;
+  if (parts.length === 3) {
+    var d = parseInt(parts[0], 10) || 0;
+    var m = parseInt(parts[1], 10) || 0;
+    var y = parseInt(parts[2], 10) || 0;
+    if (y < 100) y += 2000;
+    // Format into YYYYMMDD integer
+    if (y > 1000) {
+        return (y * 10000) + (m * 100) + d;
+    }
+  }
+  return 0;
 }
 
 document.getElementById('pageLogin').style.display = 'block';
@@ -712,7 +690,7 @@ function loadData() {
       studies.push(data); 
     });
     
-    // NEWEST FIRST: Sorting using the bulletproof parser
+    // NEWEST FIRST: Sorting using the integer parser
     studies.sort(function(a, b) {
       return parseDateString(b.date) - parseDateString(a.date);
     });
@@ -773,8 +751,11 @@ function buildDash() {
   var dc = [0,0,0,0,0,0,0];
   studies.forEach(function(s){
     if (!s.date) return;
-    var dTime = parseDateString(s.date);
-    if (dTime > 0) dc[new Date(dTime).getDay()]++;
+    var parts = s.date.replace(/[\-\.]/g, '/').split('/');
+    if (parts.length === 3) {
+      var d = new Date(parts[2], parts[1]-1, parts[0]);
+      if (!isNaN(d)) dc[d.getDay()]++;
+    }
   });
   
   if(dayChart) dayChart.destroy();
@@ -902,6 +883,7 @@ function renderTable() {
     
     var indDisplay = tags.length ? tags.join(' ') : '<span style="color:var(--border)">—</span>';
     
+    // EDIT AND DELETE are protected by Admin status
     var adminActions = isSessionAdmin 
       ? '<button class="btn-icon" onclick="openEditModal(\''+s._docId+'\')" title="Edit Study"><i class="fa fa-pen"></i></button>' +
         '<button class="btn-icon" style="color:var(--red); margin-left:2px;" onclick="deleteStudy(\''+s._docId+'\')" title="Delete Study"><i class="fa fa-trash"></i></button>' 
@@ -1198,11 +1180,9 @@ function saveEdit() {
     valvular: isNormal ? [] : valves
   };
 
-  // Extract month mathematically for dashboard charts
-  var parsedTime = parseDateString(newDate);
-  if (parsedTime > 0) {
-      updates.month = String(new Date(parsedTime).getMonth() + 1).padStart(2, '0');
-  }
+  // Keep charts working perfectly for manual entries
+  var parts = newDate.replace(/[\-\.]/g, '/').split('/');
+  if (parts.length === 3) updates.month = parts[1].padStart(2, '0');
 
   if (isNewEntry) {
     updates.importedAt = new Date().toISOString();
@@ -1232,10 +1212,16 @@ function errorSave(error, btn) {
 
 function calculateAgeAtScan(dobStr, scanDateStr, pid) {
   if (!scanDateStr) return '—';
-  let scanTime = parseDateString(scanDateStr);
-  if (!scanTime) return '—';
   
-  let scanDate = new Date(scanTime);
+  let scanDate;
+  var parts = String(scanDateStr).trim().split(' ')[0].replace(/[\-\.]/g, '/').split('/');
+  if (parts.length === 3) {
+      let y = parseInt(parts[2], 10);
+      if (y < 100) y += 2000;
+      scanDate = new Date(y, parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+  }
+  
+  if (!scanDate || isNaN(scanDate)) return '—';
 
   let dob;
   if (pid && pid.length === 12 && (pid.startsWith('2') || pid.startsWith('3'))) {
@@ -1292,6 +1278,8 @@ function parseAndImport(raw) {
   if(cPID<0||cDate<0||cStatus<0){toast('Required columns not found');return;}
 
   var list=[],skip=0;
+  var dateFormat = document.getElementById('import-date-format').value; // Get format from dropdown
+
   for(var i=1;i<rows.length;i++){
     var r=rows[i];
     if(!r||r.length<3){skip++;continue;}
@@ -1308,7 +1296,24 @@ function parseAndImport(raw) {
     if(status.toLowerCase().indexOf('scan')<0){skip++;continue;}
     if(type&&type!=='TTE'&&type!=='TEE'){skip++;continue;}
     if(!pid||pid.length<3){skip++;continue;}
-    var date=cDate>=0?(r[cDate]||'').trim():'';
+    
+    // DATE STANDARDIZATION LOGIC
+    var dateRaw=cDate>=0?(r[cDate]||'').trim():'';
+    var finalDate = dateRaw;
+    var finalMonthStr = '';
+    
+    var dateClean = dateRaw.split(' ')[0].replace(/[\-\.]/g, '/');
+    var dp = dateClean.split('/');
+    if (dp.length === 3) {
+        if (dateFormat === 'MM/DD/YYYY') {
+            finalDate = dp[1].padStart(2,'0') + '/' + dp[0].padStart(2,'0') + '/' + dp[2];
+            finalMonthStr = dp[0].padStart(2,'0');
+        } else {
+            finalDate = dp[0].padStart(2,'0') + '/' + dp[1].padStart(2,'0') + '/' + dp[2];
+            finalMonthStr = dp[1].padStart(2,'0');
+        }
+    }
+
     var physRaw='';
     if(cPhysR>=0)physRaw=(r[cPhysR]||'').trim();
     if(!physRaw&&cPhysP>=0)physRaw=(r[cPhysP]||'').trim();
@@ -1316,22 +1321,18 @@ function parseAndImport(raw) {
     
     var ind=cAcc>=0?(r[cAcc]||'').trim():'';
     var dob=cDOB>=0?(r[cDOB]||'').trim():'';
-    var ageAtScan = calculateAgeAtScan(dob, date, pid);
-    
-    // Extract Month mathematically
-    var parsedTime = parseDateString(date);
-    var extractedMonth = parsedTime > 0 ? String(new Date(parsedTime).getMonth() + 1).padStart(2, '0') : '';
+    var ageAtScan = calculateAgeAtScan(dob, finalDate, pid);
 
     list.push({
       pid:pid,
-      date:date,
+      date:finalDate, // Standardized safely to DD/MM/YYYY
       type:type||'TTE',
       physician:phys,
       diagnosis:ind,
       indication:ind, 
       dob:dob,
       age:ageAtScan,
-      month: extractedMonth,
+      month:finalMonthStr, // Correct month for charts
       importedAt:new Date().toISOString()
     });
   }

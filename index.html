@@ -15,133 +15,99 @@
 :root{--navy:#0a1628;--navy2:#0f2040;--blue:#1a4fd4;--cyan:#00c2ff;--teal:#00e5c3;--gold:#f0c040;--white:#f0f4ff;--grey:#8899bb;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--navy);color:var(--white);font-family:'DM Mono',monospace;font-size:13px;min-height:100vh;}
-
 /* LOGIN */
-#pageLogin{display:none;min-height:100vh;background-color:#6b0000;position:relative;}
+#pageLogin{display:none;min-height:100vh;background-color:#8b0000;}
 .login-container{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:30px 20px;}
 .login-logo{text-align:center;margin-bottom:40px;}
-.login-logo h1{font-family:‘Syne’,sans-serif;color:#fff;font-size:1.6rem;font-weight:700;margin:12px 0 4px;}
+.login-logo h1{font-family:'Syne',sans-serif;color:#fff;font-size:1.6rem;font-weight:700;margin:0 0 4px;}
 .login-logo p{color:rgba(255,255,255,0.75);font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;}
 .login-card{background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:35px 28px;width:100%;max-width:380px;}
-.login-card h2{font-family:‘Syne’,sans-serif;color:#fff;font-size:1.4rem;font-weight:600;margin-bottom:6px;}
-.login-card .subtitle{color:rgba(255,255,255,0.65);font-size:0.78rem;margin-bottom:28px;}
-.login-field{margin-bottom:16px;}
-.login-field label{color:rgba(255,255,255,0.85);font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:6px;}
-.login-field .input-wrap{position:relative;}
-.login-field .input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.5);font-size:0.85rem;}
-.login-field input{width:100%;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);border-radius:10px;padding:12px 14px 12px 38px;color:#fff;font-size:0.9rem;outline:none;}
-.login-field input:focus{border-color:#fff;background:rgba(255,255,255,0.2);}
-.login-field input::placeholder{color:rgba(255,255,255,0.4);}
-.btn-login{width:100%;padding:13px;background:#fff;border:none;border-radius:10px;color:#6b0000;font-family:‘Syne’,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;margin-top:8px;}
-.btn-login:disabled{opacity:0.6;cursor:not-allowed;}
-.login-error{background:rgba(0,0,0,0.25);border:1px solid rgba(255,150,150,0.5);border-radius:8px;color:#ffbbbb;font-size:0.8rem;padding:10px 14px;margin-top:14px;display:none;text-align:center;}
-.login-footer{margin-top:28px;text-align:center;color:rgba(255,255,255,0.45);font-size:0.72rem;}
-
-/* LOADING */
-#pageLoading{display:flex;min-height:100vh;background-color:#6b0000;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
-.loading-text{color:rgba(255,255,255,0.7);font-size:0.85rem;letter-spacing:0.06em;}
-
-/* HEADER */
-.header{background:linear-gradient(135deg,var(–navy2) 0%,#0d2a55 100%);border-bottom:1px solid var(–border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.header-left h1{font-family:‘Syne’,sans-serif;font-size:1rem;font-weight:800;color:#fff;}
-.header-left p{font-size:0.65rem;color:var(–cyan);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;}
-.header-right{display:flex;align-items:center;gap:10px;}
-.btn-logout{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:0.7rem;padding:5px 10px;border-radius:16px;cursor:pointer;}
-
-/* NAV */
-.nav-tabs{display:flex;background:var(–navy2);border-bottom:1px solid var(–border);overflow-x:auto;scrollbar-width:none;}
-.nav-tabs::-webkit-scrollbar{display:none;}
-.tab-btn{flex-shrink:0;padding:11px 18px;background:none;border:none;color:var(–grey);font-family:‘DM Mono’,monospace;font-size:0.7rem;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;border-bottom:2px solid transparent;transition:all 0.2s;}
-.tab-btn.active{color:var(–cyan);border-bottom-color:var(–cyan);}
-
-/* PAGES */
-.page{display:none;padding:14px;}
-.page.active{display:block;}
-
+.login-card h2{font-family:'Syne',sans-serif;color:#fff;font-size:1.4rem;font-weight:600;margin-bottom:6px;}
+.login-card .sub{color:rgba(255,255,255,0.65);font-size:0.78rem;margin-bottom:28px;}
+.lfield{margin-bottom:16px;}
+.lfield label{color:rgba(255,255,255,0.85);font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:6px;}
+.lfield .iw{position:relative;}
+.lfield .iw i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.5);font-size:0.85rem;}
+.lfield input{width:100%;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);border-radius:10px;padding:12px 14px 12px 38px;color:#fff;font-size:0.9rem;outline:none;}
+.lfield input:focus{border-color:#fff;}
+.lfield input::placeholder{color:rgba(255,255,255,0.4);}
+.btn-login{width:100%;padding:13px;background:#fff;border:none;border-radius:10px;color:#8b0000;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;margin-top:8px;}
+.btn-login:disabled{opacity:0.6;}
+.lerr{background:rgba(0,0,0,0.25);border:1px solid rgba(255,150,150,0.5);border-radius:8px;color:#ffbbbb;font-size:0.8rem;padding:10px 14px;margin-top:14px;display:none;text-align:center;}
+.lfooter{margin-top:28px;text-align:center;color:rgba(255,255,255,0.45);font-size:0.72rem;}
+/* APP */
+#pageApp{display:none;}
+.header{background:linear-gradient(135deg,var(--navy2),#0d2a55);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.header h1{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:#fff;}
+.header p{font-size:0.65rem;color:var(--cyan);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;}
+.hright{display:flex;align-items:center;gap:10px;}
+.db-dot{width:7px;height:7px;border-radius:50%;background:var(--grey);display:inline-block;}
+.db-dot.on{background:var(--teal);}
+.dblabel{font-size:0.62rem;color:var(--grey);}
+.btn-out{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:0.7rem;padding:5px 10px;border-radius:16px;cursor:pointer;}
+.navtabs{display:flex;background:var(--navy2);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.navtabs::-webkit-scrollbar{display:none;}
+.tbtn{flex-shrink:0;padding:11px 18px;background:none;border:none;color:var(--grey);font-family:'DM Mono',monospace;font-size:0.7rem;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;border-bottom:2px solid transparent;}
+.tbtn.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+.pg{display:none;padding:14px;}
+.pg.active{display:block;}
 /* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
-.stat-card{background:var(–card);border:1px solid var(–border);border-radius:12px;padding:14px;position:relative;overflow:hidden;}
-.stat-card::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(–cyan),var(–teal));}
-.stat-label{font-size:0.6rem;color:var(–grey);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
-.stat-value{font-family:‘Syne’,sans-serif;font-size:1.8rem;font-weight:800;color:var(–white);line-height:1;}
-.stat-sub{font-size:0.62rem;color:var(–teal);margin-top:4px;}
-
-/* CHARTS */
-.chart-card{background:var(–card);border:1px solid var(–border);border-radius:12px;padding:14px;margin-bottom:12px;}
-.chart-title{font-family:‘Syne’,sans-serif;font-size:0.78rem;font-weight:700;color:var(–white);margin-bottom:12px;}
-.chart-wrap{position:relative;height:190px;}
-
-/* PHYSICIAN LIST */
-.phys-list{list-style:none;}
-.phys-item{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
-.phys-name{font-size:0.68rem;color:var(–white);width:155px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.phys-bar-wrap{flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:7px;overflow:hidden;}
-.phys-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(–blue),var(–cyan));}
-.phys-count{font-size:0.7rem;color:var(–cyan);width:28px;text-align:right;flex-shrink:0;}
-
-/* SEARCH & FILTERS */
-.search-wrap{display:flex;gap:8px;margin-bottom:12px;}
-.search-input{flex:1;background:var(–card);border:1px solid var(–border);border-radius:8px;padding:9px 12px;color:var(–white);font-family:‘DM Mono’,monospace;font-size:0.78rem;outline:none;}
-.search-input:focus{border-color:var(–cyan);}
-.search-input::placeholder{color:var(–grey);}
-.search-btn{background:var(–blue);border:none;border-radius:8px;padding:9px 14px;color:#fff;cursor:pointer;}
-.filter-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
-.filter-select{background:var(–card);border:1px solid var(–border);border-radius:8px;padding:7px 10px;color:var(–white);font-family:‘DM Mono’,monospace;font-size:0.72rem;outline:none;cursor:pointer;}
-.filter-select option{background:var(–navy2);}
-
-/* TABLE */
-.table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(–border);}
+.sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;position:relative;overflow:hidden;}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--teal));}
+.slabel{font-size:0.6rem;color:var(--grey);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
+.sval{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--white);line-height:1;}
+.ssub{font-size:0.62rem;color:var(--teal);margin-top:4px;}
+/* CHART CARD */
+.cc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
+.ct{font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;color:var(--white);margin-bottom:12px;}
+.cw{position:relative;height:190px;}
+/* PHYS */
+.pl{list-style:none;}
+.pi{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.pn{font-size:0.68rem;color:var(--white);width:155px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pb{flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:7px;overflow:hidden;}
+.pbf{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--cyan));}
+.pc{font-size:0.7rem;color:var(--cyan);width:28px;text-align:right;flex-shrink:0;}
+/* REGISTRY */
+.srow{display:flex;gap:8px;margin-bottom:12px;}
+.si{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--white);font-family:'DM Mono',monospace;font-size:0.78rem;outline:none;}
+.si:focus{border-color:var(--cyan);}
+.si::placeholder{color:var(--grey);}
+.sbtn{background:var(--blue);border:none;border-radius:8px;padding:9px 14px;color:#fff;cursor:pointer;}
+.frow{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.fsel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--white);font-family:'DM Mono',monospace;font-size:0.72rem;outline:none;cursor:pointer;}
+.fsel option{background:var(--navy2);}
+.tw{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
 table{width:100%;border-collapse:collapse;font-size:0.7rem;}
-thead th{background:rgba(26,79,212,0.3);color:var(–cyan);padding:9px 10px;text-align:left;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(–border);}
-tbody tr{border-bottom:1px solid var(–border);transition:background 0.15s;}
+thead th{background:rgba(26,79,212,0.3);color:var(--cyan);padding:9px 10px;text-align:left;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(--border);}
+tbody tr{border-bottom:1px solid var(--border);}
 tbody tr:hover{background:rgba(255,255,255,0.04);}
-tbody td{padding:8px 10px;color:var(–white);white-space:nowrap;}
-.badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:0.62rem;font-weight:600;}
-.badge-tte{background:rgba(0,194,255,0.15);color:var(–cyan);}
-.badge-tee{background:rgba(240,192,64,0.15);color:var(–gold);}
-.indication-tag{background:rgba(240,192,64,0.12);color:var(–gold);padding:1px 5px;border-radius:4px;font-size:0.58rem;}
-
-/* PAGINATION */
-.pagination{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
-.page-info{font-size:0.68rem;color:var(–grey);}
-.page-btns{display:flex;gap:6px;}
-.page-btn{background:var(–card);border:1px solid var(–border);border-radius:6px;padding:5px 10px;color:var(–white);font-size:0.68rem;cursor:pointer;}
-.page-btn:disabled{opacity:0.3;cursor:not-allowed;}
-
+tbody td{padding:8px 10px;white-space:nowrap;}
+.btte{display:inline-block;padding:2px 7px;border-radius:10px;font-size:0.62rem;font-weight:600;background:rgba(0,194,255,0.15);color:var(--cyan);}
+.btee{display:inline-block;padding:2px 7px;border-radius:10px;font-size:0.62rem;font-weight:600;background:rgba(240,192,64,0.15);color:var(--gold);}
+.itag{background:rgba(240,192,64,0.12);color:var(--gold);padding:1px 5px;border-radius:4px;font-size:0.58rem;}
+.pgn{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+.pgi{font-size:0.68rem;color:var(--grey);}
+.pgbtns{display:flex;gap:6px;}
+.pgb{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--white);font-size:0.68rem;cursor:pointer;}
+.pgb:disabled{opacity:0.3;cursor:not-allowed;}
 /* IMPORT */
-.upload-card{background:rgba(0,229,195,0.05);border:1px dashed rgba(0,229,195,0.3);border-radius:12px;padding:20px;text-align:center;margin-bottom:14px;}
-.upload-card h3{font-family:‘Syne’,sans-serif;font-size:0.9rem;color:var(–teal);margin-bottom:8px;}
-.upload-card p{font-size:0.7rem;color:var(–grey);margin-bottom:14px;line-height:1.6;}
-.upload-btn{background:linear-gradient(135deg,var(–teal),var(–cyan));border:none;border-radius:8px;padding:10px 20px;color:var(–navy);font-family:‘Syne’,sans-serif;font-weight:700;font-size:0.78rem;cursor:pointer;}
-#csvFileInput{display:none;}
-
-.info-box{background:rgba(26,79,212,0.1);border:1px solid rgba(26,79,212,0.3);border-radius:10px;padding:12px;margin-bottom:12px;font-size:0.7rem;color:var(–grey);line-height:1.7;}
-.info-box strong{color:var(–cyan);}
-
-/* PROGRESS */
-.progress-wrap{margin-top:14px;display:none;}
-.progress-bar-bg{background:rgba(255,255,255,0.08);border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px;}
-.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(–blue),var(–cyan));border-radius:6px;transition:width 0.3s;width:0%;}
-.progress-text{font-size:0.68rem;color:var(–cyan);text-align:center;}
-
+.ucard{background:rgba(0,229,195,0.05);border:1px dashed rgba(0,229,195,0.3);border-radius:12px;padding:20px;text-align:center;margin-bottom:14px;}
+.ucard h3{font-family:'Syne',sans-serif;font-size:0.9rem;color:var(--teal);margin-bottom:8px;}
+.ucard p{font-size:0.7rem;color:var(--grey);margin-bottom:14px;line-height:1.6;}
+.ubtn{background:linear-gradient(135deg,var(--teal),var(--cyan));border:none;border-radius:8px;padding:10px 20px;color:var(--navy);font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;cursor:pointer;}
+.ibox{background:rgba(26,79,212,0.1);border:1px solid rgba(26,79,212,0.3);border-radius:10px;padding:12px;margin-bottom:12px;font-size:0.7rem;color:var(--grey);line-height:1.7;}
+.ibox strong{color:var(--cyan);}
+.prwrap{margin-top:14px;display:none;}
+.prbg{background:rgba(255,255,255,0.08);border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px;}
+.prfill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:6px;transition:width 0.3s;width:0%;}
+.prtxt{font-size:0.68rem;color:var(--cyan);text-align:center;}
 /* TOAST */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(–teal);color:var(–navy);padding:10px 20px;border-radius:8px;font-weight:600;font-size:0.75rem;z-index:9999;display:none;}
-
-/* DB STATUS */
-.db-status{display:flex;align-items:center;gap:6px;font-size:0.65rem;color:var(–grey);}
-.db-dot{width:7px;height:7px;border-radius:50%;background:var(–grey);}
-.db-dot.online{background:var(–teal);}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--teal);color:var(--navy);padding:10px 20px;border-radius:8px;font-weight:600;font-size:0.75rem;z-index:9999;display:none;white-space:nowrap;}
 </style>
-
 </head>
 <body>
-
-<!-- LOADING -->
-
-<div id="pageLoading">
-  <div style="font-size:2rem">🫀</div>
-  <div class="loading-text">Echo Registry</div>
-</div>
 
 <!-- LOGIN -->
 
@@ -149,213 +115,127 @@ tbody td{padding:8px 10px;color:var(–white);white-space:nowrap;}
   <div class="login-container">
     <div class="login-logo">
       <h1>Echo Lab Registry</h1>
-      <p>Mubarak Al-Kabeer Hospital</p>
+      <p>Mubarak Al-Kabeer Hospital · Cardiology</p>
     </div>
     <div class="login-card">
       <h2>Secure Access</h2>
-      <p class="subtitle">Authorized personnel only</p>
-      <div class="login-field">
-        <label>Email Address</label>
-        <div class="input-wrap">
-          <i class="fa fa-envelope"></i>
-          <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email">
-        </div>
+      <p class="sub">Authorized personnel only</p>
+      <div class="lfield">
+        <label>Email</label>
+        <div class="iw"><i class="fa fa-envelope"></i><input type="email" id="lemail" placeholder="your@email.com" autocomplete="email"></div>
       </div>
-      <div class="login-field">
+      <div class="lfield">
         <label>Password</label>
-        <div class="input-wrap">
-          <i class="fa fa-lock"></i>
-          <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-        </div>
+        <div class="iw"><i class="fa fa-lock"></i><input type="password" id="lpass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       </div>
-      <button class="btn-login" id="loginBtn" onclick="doLogin()">
-        <i class="fa fa-sign-in-alt" style="margin-right:6px"></i>Sign In
-      </button>
-      <div class="login-error" id="loginError"></div>
+      <button class="btn-login" id="lbtn" onclick="doLogin()"><i class="fa fa-sign-in-alt" style="margin-right:6px"></i>Sign In</button>
+      <div class="lerr" id="lerr"></div>
     </div>
-    <div class="login-footer">Ministry of Health · Kuwait · Cardiology Department</div>
+    <div class="lfooter">Ministry of Health · Kuwait</div>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 
-<div id="pageApp" style="display:none">
+<div id="pageApp">
   <div class="header">
-    <div class="header-left">
+    <div>
       <h1>Echo Lab Registry</h1>
       <p>Mubarak Al-Kabeer · Cardiology</p>
     </div>
-    <div class="header-right">
-      <div class="db-status"><div class="db-dot" id="dbDot"></div><span id="dbStatus">connecting</span></div>
-      <button class="btn-logout" onclick="doLogout()"><i class="fa fa-sign-out-alt"></i></button>
+    <div class="hright">
+      <span class="db-dot" id="dbdot"></span>
+      <span class="dblabel" id="dblabel">—</span>
+      <button class="btn-out" onclick="doLogout()"><i class="fa fa-sign-out-alt"></i></button>
     </div>
   </div>
 
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="showTab('dashboard',this)">📊 Dashboard</button>
-    <button class="tab-btn" onclick="showTab('registry',this)">📋 Registry</button>
-    <button class="tab-btn" onclick="showTab('import',this)">📥 Import</button>
+  <div class="navtabs">
+    <button class="tbtn active" onclick="showTab('dash',this)">📊 Dashboard</button>
+    <button class="tbtn" onclick="showTab('reg',this)">📋 Registry</button>
+    <button class="tbtn" onclick="showTab('imp',this)">📥 Import</button>
   </div>
 
   <!-- DASHBOARD -->
 
-  <div id="tab-dashboard" class="page active">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Total Studies</div>
-        <div class="stat-value" id="stat-total">—</div>
-        <div class="stat-sub" id="stat-year">2026 YTD</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Unique Patients</div>
-        <div class="stat-value" id="stat-patients">—</div>
-        <div class="stat-sub">distinct IDs</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">TTE Studies</div>
-        <div class="stat-value" id="stat-tte">—</div>
-        <div class="stat-sub" id="stat-tte-pct">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">TEE Studies</div>
-        <div class="stat-value" id="stat-tee">—</div>
-        <div class="stat-sub" id="stat-tee-pct">—</div>
-      </div>
+  <div id="tab-dash" class="pg active">
+    <div class="sgrid">
+      <div class="sc"><div class="slabel">Total Studies</div><div class="sval" id="s-total">—</div><div class="ssub">2026 YTD</div></div>
+      <div class="sc"><div class="slabel">Unique Patients</div><div class="sval" id="s-pts">—</div><div class="ssub">distinct IDs</div></div>
+      <div class="sc"><div class="slabel">TTE Studies</div><div class="sval" id="s-tte">—</div><div class="ssub" id="s-tte-p">—</div></div>
+      <div class="sc"><div class="slabel">TEE Studies</div><div class="sval" id="s-tee">—</div><div class="ssub" id="s-tee-p">—</div></div>
     </div>
-    <div class="chart-card">
-      <div class="chart-title">📅 Studies by Month</div>
-      <div class="chart-wrap"><canvas id="monthChart"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">👨‍⚕️ Workload by Reading Physician</div>
-      <ul class="phys-list" id="physList"></ul>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">🔬 Exam Type Distribution</div>
-      <div class="chart-wrap" style="height:160px"><canvas id="typeChart"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">🏷️ Clinical Indications</div>
-      <div id="indicationList"></div>
-    </div>
-    <div class="info-box">
-      <strong>Phase 2 — Pending measurement export from GE ViewPoint</strong><br>
-      EF distribution · LV function · Valvular disease prevalence · Diastolic dysfunction · Longitudinal patient tracking
-    </div>
+    <div class="cc"><div class="ct">📅 Studies by Month</div><div class="cw"><canvas id="mChart"></canvas></div></div>
+    <div class="cc"><div class="ct">👨‍⚕️ Workload by Reading Physician</div><ul class="pl" id="physList"></ul></div>
+    <div class="cc"><div class="ct">🔬 Exam Type Distribution</div><div class="cw" style="height:160px"><canvas id="tChart"></canvas></div></div>
+    <div class="cc"><div class="ct">🏷️ Clinical Indications</div><div id="indList"></div></div>
+    <div class="ibox"><strong>Phase 2 — Pending measurement export from GE ViewPoint</strong><br>EF · LV volumes · LAVI · E/e' · TR Vmax · Valvular findings · Diastolic dysfunction grading</div>
   </div>
 
   <!-- REGISTRY -->
 
-  <div id="tab-registry" class="page">
-    <div class="search-wrap">
-      <input type="text" class="search-input" id="searchInput" placeholder="Search Patient ID, date, physician..." oninput="filterStudies()">
-      <button class="search-btn" onclick="filterStudies()"><i class="fa fa-search"></i></button>
+  <div id="tab-reg" class="pg">
+    <div class="srow">
+      <input type="text" class="si" id="srch" placeholder="Search Patient ID, date, physician..." oninput="doFilter()">
+      <button class="sbtn" onclick="doFilter()"><i class="fa fa-search"></i></button>
     </div>
-    <div class="filter-row">
-      <select class="filter-select" id="filterType" onchange="filterStudies()">
-        <option value="">All Types</option>
-        <option value="TTE">TTE</option>
-        <option value="TEE">TEE</option>
-      </select>
-      <select class="filter-select" id="filterMonth" onchange="filterStudies()">
+    <div class="frow">
+      <select class="fsel" id="ftype" onchange="doFilter()"><option value="">All Types</option><option>TTE</option><option>TEE</option></select>
+      <select class="fsel" id="fmonth" onchange="doFilter()">
         <option value="">All Months</option>
-        <option value="01">January</option>
-        <option value="02">February</option>
-        <option value="03">March</option>
-        <option value="04">April</option>
-        <option value="05">May</option>
-        <option value="06">June</option>
-        <option value="07">July</option>
-        <option value="08">August</option>
-        <option value="09">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
+        <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+        <option value="04">April</option><option value="05">May</option><option value="06">June</option>
+        <option value="07">July</option><option value="08">August</option><option value="09">September</option>
+        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
       </select>
-      <select class="filter-select" id="filterPhys" onchange="filterStudies()">
-        <option value="">All Physicians</option>
-      </select>
+      <select class="fsel" id="fphys" onchange="doFilter()"><option value="">All Physicians</option></select>
     </div>
-    <div id="resultsInfo" style="font-size:0.68rem;color:var(--grey);margin-bottom:8px;"></div>
-    <div class="table-wrap">
+    <div id="rinfo" style="font-size:0.68rem;color:var(--grey);margin-bottom:8px;"></div>
+    <div class="tw">
       <table>
-        <thead>
-          <tr>
-            <th>Patient ID</th>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Physician</th>
-            <th>Indication</th>
-          </tr>
-        </thead>
-        <tbody id="studyTable"></tbody>
+        <thead><tr><th>Patient ID</th><th>Date</th><th>Type</th><th>Physician</th><th>Indication</th></tr></thead>
+        <tbody id="tbody"></tbody>
       </table>
     </div>
-    <div class="pagination">
-      <span class="page-info" id="pageInfo"></span>
-      <div class="page-btns">
-        <button class="page-btn" id="prevBtn" onclick="changePage(-1)">← Prev</button>
-        <button class="page-btn" id="nextBtn" onclick="changePage(1)">Next →</button>
+    <div class="pgn">
+      <span class="pgi" id="pgi"></span>
+      <div class="pgbtns">
+        <button class="pgb" id="pbprev" onclick="goPage(-1)">← Prev</button>
+        <button class="pgb" id="pbnext" onclick="goPage(1)">Next →</button>
       </div>
     </div>
   </div>
 
   <!-- IMPORT -->
 
-  <div id="tab-import" class="page">
-    <div class="upload-card">
+  <div id="tab-imp" class="pg">
+    <div class="ucard">
       <h3><i class="fa fa-file-csv" style="margin-right:6px"></i>Import ViewPoint CSV</h3>
-      <p>
-        Export from ViewPoint → Export query result → CSV<br>
-        Completed studies (Scan started) only.<br>
-        App filters TTE/TEE automatically and saves to Firebase.
-      </p>
-      <input type="file" id="csvFileInput" accept=".csv" onchange="importCSV(event)">
-      <button class="upload-btn" onclick="document.getElementById('csvFileInput').click()">
-        <i class="fa fa-upload" style="margin-right:6px"></i>Choose CSV File
-      </button>
-      <div class="progress-wrap" id="progressWrap">
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
-        <div class="progress-text" id="progressText">Importing...</div>
+      <p>Export from ViewPoint → Export query result → CSV with headers.<br>App filters completed TTE/TEE automatically and saves to Firebase.</p>
+      <input type="file" id="csvfile" accept=".csv" style="display:none" onchange="onFileSelect(event)">
+      <button class="ubtn" onclick="document.getElementById('csvfile').click()"><i class="fa fa-upload" style="margin-right:6px"></i>Choose CSV File</button>
+      <div class="prwrap" id="prwrap">
+        <div class="prbg"><div class="prfill" id="prfill"></div></div>
+        <div class="prtxt" id="prtxt">Importing...</div>
       </div>
     </div>
-
-```
-<div class="info-box">
-  <strong>How it works:</strong><br>
-  1. Export CSV from ViewPoint (any date range)<br>
-  2. Import here — all completed TTE/TEE studies saved to Firebase<br>
-  3. Dashboard updates automatically<br>
-  4. Re-import anytime to add new studies — duplicates are handled automatically<br><br>
-  <strong>Database:</strong> Firebase Firestore — echo-registry project<br>
-  <strong>Collection:</strong> echo_studies
-</div>
-
-<div class="info-box" style="border-color:rgba(240,192,64,0.3);background:rgba(240,192,64,0.05)">
-  <strong style="color:var(--gold)">Phase 2 — Measurement Import (Coming Soon)</strong><br>
-  Once GE engineer enables measurement export from ViewPoint:<br>
-  EF · LV volumes · LAVI · E/e' · TR Vmax · Valvular findings<br>
-  Will link automatically to existing studies by Patient ID + Date
-</div>
-
-<div class="chart-card">
-  <div class="chart-title">🗄️ Database Statistics</div>
-  <div style="font-size:0.72rem;color:var(--grey);line-height:2">
-    Total studies in Firebase: <span style="color:var(--cyan)" id="db-total">—</span><br>
-    Last import: <span style="color:var(--teal)" id="db-last-import">—</span><br>
-    Firebase project: <span style="color:var(--white)">echo-registry</span><br>
-    Collection: <span style="color:var(--white)">echo_studies</span>
-  </div>
-</div>
-```
-
+    <div class="ibox">
+      <strong>Database info:</strong><br>
+      Studies in Firebase: <span style="color:var(--cyan)" id="dbtotal">—</span><br>
+      Last import: <span style="color:var(--teal)" id="dblast">—</span><br>
+      Project: echo-registry · Collection: echo_studies
+    </div>
+    <div class="ibox" style="border-color:rgba(240,192,64,0.3);background:rgba(240,192,64,0.05)">
+      <strong style="color:var(--gold)">Phase 2 — Measurement Import</strong><br>
+      Once GE engineer enables ViewPoint measurement export, you can import EF, LV volumes, Doppler values — linked automatically by Patient ID + Date.
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== FIREBASE INIT =====
+// Firebase init
 firebase.initializeApp({
   apiKey: "AIzaSyCz-9cwOHbz_Ez-1DYwHQQQmwBjnclr-VI",
   authDomain: "echo-registry.firebaseapp.com",
@@ -364,414 +244,263 @@ firebase.initializeApp({
   messagingSenderId: "1045650491833",
   appId: "1:1045650491833:web:e9346488d46c0e7f9ece68"
 });
-
 var db = firebase.firestore();
 var auth = firebase.auth();
 
-// ===== STATE =====
-var ALL_STUDIES = [];
-var filteredStudies = [];
-var currentPage = 1;
-var PAGE_SIZE = 25;
-var monthChartInst = null, typeChartInst = null;
+// State
+var studies = [], filtered = [], curPage = 1, PAGE = 25;
+var mChart = null, tChart = null;
 
-// ===== AUTH =====
-// Timeout fallback in case Firebase takes too long
-var authResolved = false;
-setTimeout(function() {
-  if (!authResolved) {
-    document.getElementById('pageLoading').style.display = 'none';
-    document.getElementById('pageLogin').style.display = 'flex';
-    document.body.style.background = '#6b0000';
-  }
-}, 5000);
+// Show login immediately, then check auth
+document.getElementById('pageLogin').style.display = 'block';
 
 auth.onAuthStateChanged(function(user) {
-  authResolved = true;
-  document.getElementById('pageLoading').style.display = 'none';
   if (user) {
     document.getElementById('pageLogin').style.display = 'none';
     document.getElementById('pageApp').style.display = 'block';
-    document.body.style.background = '';
-    loadFromFirebase();
+    loadData();
   } else {
-    document.getElementById('pageLogin').style.display = 'flex';
+    document.getElementById('pageLogin').style.display = 'block';
     document.getElementById('pageApp').style.display = 'none';
-    document.body.style.background = '#6b0000';
   }
 });
 
 function doLogin() {
-  var email = document.getElementById('loginEmail').value.trim();
-  var password = document.getElementById('loginPassword').value;
-  var btn = document.getElementById('loginBtn');
-  var err = document.getElementById('loginError');
-  if (!email || !password) { err.textContent = 'Please enter email and password.'; err.style.display = 'block'; return; }
+  var email = document.getElementById('lemail').value.trim();
+  var pass = document.getElementById('lpass').value;
+  var btn = document.getElementById('lbtn');
+  var err = document.getElementById('lerr');
+  if (!email || !pass) { err.textContent='Enter email and password'; err.style.display='block'; return; }
   btn.disabled = true;
   btn.innerHTML = '<i class="fa fa-spinner fa-spin" style="margin-right:6px"></i>Signing in...';
   err.style.display = 'none';
-  auth.signInWithEmailAndPassword(email, password)
-    .catch(function() {
-      err.textContent = 'Invalid email or password.';
-      err.style.display = 'block';
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa fa-sign-in-alt" style="margin-right:6px"></i>Sign In';
-    });
+  auth.signInWithEmailAndPassword(email, pass).catch(function() {
+    err.textContent = 'Invalid email or password';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa fa-sign-in-alt" style="margin-right:6px"></i>Sign In';
+  });
 }
 
 function doLogout() {
-  if (confirm('Sign out of Echo Registry?')) auth.signOut();
+  if (confirm('Sign out?')) auth.signOut();
 }
 
-// ===== LOAD FROM FIREBASE =====
-function loadFromFirebase() {
-  var dot = document.getElementById('dbDot');
-  var status = document.getElementById('dbStatus');
-  dot.className = 'db-dot';
-  status.textContent = 'loading...';
-
+function loadData() {
+  document.getElementById('dbdot').className = 'db-dot';
+  document.getElementById('dblabel').textContent = 'loading...';
   db.collection('echo_studies').get().then(function(snap) {
-    ALL_STUDIES = [];
-    snap.forEach(function(doc) { ALL_STUDIES.push(doc.data()); });
-    dot.className = 'db-dot online';
-    status.textContent = ALL_STUDIES.length + ' studies';
-    document.getElementById('db-total').textContent = ALL_STUDIES.length;
-    if (ALL_STUDIES.length > 0) {
-      buildDashboard();
-      buildRegistry();
-    } else {
-      showEmptyState();
-    }
+    studies = [];
+    snap.forEach(function(d) { studies.push(d.data()); });
+    document.getElementById('dbdot').className = 'db-dot on';
+    document.getElementById('dblabel').textContent = studies.length + ' studies';
+    document.getElementById('dbtotal').textContent = studies.length;
+    if (studies.length > 0) { buildDash(); buildReg(); }
+    else { showEmpty(); }
   }).catch(function(e) {
-    dot.className = 'db-dot';
-    status.textContent = 'error';
+    document.getElementById('dblabel').textContent = 'error';
     console.error(e);
   });
 }
 
-function showEmptyState() {
-  document.getElementById('stat-total').textContent = '0';
-  document.getElementById('stat-patients').textContent = '0';
-  document.getElementById('stat-tte').textContent = '0';
-  document.getElementById('stat-tee').textContent = '0';
-  document.getElementById('studyTable').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--grey)">No studies yet — import your ViewPoint CSV in the Import tab</td></tr>';
+function showEmpty() {
+  ['s-total','s-pts','s-tte','s-tee'].forEach(function(id){ document.getElementById(id).textContent='0'; });
+  document.getElementById('tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--grey)">No studies yet — use Import tab to upload ViewPoint CSV</td></tr>';
 }
 
-// ===== DASHBOARD =====
-function buildDashboard() {
-  var total = ALL_STUDIES.length;
-  var tteCount = ALL_STUDIES.filter(function(s){return s.type==='TTE';}).length;
-  var teeCount = ALL_STUDIES.filter(function(s){return s.type==='TEE';}).length;
-  var uniquePts = new Set(ALL_STUDIES.filter(function(s){return s.pid;}).map(function(s){return s.pid;})).size;
+function buildDash() {
+  var n = studies.length;
+  var tte = studies.filter(function(s){return s.type==='TTE';}).length;
+  var tee = studies.filter(function(s){return s.type==='TEE';}).length;
+  var pts = new Set(studies.filter(function(s){return s.pid;}).map(function(s){return s.pid;})).size;
+  document.getElementById('s-total').textContent = n;
+  document.getElementById('s-pts').textContent = pts;
+  document.getElementById('s-tte').textContent = tte;
+  document.getElementById('s-tee').textContent = tee;
+  document.getElementById('s-tte-p').textContent = n?Math.round(tte/n*100)+'% of studies':'—';
+  document.getElementById('s-tee-p').textContent = n?Math.round(tee/n*100)+'% of studies':'—';
 
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-patients').textContent = uniquePts;
-  document.getElementById('stat-tte').textContent = tteCount;
-  document.getElementById('stat-tee').textContent = teeCount;
-  document.getElementById('stat-tte-pct').textContent = total > 0 ? Math.round(tteCount/total*100)+'% of studies' : '—';
-  document.getElementById('stat-tee-pct').textContent = total > 0 ? Math.round(teeCount/total*100)+'% of studies' : '—';
+  var mn={'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'};
+  var mc={};
+  studies.forEach(function(s){if(s.month)mc[s.month]=(mc[s.month]||0)+1;});
+  var sm=Object.keys(mc).sort();
+  if(mChart)mChart.destroy();
+  mChart=new Chart(document.getElementById('mChart'),{type:'bar',data:{labels:sm.map(function(m){return mn[m]||m;}),datasets:[{data:sm.map(function(m){return mc[m];}),backgroundColor:'rgba(0,194,255,0.3)',borderColor:'#00c2ff',borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8899bb',font:{family:'DM Mono',size:10}},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#8899bb',font:{family:'DM Mono',size:10}},grid:{color:'rgba(255,255,255,0.05)'}}}}});
 
-  // Month chart
-  var monthNames = {'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'};
-  var months = {};
-  ALL_STUDIES.forEach(function(s){ if(s.month) months[s.month]=(months[s.month]||0)+1; });
-  var sortedMonths = Object.keys(months).sort();
-  if (monthChartInst) monthChartInst.destroy();
-  monthChartInst = new Chart(document.getElementById('monthChart'), {
-    type: 'bar',
-    data: {
-      labels: sortedMonths.map(function(m){return monthNames[m]||m;}),
-      datasets: [{data:sortedMonths.map(function(m){return months[m];}),backgroundColor:'rgba(0,194,255,0.3)',borderColor:'#00c2ff',borderWidth:2,borderRadius:6}]
-    },
-    options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8899bb',font:{family:'DM Mono',size:10}},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#8899bb',font:{family:'DM Mono',size:10}},grid:{color:'rgba(255,255,255,0.05)'}}}}
-  });
+  var pc={};
+  studies.forEach(function(s){var p=s.physician||'Unassigned';pc[p]=(pc[p]||0)+1;});
+  var sp=Object.entries(pc).sort(function(a,b){return b[1]-a[1];}).slice(0,12);
+  var mx=sp[0]?sp[0][1]:1;
+  document.getElementById('physList').innerHTML=sp.map(function(x){return '<li class="pi"><span class="pn">'+x[0]+'</span><div class="pb"><div class="pbf" style="width:'+Math.round(x[1]/mx*100)+'%"></div></div><span class="pc">'+x[1]+'</span></li>';}).join('');
 
-  // Physician bars
-  var physCounts = {};
-  ALL_STUDIES.forEach(function(s){ var p=s.physician||'Unassigned'; physCounts[p]=(physCounts[p]||0)+1; });
-  var sorted = Object.entries(physCounts).sort(function(a,b){return b[1]-a[1];}).slice(0,12);
-  var maxCount = sorted[0]?sorted[0][1]:1;
-  document.getElementById('physList').innerHTML = sorted.map(function(item){
-    return '<li class="phys-item"><span class="phys-name">'+item[0]+'</span><div class="phys-bar-wrap"><div class="phys-bar" style="width:'+Math.round(item[1]/maxCount*100)+'%"></div></div><span class="phys-count">'+item[1]+'</span></li>';
-  }).join('');
+  if(tChart)tChart.destroy();
+  tChart=new Chart(document.getElementById('tChart'),{type:'doughnut',data:{labels:['TTE','TEE'],datasets:[{data:[tte,tee],backgroundColor:['rgba(0,194,255,0.6)','rgba(240,192,64,0.6)'],borderColor:['#00c2ff','#f0c040'],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#f0f4ff',font:{family:'DM Mono',size:11},padding:14}}}}});
 
-  // Type donut
-  if (typeChartInst) typeChartInst.destroy();
-  typeChartInst = new Chart(document.getElementById('typeChart'), {
-    type: 'doughnut',
-    data: {labels:['TTE','TEE'],datasets:[{data:[tteCount,teeCount],backgroundColor:['rgba(0,194,255,0.6)','rgba(240,192,64,0.6)'],borderColor:['#00c2ff','#f0c040'],borderWidth:2}]},
-    options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#f0f4ff',font:{family:'DM Mono',size:11},padding:14}}}}
-  });
+  var ic={};
+  studies.forEach(function(s){if(s.indication&&s.indication.trim()){var k=s.indication.trim().toLowerCase();ic[k]=(ic[k]||0)+1;}});
+  var si=Object.entries(ic).sort(function(a,b){return b[1]-a[1];}).slice(0,20);
+  document.getElementById('indList').innerHTML=si.length?si.map(function(x){return '<span style="display:inline-block;background:rgba(240,192,64,0.12);color:var(--gold);padding:2px 7px;border-radius:10px;font-size:0.6rem;margin:3px">'+x[0]+' <span style="opacity:0.6">('+x[1]+')</span></span>';}).join(''):'<span style="color:var(--grey);font-size:0.7rem">No indication notes in dataset</span>';
 
-  // Indications
-  var indications = {};
-  ALL_STUDIES.forEach(function(s){ if(s.indication&&s.indication.trim()){var ind=s.indication.trim().toLowerCase().replace(/\s+/g,' ');indications[ind]=(indications[ind]||0)+1;} });
-  var sortedInd = Object.entries(indications).sort(function(a,b){return b[1]-a[1];}).slice(0,20);
-  var indDiv = document.getElementById('indicationList');
-  indDiv.innerHTML = sortedInd.length > 0
-    ? sortedInd.map(function(item){return '<span class="badge" style="background:rgba(240,192,64,0.12);color:var(--gold);margin:3px;font-size:0.6rem">'+item[0]+' <span style="opacity:0.6">('+item[1]+')</span></span>';}).join('')
-    : '<p style="color:var(--grey);font-size:0.7rem">No indication notes in current dataset</p>';
-
-  // Populate physician filter
-  var physFilter = document.getElementById('filterPhys');
-  physFilter.innerHTML = '<option value="">All Physicians</option>';
-  sorted.forEach(function(item){
-    if(item[0]!=='Unassigned'){var opt=document.createElement('option');opt.value=item[0];opt.textContent=item[0];physFilter.appendChild(opt);}
-  });
+  var fp=document.getElementById('fphys');
+  fp.innerHTML='<option value="">All Physicians</option>';
+  sp.forEach(function(x){if(x[0]!=='Unassigned'){var o=document.createElement('option');o.value=x[0];o.textContent=x[0];fp.appendChild(o);}});
 }
 
-// ===== REGISTRY =====
-function buildRegistry() {
-  filteredStudies = ALL_STUDIES.slice();
-  currentPage = 1;
-  renderTable();
-}
+function buildReg() { filtered=studies.slice(); curPage=1; renderTable(); }
 
-function filterStudies() {
-  var q = document.getElementById('searchInput').value.trim().toLowerCase();
-  var type = document.getElementById('filterType').value;
-  var month = document.getElementById('filterMonth').value;
-  var phys = document.getElementById('filterPhys').value;
-  filteredStudies = ALL_STUDIES.filter(function(s){
-    if(type&&s.type!==type)return false;
-    if(month&&s.month!==month)return false;
-    if(phys&&s.physician!==phys)return false;
-    if(q){var searchable=(s.pid+' '+s.date+' '+s.physician+' '+s.indication).toLowerCase();if(!searchable.includes(q))return false;}
+function doFilter() {
+  var q=document.getElementById('srch').value.trim().toLowerCase();
+  var ft=document.getElementById('ftype').value;
+  var fm=document.getElementById('fmonth').value;
+  var fp=document.getElementById('fphys').value;
+  filtered=studies.filter(function(s){
+    if(ft&&s.type!==ft)return false;
+    if(fm&&s.month!==fm)return false;
+    if(fp&&s.physician!==fp)return false;
+    if(q&&!(s.pid+' '+s.date+' '+s.physician+' '+s.indication).toLowerCase().includes(q))return false;
     return true;
   });
-  currentPage=1;
-  renderTable();
+  curPage=1; renderTable();
 }
 
 function renderTable() {
-  var tbody = document.getElementById('studyTable');
-  var start = (currentPage-1)*PAGE_SIZE;
-  var end = start+PAGE_SIZE;
-  var page = filteredStudies.slice(start,end);
-  var total = filteredStudies.length;
-  document.getElementById('resultsInfo').textContent = 'Showing '+(total===0?0:start+1)+'–'+Math.min(end,total)+' of '+total+' studies';
-  document.getElementById('pageInfo').textContent = 'Page '+currentPage+' of '+Math.max(1,Math.ceil(total/PAGE_SIZE));
-  document.getElementById('prevBtn').disabled = currentPage===1;
-  document.getElementById('nextBtn').disabled = end>=total;
-  if(page.length===0){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--grey)">No studies found</td></tr>';return;}
-  tbody.innerHTML = page.map(function(s){
-    return '<tr><td style="color:var(--cyan);font-size:0.65rem">'+(s.pid||'<span style="opacity:0.4">—</span>')+'</td><td>'+s.date+'</td><td><span class="badge badge-'+s.type.toLowerCase()+'">'+s.type+'</span></td><td style="color:var(--grey);max-width:130px;overflow:hidden;text-overflow:ellipsis">'+(s.physician||'<span style="opacity:0.3">—</span>')+'</td><td>'+(s.indication?'<span class="indication-tag">'+s.indication+'</span>':'<span style="opacity:0.3">—</span>')+'</td></tr>';
+  var s=(curPage-1)*PAGE, e=s+PAGE, pg=filtered.slice(s,e), n=filtered.length;
+  document.getElementById('rinfo').textContent='Showing '+(n?s+1:0)+'–'+Math.min(e,n)+' of '+n+' studies';
+  document.getElementById('pgi').textContent='Page '+curPage+' of '+Math.max(1,Math.ceil(n/PAGE));
+  document.getElementById('pbprev').disabled=curPage===1;
+  document.getElementById('pbnext').disabled=e>=n;
+  if(!pg.length){document.getElementById('tbody').innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--grey)">No studies found</td></tr>';return;}
+  document.getElementById('tbody').innerHTML=pg.map(function(s){
+    return '<tr><td style="color:var(--cyan);font-size:0.65rem">'+(s.pid||'—')+'</td><td>'+s.date+'</td><td><span class="b'+s.type.toLowerCase()+'">'+s.type+'</span></td><td style="color:var(--grey);max-width:130px;overflow:hidden;text-overflow:ellipsis">'+(s.physician||'—')+'</td><td>'+(s.indication?'<span class="itag">'+s.indication+'</span>':'—')+'</td></tr>';
   }).join('');
 }
 
-function changePage(dir) {
-  currentPage = Math.max(1, Math.min(Math.ceil(filteredStudies.length/PAGE_SIZE), currentPage+dir));
-  renderTable();
-}
+function goPage(d){curPage=Math.max(1,Math.min(Math.ceil(filtered.length/PAGE),curPage+d));renderTable();}
 
-function showTab(name, btn) {
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+function showTab(name,btn){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tbtn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('tab-'+name).classList.add('active');
-  if(btn) btn.classList.add('active');
+  if(btn)btn.classList.add('active');
 }
 
-// ===== CSV IMPORT =====
-function importCSV(e) {
+// CSV Import
+function onFileSelect(e) {
   var file = e.target.files[0];
-  if(!file) return;
+  if (!file) return;
   var reader = new FileReader();
-  reader.onload = function(ev) {
-    try {
-      processCSV(ev.target.result);
-    } catch(err) {
-      showToast('Error reading file — check format');
-      console.error(err);
-    }
-  };
-  reader.readAsText(file);
+  reader.onload = function(ev) { parseAndImport(ev.target.result); };
+  reader.readAsText(file, 'UTF-8');
 }
 
+function parseAndImport(raw) {
+  // Remove BOM
+  raw = raw.replace(/^\uFEFF/, '');
+  // Normalize line endings
+  raw = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
-function processCSV(text) {
-  // Remove BOM and normalize line endings
-  text = text.replace(/^﻿/, '').replace(/
-/g, '
-').replace(/
-/g, '
-');
-
-  // Split into lines respecting quoted fields
-  var lines = splitCSVLines(text);
-  if (lines.length < 2) { showToast('CSV appears empty'); return; }
-
-  // Parse headers
-  var headers = splitCSVRow(lines[0]).map(function(h){ return h.trim(); });
-  console.log('ViewPoint CSV headers:', headers);
-
-  // Find column indexes
-  var idxPID    = findCol(headers, ['Patient ID','patient id','PatientID']);
-  var idxDate   = findCol(headers, ['Exam date','exam date','ExamDate']);
-  var idxType   = findCol(headers, ['Exam type','exam type','ExamType']);
-  var idxStatus = findCol(headers, ['Exam status','exam status','ExamStatus']);
-  var idxPhysR  = findCol(headers, ['Reading physician','reading physician']);
-  var idxPhysP  = findCol(headers, ['Performing physician','performing physician']);
-  var idxAcc    = findCol(headers, ['Accession No.','accession no','Accession No','AccessionNo']);
-
-  console.log('Column indexes - PID:'+idxPID+' Date:'+idxDate+' Type:'+idxType+' Status:'+idxStatus);
-
-  if (idxPID < 0 || idxDate < 0 || idxType < 0 || idxStatus < 0) {
-    showToast('Cannot find required columns — check CSV format');
-    return;
-  }
-
-  var studies = [];
-  var skipped = 0;
-
-  for (var i = 1; i < lines.length; i++) {
-    if (!lines[i].trim()) continue;
-    var vals = splitCSVRow(lines[i]);
-
-    var status = (vals[idxStatus]||'').trim();
-    var type   = (vals[idxType]||'').trim();
-    var pid    = (vals[idxPID]||'').replace(/[\s
-
-]+/g,'');
-
-    // Skip non-completed or non-echo studies
-    if (status !== 'Scan started') { skipped++; continue; }
-    if (type !== 'TTE' && type !== 'TEE') { skipped++; continue; }
-    if (!pid || pid.length < 3) { skipped++; continue; }
-
-    var date = (vals[idxDate]||'').trim();
-    var physician = '';
-    if (idxPhysR >= 0) physician = (vals[idxPhysR]||'').trim();
-    if (!physician && idxPhysP >= 0) physician = (vals[idxPhysP]||'').trim();
-    var indication = idxAcc >= 0 ? (vals[idxAcc]||'').trim() : '';
-
-    studies.push({
-      pid: pid,
-      date: date,
-      type: type,
-      physician: physician,
-      indication: indication,
-      month: date ? date.substring(0,2) : '',
-      importedAt: new Date().toISOString()
-    });
-  }
-
-  console.log('Studies found: '+studies.length+', skipped: '+skipped);
-
-  if (studies.length === 0) {
-    showToast('No completed TTE/TEE studies found. Skipped: '+skipped+' rows');
-    return;
-  }
-
-  showToast('Found '+studies.length+' studies — saving to Firebase...');
-  saveToFirebase(studies);
-}
-
-function findCol(headers, names) {
-  for (var i=0; i<headers.length; i++) {
-    var h = headers[i].toLowerCase().trim();
-    for (var j=0; j<names.length; j++) {
-      if (h === names[j].toLowerCase()) return i;
-    }
-  }
-  return -1;
-}
-
-function splitCSVLines(text) {
-  // Split lines but keep quoted newlines together
-  var lines = [];
-  var current = '';
-  var inQuotes = false;
-  for (var i=0; i<text.length; i++) {
-    var c = text[i];
-    if (c==='"') {
-      inQuotes = !inQuotes;
-      current += c;
-    } else if (c==='
-' && !inQuotes) {
-      lines.push(current);
-      current = '';
-    } else {
-      current += c;
-    }
-  }
-  if (current) lines.push(current);
-  return lines;
-}
-
-function splitCSVRow(line) {
-  var result = [];
-  var field = '';
-  var inQuotes = false;
-  for (var i=0; i<line.length; i++) {
-    var c = line[i];
-    if (c==='"') {
-      if (inQuotes && line[i+1]==='"') { field+='"'; i++; }
-      else inQuotes = !inQuotes;
-    } else if (c===',' && !inQuotes) {
-      result.push(field);
-      field = '';
+  // Parse all fields respecting quotes
+  var rows = [];
+  var row = [], field = '', inQ = false;
+  for (var i = 0; i < raw.length; i++) {
+    var c = raw[i];
+    if (c === '"') {
+      if (inQ && raw[i+1] === '"') { field += '"'; i++; }
+      else inQ = !inQ;
+    } else if (c === ',' && !inQ) {
+      row.push(field); field = '';
+    } else if (c === '\n' && !inQ) {
+      row.push(field); field = '';
+      rows.push(row); row = [];
     } else {
       field += c;
     }
   }
-  result.push(field);
-  return result;
-}
+  if (field || row.length) { row.push(field); if(row.some(function(f){return f.trim();})) rows.push(row); }
 
-function saveToFirebase(studies) {
-  var progress = document.getElementById('progressWrap');
-  var fill = document.getElementById('progressFill');
-  var text = document.getElementById('progressText');
-  progress.style.display = 'block';
+  if (rows.length < 2) { toast('CSV appears empty'); return; }
 
-  var BATCH_SIZE = 400;
-  var total = studies.length;
-  var saved = 0;
-  var batches = [];
+  // Headers
+  var hdrs = rows[0].map(function(h){ return h.trim(); });
+  console.log('Headers:', hdrs);
 
-  for(var i=0; i<studies.length; i+=BATCH_SIZE) {
-    batches.push(studies.slice(i, i+BATCH_SIZE));
+  // Find columns
+  function col(names) {
+    for (var i=0;i<hdrs.length;i++) {
+      for (var j=0;j<names.length;j++) {
+        if (hdrs[i].toLowerCase().indexOf(names[j].toLowerCase())>=0) return i;
+      }
+    }
+    return -1;
   }
 
-  function saveBatch(idx) {
-    if(idx >= batches.length) {
-      fill.style.width = '100%';
-      text.textContent = 'Complete! '+saved+' studies saved to Firebase.';
-      document.getElementById('db-last-import').textContent = new Date().toLocaleString();
-      showToast('✓ '+saved+' studies imported successfully');
-      setTimeout(function(){ progress.style.display='none'; loadFromFirebase(); }, 2000);
+  var cPID=col(['Patient ID']), cDate=col(['Exam date']), cType=col(['Exam type']), cStatus=col(['Exam status']);
+  var cPhysR=col(['Reading physician']), cPhysP=col(['Performing physician']), cAcc=col(['Accession No']);
+
+  console.log('Cols: PID='+cPID+' Date='+cDate+' Type='+cType+' Status='+cStatus);
+
+  if (cPID<0||cDate<0||cType<0||cStatus<0) {
+    toast('Required columns not found. Check CSV format.');
+    return;
+  }
+
+  var list = [], skip = 0;
+  for (var i=1; i<rows.length; i++) {
+    var r = rows[i];
+    if (r.length < 4) continue;
+    var status = (r[cStatus]||'').trim();
+    var type   = (r[cType]||'').trim();
+    var pid    = (r[cPID]||'').replace(/[\s\n\r]+/g,'');
+    if (status !== 'Scan started') { skip++; continue; }
+    if (type !== 'TTE' && type !== 'TEE') { skip++; continue; }
+    if (!pid || pid.length < 3) { skip++; continue; }
+    var date = (r[cDate]||'').trim();
+    var phys = '';
+    if (cPhysR>=0) phys=(r[cPhysR]||'').trim();
+    if (!phys && cPhysP>=0) phys=(r[cPhysP]||'').trim();
+    var ind = cAcc>=0 ? (r[cAcc]||'').trim() : '';
+    list.push({ pid:pid, date:date, type:type, physician:phys, indication:ind, month:date?date.substring(0,2):'', importedAt:new Date().toISOString() });
+  }
+
+  console.log('Found: '+list.length+' studies, skipped: '+skip);
+  if (!list.length) { toast('No completed TTE/TEE found. Skipped '+skip+' rows.'); return; }
+  toast('Found '+list.length+' studies — saving...');
+  batchSave(list);
+}
+
+function batchSave(list) {
+  var wrap=document.getElementById('prwrap'), fill=document.getElementById('prfill'), txt=document.getElementById('prtxt');
+  wrap.style.display='block';
+  var BATCH=400, total=list.length, done=0, batches=[];
+  for(var i=0;i<list.length;i+=BATCH) batches.push(list.slice(i,i+BATCH));
+
+  function next(idx) {
+    if(idx>=batches.length){
+      fill.style.width='100%'; txt.textContent='Done! '+done+' studies saved.';
+      document.getElementById('dblast').textContent=new Date().toLocaleString();
+      toast('✓ '+done+' studies imported');
+      setTimeout(function(){wrap.style.display='none';loadData();},2000);
       return;
     }
-
-    var batch = db.batch();
-    batches[idx].forEach(function(study) {
-      // Use pid+date as document ID to prevent duplicates
-      var docId = study.pid + '_' + study.date.replace(/\//g,'-');
-      var ref = db.collection('echo_studies').doc(docId);
-      batch.set(ref, study, {merge: true});
-      saved++;
+    var batch=db.batch();
+    batches[idx].forEach(function(s){
+      var id=s.pid+'_'+s.date.replace(/\//g,'-');
+      batch.set(db.collection('echo_studies').doc(id), s, {merge:true});
+      done++;
     });
-
-    batch.commit().then(function() {
-      var pct = Math.round((idx+1)/batches.length*100);
-      fill.style.width = pct+'%';
-      text.textContent = 'Saving... '+Math.min(saved,total)+' / '+total;
-      saveBatch(idx+1);
-    }).catch(function(err) {
-      text.textContent = 'Error: '+err.message;
-      showToast('Import error — check console');
-      console.error(err);
-    });
+    batch.commit().then(function(){
+      var p=Math.round((idx+1)/batches.length*100);
+      fill.style.width=p+'%'; txt.textContent='Saving '+Math.min(done,total)+' / '+total+'...';
+      next(idx+1);
+    }).catch(function(e){ txt.textContent='Error: '+e.message; toast('Save error'); console.error(e); });
   }
-
-  saveBatch(0);
+  next(0);
 }
 
-function showToast(msg) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.display = 'block';
-  setTimeout(function(){ t.style.display='none'; }, 3500);
+function toast(msg) {
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.style.display='block';
+  setTimeout(function(){t.style.display='none';},3500);
 }
 </script>
 

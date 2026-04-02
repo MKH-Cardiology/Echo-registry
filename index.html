@@ -4,134 +4,210 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Echo Lab Registry — Mubarak Al-Kabeer Hospital</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Echo Lab Registry — Mubarak Al-Kabeer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 <style>
-:root{--navy:#0a1628;--navy2:#0f2040;--blue:#1a4fd4;--cyan:#00c2ff;--teal:#00e5c3;--gold:#f0c040;--white:#f0f4ff;--grey:#8899bb;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--navy);color:var(--white);font-family:'DM Mono',monospace;font-size:13px;min-height:100vh;}
+:root {
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --surface2: #f0f2f8;
+  --border: #e4e8f0;
+  --text: #1a2340;
+  --text2: #5a6480;
+  --text3: #9aa0b8;
+  --accent: #1a56db;
+  --accent2: #0e3fa8;
+  --teal: #0891b2;
+  --green: #059669;
+  --amber: #d97706;
+  --red: #dc2626;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; min-height: 100vh; }
+
 /* LOGIN */
-#pageLogin{display:none;min-height:100vh;background-color:#8b0000;}
-.login-container{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:30px 20px;}
-.login-logo{text-align:center;margin-bottom:40px;}
-.login-logo h1{font-family:'Syne',sans-serif;color:#fff;font-size:1.6rem;font-weight:700;margin:0 0 4px;}
-.login-logo p{color:rgba(255,255,255,0.75);font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;}
-.login-card{background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:35px 28px;width:100%;max-width:380px;}
-.login-card h2{font-family:'Syne',sans-serif;color:#fff;font-size:1.4rem;font-weight:600;margin-bottom:6px;}
-.login-card .sub{color:rgba(255,255,255,0.65);font-size:0.78rem;margin-bottom:28px;}
-.lfield{margin-bottom:16px;}
-.lfield label{color:rgba(255,255,255,0.85);font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:6px;}
-.lfield .iw{position:relative;}
-.lfield .iw i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.5);font-size:0.85rem;}
-.lfield input{width:100%;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);border-radius:10px;padding:12px 14px 12px 38px;color:#fff;font-size:0.9rem;outline:none;}
-.lfield input:focus{border-color:#fff;}
-.lfield input::placeholder{color:rgba(255,255,255,0.4);}
-.btn-login{width:100%;padding:13px;background:#fff;border:none;border-radius:10px;color:#8b0000;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;margin-top:8px;}
-.btn-login:disabled{opacity:0.6;}
-.lerr{background:rgba(0,0,0,0.25);border:1px solid rgba(255,150,150,0.5);border-radius:8px;color:#ffbbbb;font-size:0.8rem;padding:10px 14px;margin-top:14px;display:none;text-align:center;}
-.lfooter{margin-top:28px;text-align:center;color:rgba(255,255,255,0.45);font-size:0.72rem;}
+#pageLogin { display: none; min-height: 100vh; background: linear-gradient(135deg, #1a2340 0%, #1a56db 100%); position: relative; overflow: hidden; }
+#pageLogin::before { content: ‘’; position: absolute; top: -30%; right: -20%; width: 600px; height: 600px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+#pageLogin::after { content: ‘’; position: absolute; bottom: -20%; left: -10%; width: 400px; height: 400px; border-radius: 50%; background: rgba(255,255,255,0.03); }
+.lc { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; }
+.llogo { text-align: center; margin-bottom: 36px; }
+.llogo .icon { width: 56px; height: 56px; background: rgba(255,255,255,0.15); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.6rem; backdrop-filter: blur(10px); }
+.llogo h1 { font-family: ‘Playfair Display’, serif; color: #fff; font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+.llogo p { color: rgba(255,255,255,0.6); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.lcard { background: rgba(255,255,255,0.97); border-radius: 20px; padding: 32px 28px; width: 100%; max-width: 380px; box-shadow: 0 24px 80px rgba(0,0,0,0.3); }
+.lcard h2 { font-family: ‘Playfair Display’, serif; color: var(–text); font-size: 1.3rem; margin-bottom: 4px; }
+.lcard .sub { color: var(–text3); font-size: 0.75rem; margin-bottom: 24px; }
+.lf { margin-bottom: 14px; }
+.lf label { display: block; font-size: 0.7rem; font-weight: 600; color: var(–text2); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 5px; }
+.lf .iw { position: relative; }
+.lf .iw i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(–text3); font-size: 0.8rem; }
+.lf input { width: 100%; background: var(–bg); border: 1.5px solid var(–border); border-radius: 10px; padding: 11px 12px 11px 36px; color: var(–text); font-size: 0.85rem; font-family: ‘Plus Jakarta Sans’, sans-serif; outline: none; transition: border-color 0.2s; }
+.lf input:focus { border-color: var(–accent); background: #fff; }
+.lf input::placeholder { color: var(–text3); }
+.lbtn { width: 100%; padding: 12px; background: var(–accent); border: none; border-radius: 10px; color: #fff; font-family: ‘Plus Jakarta Sans’, sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 6px; transition: background 0.2s; }
+.lbtn:hover { background: var(–accent2); }
+.lbtn:disabled { opacity: 0.6; }
+.lerr { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; color: var(–red); font-size: 0.75rem; padding: 9px 12px; margin-top: 12px; display: none; }
+.lfoot { margin-top: 24px; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.68rem; }
+
 /* APP */
-#pageApp{display:none;}
-.header{background:linear-gradient(135deg,var(--navy2),#0d2a55);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.header h1{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:#fff;}
-.header p{font-size:0.65rem;color:var(--cyan);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;}
-.hright{display:flex;align-items:center;gap:10px;}
-.db-dot{width:7px;height:7px;border-radius:50%;background:var(--grey);display:inline-block;}
-.db-dot.on{background:var(--teal);}
-.dblabel{font-size:0.62rem;color:var(--grey);}
-.btn-out{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:0.7rem;padding:5px 10px;border-radius:16px;cursor:pointer;}
-.navtabs{display:flex;background:var(--navy2);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
-.navtabs::-webkit-scrollbar{display:none;}
-.tbtn{flex-shrink:0;padding:11px 18px;background:none;border:none;color:var(--grey);font-family:'DM Mono',monospace;font-size:0.7rem;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;border-bottom:2px solid transparent;}
-.tbtn.active{color:var(--cyan);border-bottom-color:var(--cyan);}
-.pg{display:none;padding:14px;}
-.pg.active{display:block;}
-/* STATS */
-.sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
-.sc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;position:relative;overflow:hidden;}
-.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--teal));}
-.slabel{font-size:0.6rem;color:var(--grey);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
-.sval{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--white);line-height:1;}
-.ssub{font-size:0.62rem;color:var(--teal);margin-top:4px;}
-/* CHART CARD */
-.cc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
-.ct{font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;color:var(--white);margin-bottom:12px;}
-.cw{position:relative;height:190px;}
-/* PHYS */
-.pl{list-style:none;}
-.pi{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
-.pn{font-size:0.68rem;color:var(--white);width:155px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.pb{flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:7px;overflow:hidden;}
-.pbf{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--cyan));}
-.pc{font-size:0.7rem;color:var(--cyan);width:28px;text-align:right;flex-shrink:0;}
+#pageApp { display: none; }
+
+/* HEADER */
+.header { background: var(–surface); border-bottom: 1px solid var(–border); padding: 0 16px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 0 var(–border); }
+.header-brand { display: flex; align-items: center; gap: 10px; }
+.brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(–accent), var(–teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.85rem; flex-shrink: 0; }
+.brand-text h1 { font-family: ‘Playfair Display’, serif; font-size: 0.95rem; font-weight: 600; color: var(–text); line-height: 1; }
+.brand-text p { font-size: 0.62rem; color: var(–text3); margin-top: 2px; letter-spacing: 0.04em; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.db-pill { display: flex; align-items: center; gap: 5px; background: var(–surface2); border: 1px solid var(–border); border-radius: 20px; padding: 4px 10px; }
+.db-dot { width: 6px; height: 6px; border-radius: 50%; background: var(–text3); }
+.db-dot.on { background: var(–green); }
+.db-label { font-size: 0.65rem; color: var(–text2); font-weight: 500; }
+.btn-out { background: none; border: 1.5px solid var(–border); border-radius: 8px; padding: 6px 10px; color: var(–text2); font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+.btn-out:hover { border-color: var(–accent); color: var(–accent); }
+
+/* NAV */
+.navtabs { background: var(–surface); border-bottom: 1px solid var(–border); display: flex; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
+.navtabs::-webkit-scrollbar { display: none; }
+.tbtn { flex-shrink: 0; padding: 14px 16px; background: none; border: none; color: var(–text3); font-family: ‘Plus Jakarta Sans’, sans-serif; font-size: 0.72rem; font-weight: 600; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.tbtn.active { color: var(–accent); border-bottom-color: var(–accent); }
+.tbtn:hover { color: var(–text); }
+
+/* PAGES */
+.pg { display: none; padding: 16px; }
+.pg.active { display: block; }
+
+/* KPI ROW */
+.kpi-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+.kpi { background: var(–surface); border: 1px solid var(–border); border-radius: 14px; padding: 16px; box-shadow: var(–shadow); position: relative; overflow: hidden; }
+.kpi-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 10px; }
+.kpi-icon.blue { background: #eff6ff; }
+.kpi-icon.teal { background: #f0fdff; }
+.kpi-icon.green { background: #f0fdf4; }
+.kpi-icon.amber { background: #fffbeb; }
+.kpi-label { font-size: 0.62rem; color: var(–text3); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+.kpi-val { font-family: ‘Playfair Display’, serif; font-size: 2rem; font-weight: 700; color: var(–text); line-height: 1; }
+.kpi-sub { font-size: 0.62rem; color: var(–text3); margin-top: 4px; }
+.kpi-trend { position: absolute; top: 14px; right: 14px; font-size: 0.65rem; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+.kpi-trend.up { background: #f0fdf4; color: var(–green); }
+
+/* CHART CARDS */
+.card { background: var(–surface); border: 1px solid var(–border); border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: var(–shadow); }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.card-title { font-family: ‘Playfair Display’, serif; font-size: 0.95rem; font-weight: 600; color: var(–text); }
+.card-badge { font-size: 0.62rem; font-weight: 600; padding: 3px 8px; border-radius: 8px; background: var(–surface2); color: var(–text2); }
+.cw { position: relative; height: 200px; }
+.cw-sm { position: relative; height: 160px; }
+
+/* PHYS LIST */
+.phys-list { list-style: none; }
+.phys-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(–border); }
+.phys-item:last-child { border-bottom: none; }
+.phys-rank { width: 20px; font-size: 0.65rem; color: var(–text3); font-weight: 600; flex-shrink: 0; text-align: center; }
+.phys-name { font-size: 0.72rem; color: var(–text); font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.phys-bar-wrap { width: 80px; background: var(–surface2); border-radius: 4px; height: 6px; overflow: hidden; flex-shrink: 0; }
+.phys-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(–accent), var(–teal)); }
+.phys-count { font-size: 0.7rem; color: var(–accent); font-weight: 700; width: 30px; text-align: right; flex-shrink: 0; }
+
+/* DAY HEATMAP */
+.day-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.day-cell { aspect-ratio: 1; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 600; color: var(–text3); background: var(–surface2); }
+.day-cell.active { color: #fff; }
+.day-label { font-size: 0.6rem; color: var(–text3); font-weight: 600; text-align: center; margin-bottom: 6px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.day-label span { text-align: center; }
+
+/* INDICATIONS */
+.ind-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+.ind-tag { padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; border: 1.5px solid; }
+.ind-tag.lg { font-size: 0.8rem; padding: 6px 14px; }
+.ind-tag.md { font-size: 0.7rem; padding: 5px 12px; }
+.ind-tag.sm { font-size: 0.62rem; padding: 3px 9px; }
+
 /* REGISTRY */
-.srow{display:flex;gap:8px;margin-bottom:12px;}
-.si{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--white);font-family:'DM Mono',monospace;font-size:0.78rem;outline:none;}
-.si:focus{border-color:var(--cyan);}
-.si::placeholder{color:var(--grey);}
-.sbtn{background:var(--blue);border:none;border-radius:8px;padding:9px 14px;color:#fff;cursor:pointer;}
-.frow{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
-.fsel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--white);font-family:'DM Mono',monospace;font-size:0.72rem;outline:none;cursor:pointer;}
-.fsel option{background:var(--navy2);}
-.tw{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
-table{width:100%;border-collapse:collapse;font-size:0.7rem;}
-thead th{background:rgba(26,79,212,0.3);color:var(--cyan);padding:9px 10px;text-align:left;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(--border);}
-tbody tr{border-bottom:1px solid var(--border);}
-tbody tr:hover{background:rgba(255,255,255,0.04);}
-tbody td{padding:8px 10px;white-space:nowrap;}
-.btte{display:inline-block;padding:2px 7px;border-radius:10px;font-size:0.62rem;font-weight:600;background:rgba(0,194,255,0.15);color:var(--cyan);}
-.btee{display:inline-block;padding:2px 7px;border-radius:10px;font-size:0.62rem;font-weight:600;background:rgba(240,192,64,0.15);color:var(--gold);}
-.itag{background:rgba(240,192,64,0.12);color:var(--gold);padding:1px 5px;border-radius:4px;font-size:0.58rem;}
-.pgn{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
-.pgi{font-size:0.68rem;color:var(--grey);}
-.pgbtns{display:flex;gap:6px;}
-.pgb{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--white);font-size:0.68rem;cursor:pointer;}
-.pgb:disabled{opacity:0.3;cursor:not-allowed;}
+.search-bar { display: flex; gap: 8px; margin-bottom: 10px; }
+.search-input { flex: 1; background: var(–surface); border: 1.5px solid var(–border); border-radius: 10px; padding: 9px 12px 9px 36px; color: var(–text); font-family: ‘Plus Jakarta Sans’, sans-serif; font-size: 0.8rem; outline: none; position: relative; }
+.search-input:focus { border-color: var(–accent); }
+.search-wrap { position: relative; flex: 1; }
+.search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(–text3); font-size: 0.8rem; z-index: 1; }
+.filter-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.fsel { background: var(–surface); border: 1.5px solid var(–border); border-radius: 8px; padding: 7px 10px; color: var(–text); font-family: ‘Plus Jakarta Sans’, sans-serif; font-size: 0.72rem; outline: none; cursor: pointer; }
+.fsel:focus { border-color: var(–accent); }
+.table-card { background: var(–surface); border: 1px solid var(–border); border-radius: 14px; overflow: hidden; box-shadow: var(–shadow); }
+table { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+thead th { background: var(–surface2); color: var(–text2); padding: 10px 12px; text-align: left; font-weight: 600; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(–border); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(–border); transition: background 0.15s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #f8faff; }
+tbody td { padding: 9px 12px; color: var(–text); }
+.badge-tte { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.62rem; font-weight: 700; background: #eff6ff; color: var(–accent); }
+.badge-tee { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.62rem; font-weight: 700; background: #fffbeb; color: var(–amber); }
+.badge-other { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.62rem; font-weight: 700; background: var(–surface2); color: var(–text2); }
+.ind-pill { display: inline-block; padding: 2px 7px; border-radius: 6px; font-size: 0.6rem; font-weight: 600; background: #f0fdf4; color: var(–green); }
+.pid-text { font-family: ‘Courier New’, monospace; font-size: 0.65rem; color: var(–text2); }
+.pgn { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-top: 1px solid var(–border); }
+.pgi { font-size: 0.68rem; color: var(–text3); }
+.pgbtns { display: flex; gap: 6px; }
+.pgb { background: var(–surface2); border: 1.5px solid var(–border); border-radius: 8px; padding: 5px 12px; color: var(–text2); font-size: 0.7rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.pgb:hover { border-color: var(–accent); color: var(–accent); }
+.pgb:disabled { opacity: 0.3; cursor: not-allowed; }
+
 /* IMPORT */
-.ucard{background:rgba(0,229,195,0.05);border:1px dashed rgba(0,229,195,0.3);border-radius:12px;padding:20px;text-align:center;margin-bottom:14px;}
-.ucard h3{font-family:'Syne',sans-serif;font-size:0.9rem;color:var(--teal);margin-bottom:8px;}
-.ucard p{font-size:0.7rem;color:var(--grey);margin-bottom:14px;line-height:1.6;}
-.ubtn{background:linear-gradient(135deg,var(--teal),var(--cyan));border:none;border-radius:8px;padding:10px 20px;color:var(--navy);font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;cursor:pointer;}
-.ibox{background:rgba(26,79,212,0.1);border:1px solid rgba(26,79,212,0.3);border-radius:10px;padding:12px;margin-bottom:12px;font-size:0.7rem;color:var(--grey);line-height:1.7;}
-.ibox strong{color:var(--cyan);}
-.prwrap{margin-top:14px;display:none;}
-.prbg{background:rgba(255,255,255,0.08);border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px;}
-.prfill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:6px;transition:width 0.3s;width:0%;}
-.prtxt{font-size:0.68rem;color:var(--cyan);text-align:center;}
+.import-card { background: linear-gradient(135deg, #eff6ff, #f0fdff); border: 1.5px dashed #93c5fd; border-radius: 14px; padding: 24px; text-align: center; margin-bottom: 14px; }
+.import-card h3 { font-family: ‘Playfair Display’, serif; font-size: 1rem; color: var(–accent); margin-bottom: 8px; }
+.import-card p { font-size: 0.72rem; color: var(–text2); margin-bottom: 16px; line-height: 1.6; }
+.import-btn { background: var(–accent); border: none; border-radius: 10px; padding: 11px 24px; color: #fff; font-family: ‘Plus Jakarta Sans’, sans-serif; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: background 0.2s; }
+.import-btn:hover { background: var(–accent2); }
+.info-card { background: var(–surface); border: 1px solid var(–border); border-radius: 14px; padding: 14px; margin-bottom: 12px; font-size: 0.72rem; color: var(–text2); line-height: 1.8; box-shadow: var(–shadow); }
+.info-card strong { color: var(–text); }
+.phase2-card { background: linear-gradient(135deg, #fffbeb, #fff7ed); border: 1.5px solid #fde68a; border-radius: 14px; padding: 14px; margin-bottom: 12px; font-size: 0.72rem; color: #92400e; line-height: 1.8; }
+.phase2-card strong { color: #d97706; }
+.pr-wrap { margin-top: 14px; display: none; }
+.pr-bg { background: #e0e7ff; border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+.pr-fill { height: 100%; background: linear-gradient(90deg, var(–accent), var(–teal)); border-radius: 6px; transition: width 0.3s; width: 0; }
+.pr-txt { font-size: 0.68rem; color: var(–accent); text-align: center; font-weight: 600; }
+
+/* SECTION LABEL */
+.section-label { font-size: 0.62rem; font-weight: 700; color: var(–text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; margin-top: 4px; }
+
 /* TOAST */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--teal);color:var(--navy);padding:10px 20px;border-radius:8px;font-weight:600;font-size:0.75rem;z-index:9999;display:none;white-space:nowrap;}
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(–text); color: #fff; padding: 10px 20px; border-radius: 10px; font-size: 0.75rem; font-weight: 500; z-index: 9999; display: none; white-space: nowrap; box-shadow: var(–shadow-md); }
 </style>
+
 </head>
 <body>
 
 <!-- LOGIN -->
 
 <div id="pageLogin">
-  <div class="login-container">
-    <div class="login-logo">
+  <div class="lc">
+    <div class="llogo">
+      <div class="icon">🫀</div>
       <h1>Echo Lab Registry</h1>
-      <p>Mubarak Al-Kabeer Hospital · Cardiology</p>
+      <p>Mubarak Al-Kabeer Hospital</p>
     </div>
-    <div class="login-card">
-      <h2>Secure Access</h2>
-      <p class="sub">Authorized personnel only</p>
-      <div class="lfield">
-        <label>Email</label>
+    <div class="lcard">
+      <h2>Welcome back</h2>
+      <p class="sub">Sign in to access the registry</p>
+      <div class="lf">
+        <label>Email Address</label>
         <div class="iw"><i class="fa fa-envelope"></i><input type="email" id="lemail" placeholder="your@email.com" autocomplete="email"></div>
       </div>
-      <div class="lfield">
+      <div class="lf">
         <label>Password</label>
         <div class="iw"><i class="fa fa-lock"></i><input type="password" id="lpass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       </div>
-      <button class="btn-login" id="lbtn" onclick="doLogin()"><i class="fa fa-sign-in-alt" style="margin-right:6px"></i>Sign In</button>
+      <button class="lbtn" id="lbtn" onclick="doLogin()">Sign In</button>
       <div class="lerr" id="lerr"></div>
     </div>
-    <div class="lfooter">Ministry of Health · Kuwait</div>
+    <div class="lfoot">Ministry of Health · Kuwait · Cardiology Department</div>
   </div>
 </div>
 
@@ -139,69 +215,160 @@ tbody td{padding:8px 10px;white-space:nowrap;}
 
 <div id="pageApp">
   <div class="header">
-    <div>
-      <h1>Echo Lab Registry</h1>
-      <p>Mubarak Al-Kabeer · Cardiology</p>
+    <div class="header-brand">
+      <div class="brand-icon"><i class="fa fa-heart-pulse"></i></div>
+      <div class="brand-text">
+        <h1>Echo Registry</h1>
+        <p>Mubarak Al-Kabeer · Cardiology</p>
+      </div>
     </div>
-    <div class="hright">
-      <span class="db-dot" id="dbdot"></span>
-      <span class="dblabel" id="dblabel">—</span>
+    <div class="header-right">
+      <div class="db-pill">
+        <span class="db-dot" id="dbdot"></span>
+        <span class="db-label" id="dblabel">—</span>
+      </div>
       <button class="btn-out" onclick="doLogout()"><i class="fa fa-sign-out-alt"></i></button>
     </div>
   </div>
 
   <div class="navtabs">
-    <button class="tbtn active" onclick="showTab('dash',this)">📊 Dashboard</button>
-    <button class="tbtn" onclick="showTab('reg',this)">📋 Registry</button>
-    <button class="tbtn" onclick="showTab('imp',this)">📥 Import</button>
+    <button class="tbtn active" onclick="showTab('dash',this)"><i class="fa fa-chart-pie"></i> Dashboard</button>
+    <button class="tbtn" onclick="showTab('reg',this)"><i class="fa fa-table"></i> Registry</button>
+    <button class="tbtn" onclick="showTab('imp',this)"><i class="fa fa-upload"></i> Import</button>
   </div>
 
   <!-- DASHBOARD -->
 
   <div id="tab-dash" class="pg active">
-    <div class="sgrid">
-      <div class="sc"><div class="slabel">Total Studies</div><div class="sval" id="s-total">—</div><div class="ssub">2026 YTD</div></div>
-      <div class="sc"><div class="slabel">Unique Patients</div><div class="sval" id="s-pts">—</div><div class="ssub">distinct IDs</div></div>
-      <div class="sc"><div class="slabel">TTE Studies</div><div class="sval" id="s-tte">—</div><div class="ssub" id="s-tte-p">—</div></div>
-      <div class="sc"><div class="slabel">TEE Studies</div><div class="sval" id="s-tee">—</div><div class="ssub" id="s-tee-p">—</div></div>
-    </div>
-    <div class="cc"><div class="ct">📅 Studies by Month</div><div class="cw"><canvas id="mChart"></canvas></div></div>
-    <div class="cc"><div class="ct">👨‍⚕️ Workload by Reading Physician</div><ul class="pl" id="physList"></ul></div>
-    <div class="cc"><div class="ct">🔬 Exam Type Distribution</div><div class="cw" style="height:160px"><canvas id="tChart"></canvas></div></div>
-    <div class="cc"><div class="ct">🏷️ Clinical Indications</div><div id="indList"></div></div>
-    <div class="ibox"><strong>Phase 2 — Pending measurement export from GE ViewPoint</strong><br>EF · LV volumes · LAVI · E/e' · TR Vmax · Valvular findings · Diastolic dysfunction grading</div>
+
+```
+<div class="section-label">Overview</div>
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-icon blue"><i class="fa fa-stethoscope" style="color:var(--accent)"></i></div>
+    <div class="kpi-label">Total Studies</div>
+    <div class="kpi-val" id="k-total">—</div>
+    <div class="kpi-sub">2026 YTD</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon teal"><i class="fa fa-users" style="color:var(--teal)"></i></div>
+    <div class="kpi-label">Unique Patients</div>
+    <div class="kpi-val" id="k-pts">—</div>
+    <div class="kpi-sub">distinct IDs</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon green"><i class="fa fa-heart" style="color:var(--green)"></i></div>
+    <div class="kpi-label">TTE Studies</div>
+    <div class="kpi-val" id="k-tte">—</div>
+    <div class="kpi-sub" id="k-tte-p">—</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon amber"><i class="fa fa-eye" style="color:var(--amber)"></i></div>
+    <div class="kpi-label">TEE Studies</div>
+    <div class="kpi-val" id="k-tee">—</div>
+    <div class="kpi-sub" id="k-tee-p">—</div>
+  </div>
+</div>
+
+<div class="section-label">Volume Analysis</div>
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Monthly Study Volume</div>
+    <span class="card-badge" id="peak-month">—</span>
+  </div>
+  <div class="cw"><canvas id="mChart"></canvas></div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Busiest Days of Week</div>
+    <span class="card-badge">studies per day</span>
+  </div>
+  <div class="cw-sm"><canvas id="dayChart"></canvas></div>
+</div>
+
+<div class="section-label">Exam Types</div>
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">TTE vs TEE Distribution</div>
+  </div>
+  <div class="cw-sm"><canvas id="tChart"></canvas></div>
+</div>
+
+<div class="section-label">Physician Workload</div>
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Studies by Reading Physician</div>
+    <span class="card-badge" id="top-phys">—</span>
+  </div>
+  <ul class="phys-list" id="physList"></ul>
+</div>
+
+<div class="section-label">Clinical Indications</div>
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Indication Distribution</div>
+    <span class="card-badge" id="ind-count">—</span>
+  </div>
+  <div class="ind-cloud" id="indCloud"></div>
+</div>
+
+<div class="phase2-card">
+  <strong>Phase 2 — Pending measurement export from GE ViewPoint</strong><br>
+  EF distribution · LV volumes · LAVI · E/e' ratio · TR Vmax · Valvular disease prevalence · Diastolic dysfunction grading · GLS
+</div>
+```
+
   </div>
 
   <!-- REGISTRY -->
 
   <div id="tab-reg" class="pg">
-    <div class="srow">
-      <input type="text" class="si" id="srch" placeholder="Search Patient ID, date, physician..." oninput="doFilter()">
-      <button class="sbtn" onclick="doFilter()"><i class="fa fa-search"></i></button>
+    <div class="search-bar">
+      <div class="search-wrap">
+        <i class="fa fa-search"></i>
+        <input type="text" class="search-input" id="srch" placeholder="Search Patient ID, date, physician, indication..." oninput="doFilter()">
+      </div>
     </div>
-    <div class="frow">
-      <select class="fsel" id="ftype" onchange="doFilter()"><option value="">All Types</option><option>TTE</option><option>TEE</option></select>
+    <div class="filter-row">
+      <select class="fsel" id="ftype" onchange="doFilter()">
+        <option value="">All Types</option>
+        <option>TTE</option><option>TEE</option>
+      </select>
       <select class="fsel" id="fmonth" onchange="doFilter()">
         <option value="">All Months</option>
-        <option value="01">January</option><option value="02">February</option><option value="03">March</option>
-        <option value="04">April</option><option value="05">May</option><option value="06">June</option>
-        <option value="07">July</option><option value="08">August</option><option value="09">September</option>
-        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+        <option value="01">January</option><option value="02">February</option>
+        <option value="03">March</option><option value="04">April</option>
+        <option value="05">May</option><option value="06">June</option>
+        <option value="07">July</option><option value="08">August</option>
+        <option value="09">September</option><option value="10">October</option>
+        <option value="11">November</option><option value="12">December</option>
       </select>
-      <select class="fsel" id="fphys" onchange="doFilter()"><option value="">All Physicians</option></select>
+      <select class="fsel" id="fphys" onchange="doFilter()">
+        <option value="">All Physicians</option>
+      </select>
     </div>
-    <div id="rinfo" style="font-size:0.68rem;color:var(--grey);margin-bottom:8px;"></div>
-    <div class="tw">
+    <div id="rinfo" style="font-size:0.68rem;color:var(--text3);margin-bottom:8px;font-weight:500;"></div>
+    <div class="table-card">
       <table>
-        <thead><tr><th>Patient ID</th><th>Date</th><th>Type</th><th>Physician</th><th>Indication</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Patient ID</th>
+            <th>Date</th>
+            <th>DOB</th>
+            <th>Type</th>
+            <th>Physician</th>
+            <th>Indication</th>
+          </tr>
+        </thead>
         <tbody id="tbody"></tbody>
       </table>
-    </div>
-    <div class="pgn">
-      <span class="pgi" id="pgi"></span>
-      <div class="pgbtns">
-        <button class="pgb" id="pbprev" onclick="goPage(-1)">← Prev</button>
-        <button class="pgb" id="pbnext" onclick="goPage(1)">Next →</button>
+      <div class="pgn">
+        <span class="pgi" id="pgi"></span>
+        <div class="pgbtns">
+          <button class="pgb" id="pbprev" onclick="goPage(-1)">← Prev</button>
+          <button class="pgb" id="pbnext" onclick="goPage(1)">Next →</button>
+        </div>
       </div>
     </div>
   </div>
@@ -209,33 +376,41 @@ tbody td{padding:8px 10px;white-space:nowrap;}
   <!-- IMPORT -->
 
   <div id="tab-imp" class="pg">
-    <div class="ucard">
+    <div class="import-card">
       <h3><i class="fa fa-file-csv" style="margin-right:6px"></i>Import ViewPoint CSV</h3>
-      <p>Export from ViewPoint → Export query result → CSV with headers.<br>App filters completed TTE/TEE automatically and saves to Firebase.</p>
-      <input type="file" id="csvfile" accept=".csv" style="display:none" onchange="onFileSelect(event)">
-      <button class="ubtn" onclick="document.getElementById('csvfile').click()"><i class="fa fa-upload" style="margin-right:6px"></i>Choose CSV File</button>
-      <div class="prwrap" id="prwrap">
-        <div class="prbg"><div class="prfill" id="prfill"></div></div>
-        <div class="prtxt" id="prtxt">Importing...</div>
+      <p>Export from ViewPoint → Export query result → CSV with headers.<br>App automatically filters and saves to Firebase.</p>
+      <input type="file" id="csvfile" accept=".csv" style="display:none" onchange="onFile(event)">
+      <button class="import-btn" onclick="document.getElementById('csvfile').click()">
+        <i class="fa fa-upload" style="margin-right:6px"></i>Choose CSV File
+      </button>
+      <div class="pr-wrap" id="prwrap">
+        <div class="pr-bg"><div class="pr-fill" id="prfill"></div></div>
+        <div class="pr-txt" id="prtxt">Importing...</div>
       </div>
     </div>
-    <div class="ibox">
-      <strong>Database info:</strong><br>
-      Studies in Firebase: <span style="color:var(--cyan)" id="dbtotal">—</span><br>
-      Last import: <span style="color:var(--teal)" id="dblast">—</span><br>
-      Project: echo-registry · Collection: echo_studies
-    </div>
-    <div class="ibox" style="border-color:rgba(240,192,64,0.3);background:rgba(240,192,64,0.05)">
-      <strong style="color:var(--gold)">Phase 2 — Measurement Import</strong><br>
-      Once GE engineer enables ViewPoint measurement export, you can import EF, LV volumes, Doppler values — linked automatically by Patient ID + Date.
-    </div>
+
+```
+<div class="info-card">
+  <strong>Database status</strong><br>
+  Studies in Firebase: <span style="color:var(--accent);font-weight:700" id="dbtotal">—</span><br>
+  Last import: <span style="color:var(--green)" id="dblast">—</span><br>
+  Project: echo-registry · Collection: echo_studies
+</div>
+
+<div class="phase2-card">
+  <strong>Phase 2 — Measurement Import</strong><br>
+  Once GE engineer configures ViewPoint measurement export:<br>
+  EF · LV dimensions · Doppler values · Valvular findings<br>
+  Will link to existing studies automatically by Patient ID + Date.
+</div>
+```
+
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// Firebase init
 firebase.initializeApp({
   apiKey: "AIzaSyCz-9cwOHbz_Ez-1DYwHQQQmwBjnclr-VI",
   authDomain: "echo-registry.firebaseapp.com",
@@ -246,12 +421,10 @@ firebase.initializeApp({
 });
 var db = firebase.firestore();
 var auth = firebase.auth();
-
-// State
 var studies = [], filtered = [], curPage = 1, PAGE = 25;
-var mChart = null, tChart = null;
+var mChart = null, tChart = null, dayChart = null;
 
-// Show login immediately, then check auth
+// Show login immediately
 document.getElementById('pageLogin').style.display = 'block';
 
 auth.onAuthStateChanged(function(user) {
@@ -271,20 +444,16 @@ function doLogin() {
   var btn = document.getElementById('lbtn');
   var err = document.getElementById('lerr');
   if (!email || !pass) { err.textContent='Enter email and password'; err.style.display='block'; return; }
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa fa-spinner fa-spin" style="margin-right:6px"></i>Signing in...';
+  btn.disabled = true; btn.textContent = 'Signing in...';
   err.style.display = 'none';
   auth.signInWithEmailAndPassword(email, pass).catch(function() {
-    err.textContent = 'Invalid email or password';
+    err.textContent = 'Invalid email or password. Please try again.';
     err.style.display = 'block';
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa fa-sign-in-alt" style="margin-right:6px"></i>Sign In';
+    btn.disabled = false; btn.textContent = 'Sign In';
   });
 }
 
-function doLogout() {
-  if (confirm('Sign out?')) auth.signOut();
-}
+function doLogout() { if (confirm('Sign out?')) auth.signOut(); }
 
 function loadData() {
   document.getElementById('dbdot').className = 'db-dot';
@@ -293,19 +462,19 @@ function loadData() {
     studies = [];
     snap.forEach(function(d) { studies.push(d.data()); });
     document.getElementById('dbdot').className = 'db-dot on';
-    document.getElementById('dblabel').textContent = studies.length + ' studies';
-    document.getElementById('dbtotal').textContent = studies.length;
+    document.getElementById('dblabel').textContent = studies.length.toLocaleString() + ' studies';
+    document.getElementById('dbtotal').textContent = studies.length.toLocaleString();
     if (studies.length > 0) { buildDash(); buildReg(); }
     else { showEmpty(); }
   }).catch(function(e) {
-    document.getElementById('dblabel').textContent = 'error';
+    document.getElementById('dblabel').textContent = 'connection error';
     console.error(e);
   });
 }
 
 function showEmpty() {
-  ['s-total','s-pts','s-tte','s-tee'].forEach(function(id){ document.getElementById(id).textContent='0'; });
-  document.getElementById('tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--grey)">No studies yet — use Import tab to upload ViewPoint CSV</td></tr>';
+  ['k-total','k-pts','k-tte','k-tee'].forEach(function(id){ document.getElementById(id).textContent='0'; });
+  document.getElementById('tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text3)">No studies yet — use Import tab to upload your ViewPoint CSV</td></tr>';
 }
 
 function buildDash() {
@@ -313,51 +482,121 @@ function buildDash() {
   var tte = studies.filter(function(s){return s.type==='TTE';}).length;
   var tee = studies.filter(function(s){return s.type==='TEE';}).length;
   var pts = new Set(studies.filter(function(s){return s.pid;}).map(function(s){return s.pid;})).size;
-  document.getElementById('s-total').textContent = n;
-  document.getElementById('s-pts').textContent = pts;
-  document.getElementById('s-tte').textContent = tte;
-  document.getElementById('s-tee').textContent = tee;
-  document.getElementById('s-tte-p').textContent = n?Math.round(tte/n*100)+'% of studies':'—';
-  document.getElementById('s-tee-p').textContent = n?Math.round(tee/n*100)+'% of studies':'—';
 
-  var mn={'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'};
-  var mc={};
-  studies.forEach(function(s){if(s.month)mc[s.month]=(mc[s.month]||0)+1;});
-  var sm=Object.keys(mc).sort();
-  if(mChart)mChart.destroy();
-  mChart=new Chart(document.getElementById('mChart'),{type:'bar',data:{labels:sm.map(function(m){return mn[m]||m;}),datasets:[{data:sm.map(function(m){return mc[m];}),backgroundColor:'rgba(0,194,255,0.3)',borderColor:'#00c2ff',borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8899bb',font:{family:'DM Mono',size:10}},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#8899bb',font:{family:'DM Mono',size:10}},grid:{color:'rgba(255,255,255,0.05)'}}}}});
+  document.getElementById('k-total').textContent = n.toLocaleString();
+  document.getElementById('k-pts').textContent = pts.toLocaleString();
+  document.getElementById('k-tte').textContent = tte.toLocaleString();
+  document.getElementById('k-tee').textContent = tee.toLocaleString();
+  document.getElementById('k-tte-p').textContent = n ? Math.round(tte/n*100)+'% of total' : '—';
+  document.getElementById('k-tee-p').textContent = n ? Math.round(tee/n*100)+'% of total' : '—';
 
-  var pc={};
-  studies.forEach(function(s){var p=s.physician||'Unassigned';pc[p]=(pc[p]||0)+1;});
-  var sp=Object.entries(pc).sort(function(a,b){return b[1]-a[1];}).slice(0,12);
-  var mx=sp[0]?sp[0][1]:1;
-  document.getElementById('physList').innerHTML=sp.map(function(x){return '<li class="pi"><span class="pn">'+x[0]+'</span><div class="pb"><div class="pbf" style="width:'+Math.round(x[1]/mx*100)+'%"></div></div><span class="pc">'+x[1]+'</span></li>';}).join('');
+  // Monthly chart
+  var mn = {'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'};
+  var mc = {};
+  studies.forEach(function(s){ if(s.month) mc[s.month]=(mc[s.month]||0)+1; });
+  var sm = Object.keys(mc).sort();
+  var maxMonth = sm.reduce(function(a,b){ return mc[a]>mc[b]?a:b; }, sm[0]);
+  document.getElementById('peak-month').textContent = 'Peak: ' + (mn[maxMonth]||'') + ' (' + (mc[maxMonth]||0) + ')';
 
-  if(tChart)tChart.destroy();
-  tChart=new Chart(document.getElementById('tChart'),{type:'doughnut',data:{labels:['TTE','TEE'],datasets:[{data:[tte,tee],backgroundColor:['rgba(0,194,255,0.6)','rgba(240,192,64,0.6)'],borderColor:['#00c2ff','#f0c040'],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#f0f4ff',font:{family:'DM Mono',size:11},padding:14}}}}});
+  if(mChart) mChart.destroy();
+  mChart = new Chart(document.getElementById('mChart'), {
+    type: 'bar',
+    data: {
+      labels: sm.map(function(m){return mn[m]||m;}),
+      datasets: [{
+        data: sm.map(function(m){return mc[m];}),
+        backgroundColor: sm.map(function(m){ return m===maxMonth ? '#1a56db' : '#bfdbfe'; }),
+        borderRadius: 8, borderSkipped: false
+      }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#9aa0b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}},
+              y:{ticks:{color:'#9aa0b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f0f2f8'}}} }
+  });
 
-  var ic={};
-  studies.forEach(function(s){if(s.indication&&s.indication.trim()){var k=s.indication.trim().toLowerCase();ic[k]=(ic[k]||0)+1;}});
-  var si=Object.entries(ic).sort(function(a,b){return b[1]-a[1];}).slice(0,20);
-  document.getElementById('indList').innerHTML=si.length?si.map(function(x){return '<span style="display:inline-block;background:rgba(240,192,64,0.12);color:var(--gold);padding:2px 7px;border-radius:10px;font-size:0.6rem;margin:3px">'+x[0]+' <span style="opacity:0.6">('+x[1]+')</span></span>';}).join(''):'<span style="color:var(--grey);font-size:0.7rem">No indication notes in dataset</span>';
+  // Day of week chart
+  var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var dc = [0,0,0,0,0,0,0];
+  studies.forEach(function(s){
+    if (!s.date) return;
+    var parts = s.date.split('/');
+    if (parts.length === 3) {
+      var d = new Date(parts[2], parts[0]-1, parts[1]);
+      if (!isNaN(d)) dc[d.getDay()]++;
+    }
+  });
+  if(dayChart) dayChart.destroy();
+  dayChart = new Chart(document.getElementById('dayChart'), {
+    type: 'bar',
+    data: {
+      labels: days,
+      datasets: [{
+        data: dc,
+        backgroundColor: dc.map(function(v){ return v===Math.max.apply(null,dc)?'#0891b2':'#a5f3fc'; }),
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#9aa0b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}},
+              y:{ticks:{color:'#9aa0b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f0f2f8'}}} }
+  });
 
-  var fp=document.getElementById('fphys');
-  fp.innerHTML='<option value="">All Physicians</option>';
-  sp.forEach(function(x){if(x[0]!=='Unassigned'){var o=document.createElement('option');o.value=x[0];o.textContent=x[0];fp.appendChild(o);}});
+  // Type donut
+  if(tChart) tChart.destroy();
+  tChart = new Chart(document.getElementById('tChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['TTE','TEE'],
+      datasets: [{ data:[tte,tee], backgroundColor:['#1a56db','#d97706'], borderColor:['#fff','#fff'], borderWidth:3, hoverOffset:4 }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'70%',
+      plugins:{ legend:{ position:'right', labels:{color:'#5a6480',font:{family:'Plus Jakarta Sans',size:12},padding:20,usePointStyle:true} } } }
+  });
+
+  // Physician list
+  var pc = {};
+  studies.forEach(function(s){ var p=s.physician||'Unassigned'; pc[p]=(pc[p]||0)+1; });
+  var sp = Object.entries(pc).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+  var mx = sp[0] ? sp[0][1] : 1;
+  document.getElementById('top-phys').textContent = sp[0] ? sp[0][0].replace('Dr. ','') : '';
+  document.getElementById('physList').innerHTML = sp.map(function(x,i){
+    return '<li class="phys-item"><span class="phys-rank">'+(i+1)+'</span><span class="phys-name">'+x[0]+'</span><div class="phys-bar-wrap"><div class="phys-bar" style="width:'+Math.round(x[1]/mx*100)+'%"></div></div><span class="phys-count">'+x[1]+'</span></li>';
+  }).join('');
+
+  // Physician filter
+  var fp = document.getElementById('fphys');
+  fp.innerHTML = '<option value="">All Physicians</option>';
+  sp.forEach(function(x){ if(x[0]!=='Unassigned'){var o=document.createElement('option');o.value=x[0];o.textContent=x[0];fp.appendChild(o);} });
+
+  // Indications
+  var ic = {};
+  studies.forEach(function(s){ if(s.indication&&s.indication.trim()){var k=s.indication.trim().toLowerCase();ic[k]=(ic[k]||0)+1;} });
+  var si = Object.entries(ic).sort(function(a,b){return b[1]-a[1];}).slice(0,25);
+  document.getElementById('ind-count').textContent = si.length + ' types found';
+  var colors = [
+    ['#eff6ff','#1a56db'],['#f0fdf4','#059669'],['#fffbeb','#d97706'],
+    ['#fdf4ff','#9333ea'],['#fff1f2','#e11d48'],['#f0fdff','#0891b2']
+  ];
+  var maxInd = si[0] ? si[0][1] : 1;
+  document.getElementById('indCloud').innerHTML = si.map(function(x,i){
+    var c = colors[i % colors.length];
+    var size = x[1]/maxInd > 0.6 ? 'lg' : x[1]/maxInd > 0.3 ? 'md' : 'sm';
+    return '<span class="ind-tag '+size+'" style="background:'+c[0]+';color:'+c[1]+';border-color:'+c[1]+'40">'+x[0]+' <b>'+x[1]+'</b></span>';
+  }).join('');
 }
 
-function buildReg() { filtered=studies.slice(); curPage=1; renderTable(); }
+function buildReg() { filtered = studies.slice(); curPage = 1; renderTable(); }
 
 function doFilter() {
-  var q=document.getElementById('srch').value.trim().toLowerCase();
-  var ft=document.getElementById('ftype').value;
-  var fm=document.getElementById('fmonth').value;
-  var fp=document.getElementById('fphys').value;
-  filtered=studies.filter(function(s){
-    if(ft&&s.type!==ft)return false;
-    if(fm&&s.month!==fm)return false;
-    if(fp&&s.physician!==fp)return false;
-    if(q&&!(s.pid+' '+s.date+' '+s.physician+' '+s.indication).toLowerCase().includes(q))return false;
+  var q = document.getElementById('srch').value.trim().toLowerCase();
+  var ft = document.getElementById('ftype').value;
+  var fm = document.getElementById('fmonth').value;
+  var fp = document.getElementById('fphys').value;
+  filtered = studies.filter(function(s){
+    if(ft && s.type!==ft) return false;
+    if(fm && s.month!==fm) return false;
+    if(fp && s.physician!==fp) return false;
+    if(q && !(s.pid+' '+s.date+' '+s.physician+' '+s.indication+' '+(s.dob||'')).toLowerCase().includes(q)) return false;
     return true;
   });
   curPage=1; renderTable();
@@ -365,179 +604,130 @@ function doFilter() {
 
 function renderTable() {
   var s=(curPage-1)*PAGE, e=s+PAGE, pg=filtered.slice(s,e), n=filtered.length;
-  document.getElementById('rinfo').textContent='Showing '+(n?s+1:0)+'–'+Math.min(e,n)+' of '+n+' studies';
-  document.getElementById('pgi').textContent='Page '+curPage+' of '+Math.max(1,Math.ceil(n/PAGE));
-  document.getElementById('pbprev').disabled=curPage===1;
-  document.getElementById('pbnext').disabled=e>=n;
-  if(!pg.length){document.getElementById('tbody').innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--grey)">No studies found</td></tr>';return;}
-  document.getElementById('tbody').innerHTML=pg.map(function(s){
-    return '<tr><td style="color:var(--cyan);font-size:0.65rem">'+(s.pid||'—')+'</td><td>'+s.date+'</td><td><span class="b'+s.type.toLowerCase()+'">'+s.type+'</span></td><td style="color:var(--grey);max-width:130px;overflow:hidden;text-overflow:ellipsis">'+(s.physician||'—')+'</td><td>'+(s.indication?'<span class="itag">'+s.indication+'</span>':'—')+'</td></tr>';
+  document.getElementById('rinfo').textContent = n.toLocaleString()+' studies found';
+  document.getElementById('pgi').textContent = 'Page '+curPage+' of '+Math.max(1,Math.ceil(n/PAGE));
+  document.getElementById('pbprev').disabled = curPage===1;
+  document.getElementById('pbnext').disabled = e>=n;
+  if(!pg.length){
+    document.getElementById('tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">No studies match your filters</td></tr>';
+    return;
+  }
+  var typeBadge = function(t){ return t==='TTE'?'badge-tte':t==='TEE'?'badge-tee':'badge-other'; };
+  document.getElementById('tbody').innerHTML = pg.map(function(s){
+    return '<tr>'+
+      '<td><span class="pid-text">'+(s.pid||'—')+'</span></td>'+
+      '<td style="font-weight:500">'+s.date+'</td>'+
+      '<td style="color:var(--text3)">'+(s.dob||'—')+'</td>'+
+      '<td><span class="'+typeBadge(s.type)+'">'+s.type+'</span></td>'+
+      '<td style="color:var(--text2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.physician||'<span style="color:var(--text3)">Unassigned</span>')+'</td>'+
+      '<td>'+(s.indication?'<span class="ind-pill">'+s.indication+'</span>':'<span style="color:var(--text3)">—</span>')+'</td>'+
+    '</tr>';
   }).join('');
 }
 
-function goPage(d){curPage=Math.max(1,Math.min(Math.ceil(filtered.length/PAGE),curPage+d));renderTable();}
+function goPage(d) { curPage=Math.max(1,Math.min(Math.ceil(filtered.length/PAGE),curPage+d)); renderTable(); }
 
-function showTab(name,btn){
+function showTab(name, btn) {
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.tbtn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('tab-'+name).classList.add('active');
-  if(btn)btn.classList.add('active');
+  if(btn) btn.classList.add('active');
 }
 
 // CSV Import
-function onFileSelect(e) {
+function onFile(e) {
   var file = e.target.files[0];
   if (!file) return;
-  // Try without specifying encoding first - let browser detect
   var reader = new FileReader();
   reader.onload = function(ev) {
     var raw = ev.target.result;
-    // Strip null bytes (UTF-16 artifact)
     raw = raw.replace(/\u0000/g, '');
-    console.log('RAW PREVIEW:', raw.substring(0,200).replace(/[\r\n]/g,'|'));
     parseAndImport(raw);
   };
-  // ViewPoint exports UTF-16 LE with BOM
   reader.readAsText(file, 'UTF-16');
 }
 
 function parseAndImport(raw) {
-  // Remove BOM
   if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+  raw = raw.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
 
-  // Normalize ALL line ending variants
-  raw = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-
-  // Parse CSV respecting quoted fields
-  var rows = [];
-  var row = [], field = '', inQ = false;
-
-  for (var i = 0; i < raw.length; i++) {
-    var c = raw[i];
-    if (c === '"') {
-      if (inQ && raw[i+1] === '"') { field += '"'; i++; }
-      else inQ = !inQ;
-    } else if (c === ',' && !inQ) {
-      row.push(field); field = '';
-    } else if (c === '\n' && !inQ) {
-      row.push(field); field = '';
-      if (row.some(function(f){return f.trim();})) rows.push(row);
-      row = [];
-    } else {
-      field += c;
-    }
+  var rows=[], row=[], field='', inQ=false;
+  for (var i=0; i<raw.length; i++) {
+    var c=raw[i];
+    if(c==='"'){ if(inQ&&raw[i+1]==='"'){field+='"';i++;}else inQ=!inQ; }
+    else if(c===','&&!inQ){ row.push(field);field=''; }
+    else if(c==='\n'&&!inQ){ row.push(field);field='';if(row.some(function(f){return f.trim();}))rows.push(row);row=[]; }
+    else field+=c;
   }
-  if (row.length) { row.push(field); if(row.some(function(f){return f.trim();})) rows.push(row); }
+  if(row.length){row.push(field);if(row.some(function(f){return f.trim();}))rows.push(row);}
 
-  if (rows.length < 2) { toast('CSV empty — only '+rows.length+' rows found'); return; }
+  if(rows.length<2){toast('CSV appears empty');return;}
+  var hdrs=rows[0].map(function(h){return h.trim();});
 
-  // Clean and show headers
-  var hdrs = rows[0].map(function(h){ return h.trim(); });
-  var hdrStr = hdrs.slice(0,5).join(' | ');
-  toast('Headers: '+hdrStr);
-  console.log('All headers:', hdrs);
+  function col(name){ for(var i=0;i<hdrs.length;i++){if(hdrs[i].toLowerCase().indexOf(name.toLowerCase())>=0)return i;}return -1; }
+  var cPID=col('Patient'),cDate=col('date'),cType=col('type'),cStatus=col('status');
+  var cPhysR=col('Reading'),cPhysP=col('Performing'),cAcc=col('Accession'),cDOB=col('DOB');
 
-  // Find columns by partial match
-  function col(name) {
-    for (var i=0; i<hdrs.length; i++) {
-      if (hdrs[i].toLowerCase().indexOf(name.toLowerCase()) >= 0) return i;
-    }
-    return -1;
-  }
+  if(cPID<0||cDate<0||cStatus<0){toast('Required columns not found');return;}
 
-  var cPID=col('Patient'), cDate=col('date'), cType=col('type'), cStatus=col('status');
-  var cPhysR=col('Reading'), cPhysP=col('Performing'), cAcc=col('Accession');
-
-  setTimeout(function(){
-    toast('Cols: PID='+cPID+' Date='+cDate+' Type='+cType+' Status='+cStatus+' | Rows='+rows.length);
-  }, 4000);
-
-  if (cPID < 0 || cDate < 0 || cStatus < 0) {
-    setTimeout(function(){toast('FAIL: Cannot find columns. PID='+cPID+' Date='+cDate+' Status='+cStatus);}, 4000);
-    return;
+  var list=[],skip=0;
+  for(var i=1;i<rows.length;i++){
+    var r=rows[i];
+    if(!r||r.length<3){skip++;continue;}
+    var status=cStatus>=0?(r[cStatus]||'').trim():'';
+    var type=cType>=0?(r[cType]||'').trim():'';
+    var pid=cPID>=0?(r[cPID]||'').replace(/[\s\n\r]+/g,''):'';
+    if(status.toLowerCase().indexOf('scan')<0){skip++;continue;}
+    if(type&&type!=='TTE'&&type!=='TEE'){skip++;continue;}
+    if(!pid||pid.length<3){skip++;continue;}
+    var date=cDate>=0?(r[cDate]||'').trim():'';
+    var phys='';
+    if(cPhysR>=0)phys=(r[cPhysR]||'').trim();
+    if(!phys&&cPhysP>=0)phys=(r[cPhysP]||'').trim();
+    var ind=cAcc>=0?(r[cAcc]||'').trim():'';
+    var dob=cDOB>=0?(r[cDOB]||'').trim():'';
+    list.push({pid:pid,date:date,type:type||'TTE',physician:phys,indication:ind,dob:dob,month:date?date.substring(0,2):'',importedAt:new Date().toISOString()});
   }
 
-  // Show sample status/type from first data row
-  if (rows.length > 1) {
-    var r1 = rows[1];
-    setTimeout(function(){
-      toast('Row1: status='+JSON.stringify(r1[cStatus])+' type='+JSON.stringify(r1[cType]||''));
-    }, 8000);
-  }
-
-  var list = [], skip = 0;
-  for (var i = 1; i < rows.length; i++) {
-    var r = rows[i];
-    if (!r || r.length < 3) { skip++; continue; }
-
-    var status = cStatus >= 0 ? (r[cStatus]||'').trim() : '';
-    var type   = cType >= 0 ? (r[cType]||'').trim() : '';
-    var pid    = cPID >= 0 ? (r[cPID]||'').replace(/[\s\n\r]+/g,'') : '';
-
-    // Filter: scan started, TTE/TEE or blank type, valid PID
-    if (status.toLowerCase().indexOf('scan') < 0) { skip++; continue; }
-    if (type !== '' && type !== 'TTE' && type !== 'TEE') { skip++; continue; }
-    if (!pid || pid.length < 3) { skip++; continue; }
-
-    var date = cDate >= 0 ? (r[cDate]||'').trim() : '';
-    var phys = '';
-    if (cPhysR >= 0) phys = (r[cPhysR]||'').trim();
-    if (!phys && cPhysP >= 0) phys = (r[cPhysP]||'').trim();
-    var ind = cAcc >= 0 ? (r[cAcc]||'').trim() : '';
-
-    list.push({
-      pid: pid, date: date, type: type||'TTE',
-      physician: phys, indication: ind,
-      month: date ? date.substring(0,2) : '',
-      importedAt: new Date().toISOString()
-    });
-  }
-
-  setTimeout(function(){
-    toast('Result: '+list.length+' found, '+skip+' skipped');
-  }, 12000);
-
-  if (!list.length) {
-    setTimeout(function(){toast('ZERO found — check console for details');}, 12000);
-    return;
-  }
-
-  toast('Saving '+list.length+' studies...');
+  if(!list.length){toast('No completed TTE/TEE studies found');return;}
+  toast('Found '+list.length+' studies — saving...');
   batchSave(list);
 }
 
 function batchSave(list) {
-  var wrap=document.getElementById('prwrap'), fill=document.getElementById('prfill'), txt=document.getElementById('prtxt');
+  var wrap=document.getElementById('prwrap'),fill=document.getElementById('prfill'),txt=document.getElementById('prtxt');
   wrap.style.display='block';
-  var BATCH=400, total=list.length, done=0, batches=[];
-  for(var i=0;i<list.length;i+=BATCH) batches.push(list.slice(i,i+BATCH));
+  var BATCH=400,done=0,batches=[];
+  for(var i=0;i<list.length;i+=BATCH)batches.push(list.slice(i,i+BATCH));
 
-  function next(idx) {
+  function next(idx){
     if(idx>=batches.length){
-      fill.style.width='100%'; txt.textContent='Done! '+done+' studies saved.';
+      fill.style.width='100%';
+      txt.textContent='Complete! '+done+' studies saved.';
       document.getElementById('dblast').textContent=new Date().toLocaleString();
-      toast('✓ '+done+' studies imported');
+      toast('✓ '+done+' studies imported successfully');
       setTimeout(function(){wrap.style.display='none';loadData();},2000);
       return;
     }
     var batch=db.batch();
     batches[idx].forEach(function(s){
       var id=s.pid+'_'+s.date.replace(/\//g,'-');
-      batch.set(db.collection('echo_studies').doc(id), s, {merge:true});
+      batch.set(db.collection('echo_studies').doc(id),s,{merge:true});
       done++;
     });
     batch.commit().then(function(){
       var p=Math.round((idx+1)/batches.length*100);
-      fill.style.width=p+'%'; txt.textContent='Saving '+Math.min(done,total)+' / '+total+'...';
+      fill.style.width=p+'%';
+      txt.textContent='Saving '+Math.min(done,list.length)+' / '+list.length+'...';
       next(idx+1);
-    }).catch(function(e){ txt.textContent='Error: '+e.message; toast('Save error'); console.error(e); });
+    }).catch(function(e){txt.textContent='Error: '+e.message;console.error(e);});
   }
   next(0);
 }
 
-function toast(msg) {
+function toast(msg){
   var t=document.getElementById('toast');
-  t.textContent=msg; t.style.display='block';
+  t.textContent=msg;t.style.display='block';
   setTimeout(function(){t.style.display='none';},3500);
 }
 </script>

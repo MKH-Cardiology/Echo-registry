@@ -360,7 +360,7 @@ tbody td { padding: 12px 16px; color: var(--text); border-bottom: 1px solid #f1f
       </div>
       
       <div style="display: flex; gap: 10px;">
-        <button id="btn-add-study" class="import-btn" style="display:none; padding: 6px 14px;" onclick="openAddModal()"><i class="fa fa-plus"></i> Add Study</button>
+        <button id="btn-add-study" class="import-btn" style="padding: 6px 14px;" onclick="openAddModal()"><i class="fa fa-plus"></i> Add Study</button>
         <button id="btn-admin-toggle" class="pgb" onclick="toggleAdmin()"><i class="fa fa-lock"></i> Admin Mode</button>
       </div>
     </div>
@@ -616,11 +616,19 @@ function normalizePhysicianName(name) {
   return cleaned;
 }
 
-// BULLETPROOF DATE PARSER FOR SORTING
+// BULLETPROOF DATE PARSER (STRIPS TIMES, FORCES DD/MM/YYYY PRIORITY)
 function parseDateString(ds) {
   if (!ds) return 0;
-  var p = ds.replace(/[\-\.]/g, '/').split('/');
+  // Clean the string (remove any time part like "02/04/2026 14:30")
+  var cleanStr = ds.trim().split(' ')[0]; 
+  
+  var p = cleanStr.replace(/[\-\.]/g, '/').split('/');
   if (p.length === 3) {
+    // If the first block is 4 digits, it's YYYY/MM/DD
+    if (p[0].length === 4) {
+      return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10)).getTime();
+    }
+    // Otherwise strictly treat as DD/MM/YYYY
     var d = parseInt(p[0], 10);
     var m = parseInt(p[1], 10) - 1;
     var y = parseInt(p[2], 10);
@@ -673,7 +681,7 @@ function loadData() {
       studies.push(data); 
     });
     
-    // NEWEST DATE FIRST SORTING
+    // STRICT CHRONOLOGICAL SORTING (Newest First)
     studies.sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
 
     document.getElementById('dbdot').className = 'db-dot on';
@@ -732,11 +740,8 @@ function buildDash() {
   var dc = [0,0,0,0,0,0,0];
   studies.forEach(function(s){
     if (!s.date) return;
-    var parts = s.date.replace(/[\-\.]/g, '/').split('/');
-    if (parts.length === 3) {
-      var d = new Date(parts[2], parts[1]-1, parts[0]);
-      if (!isNaN(d)) dc[d.getDay()]++;
-    }
+    var dTime = parseDateString(s.date);
+    if (dTime > 0) dc[new Date(dTime).getDay()]++;
   });
   if(dayChart) dayChart.destroy();
   dayChart = new Chart(document.getElementById('dayChart'), {
@@ -863,6 +868,7 @@ function renderTable() {
     
     var indDisplay = tags.length ? tags.join(' ') : '<span style="color:var(--border)">—</span>';
     
+    // EDIT AND DELETE are protected by Admin status
     var adminActions = isSessionAdmin 
       ? '<button class="btn-icon" onclick="openEditModal(\''+s._docId+'\')" title="Edit Study"><i class="fa fa-pen"></i></button>' +
         '<button class="btn-icon" style="color:var(--red); margin-left:2px;" onclick="deleteStudy(\''+s._docId+'\')" title="Delete Study"><i class="fa fa-trash"></i></button>' 
@@ -901,7 +907,6 @@ function toggleAdmin() {
     var btn = document.getElementById('btn-admin-toggle');
     btn.innerHTML = '<i class="fa fa-lock"></i> Admin Mode';
     btn.classList.remove('btn-admin-active');
-    document.getElementById('btn-add-study').style.display = 'none';
     renderTable(); 
   } else {
     document.getElementById('admin-pin').value = '';
@@ -923,7 +928,6 @@ function verifyPin() {
     var btn = document.getElementById('btn-admin-toggle');
     btn.innerHTML = '<i class="fa fa-unlock"></i> Admin Mode ON';
     btn.classList.add('btn-admin-active');
-    document.getElementById('btn-add-study').style.display = 'block'; // Show Add Button
     renderTable(); 
   } else {
     toast('Incorrect Admin PIN');
@@ -1038,7 +1042,7 @@ function toggleNormalStudy() {
   }
 }
 
-// OPEN ADD MODAL
+// OPEN ADD MODAL (ANYONE CAN ACCESS)
 function openAddModal() {
   pendingEditId = null; // null means NEW study
   document.getElementById('edit-modal-title').textContent = 'Add New Study';
@@ -1074,7 +1078,7 @@ function openAddModal() {
   document.getElementById('editModal').classList.add('show');
 }
 
-// OPEN EDIT MODAL
+// OPEN EDIT MODAL (ADMIN ONLY)
 function openEditModal(docId) {
   var study = studies.find(function(s) { return s._docId === docId; });
   if (!study) return;

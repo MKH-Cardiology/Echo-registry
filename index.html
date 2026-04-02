@@ -355,7 +355,6 @@ tbody td { padding: 9px 12px; color: var(–text); }
           <tr>
             <th>Patient ID</th>
             <th>Date</th>
-            <th>DOB</th>
             <th>Type</th>
             <th>Physician</th>
             <th>Indication</th>
@@ -474,7 +473,7 @@ function loadData() {
 
 function showEmpty() {
   ['k-total','k-pts','k-tte','k-tee'].forEach(function(id){ document.getElementById(id).textContent='0'; });
-  document.getElementById('tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text3)">No studies yet — use Import tab to upload your ViewPoint CSV</td></tr>';
+  document.getElementById('tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text3)">No studies yet — use Import tab to upload your ViewPoint CSV</td></tr>';
 }
 
 function buildDash() {
@@ -609,7 +608,7 @@ function renderTable() {
   document.getElementById('pbprev').disabled = curPage===1;
   document.getElementById('pbnext').disabled = e>=n;
   if(!pg.length){
-    document.getElementById('tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">No studies match your filters</td></tr>';
+    document.getElementById('tbody').innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text3)">No studies match your filters</td></tr>';
     return;
   }
   var typeBadge = function(t){ return t==='TTE'?'badge-tte':t==='TEE'?'badge-tee':'badge-other'; };
@@ -617,7 +616,6 @@ function renderTable() {
     return '<tr>'+
       '<td><span class="pid-text">'+(s.pid||'—')+'</span></td>'+
       '<td style="font-weight:500">'+s.date+'</td>'+
-      '<td style="color:var(--text3)">'+(s.dob||'—')+'</td>'+
       '<td><span class="'+typeBadge(s.type)+'">'+s.type+'</span></td>'+
       '<td style="color:var(--text2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.physician||'<span style="color:var(--text3)">Unassigned</span>')+'</td>'+
       '<td>'+(s.indication?'<span class="ind-pill">'+s.indication+'</span>':'<span style="color:var(--text3)">—</span>')+'</td>'+

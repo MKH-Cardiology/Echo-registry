@@ -682,7 +682,9 @@ function loadData() {
     });
     
     // STRICT CHRONOLOGICAL SORTING (Newest First)
-    studies.sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
+    studies.sort(function(a, b) {
+       return parseDateString(b.date) - parseDateString(a.date);
+    });
 
     document.getElementById('dbdot').className = 'db-dot on';
     document.getElementById('dblabel').textContent = studies.length.toLocaleString() + ' studies';

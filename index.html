@@ -499,6 +499,7 @@ function normalizePhysicianName(name) {
   if (lower.includes('ehab') || lower.includes('ihab')) return 'Dr. Ihab';
   if (lower.includes('maged')) return 'Dr. Maged';
   if (lower.includes('hany')) return 'Dr. Hany';
+  if (lower.includes('farouk')) return 'Dr. Farouk';
 
   var cleaned = name.trim();
   
@@ -648,16 +649,26 @@ function buildDash() {
 
   var pc = {};
   studies.forEach(function(s){ var p=s.physician||'—'; pc[p]=(pc[p]||0)+1; });
-  var sp = Object.entries(pc).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
-  var mx = sp[0] ? sp[0][1] : 1;
-  document.getElementById('top-phys').textContent = sp[0] ? sp[0][0].replace('Dr. ','') : '';
-  document.getElementById('physList').innerHTML = sp.map(function(x,i){
+  
+  // Create Top 10 list for Dashboard UI
+  var sp = Object.entries(pc).sort(function(a,b){return b[1]-a[1];});
+  var top10 = sp.slice(0, 10);
+  var mx = top10[0] ? top10[0][1] : 1;
+  document.getElementById('top-phys').textContent = top10[0] ? top10[0][0].replace('Dr. ','') : '';
+  document.getElementById('physList').innerHTML = top10.map(function(x,i){
     return '<li class="phys-item"><span class="phys-rank">'+(i+1)+'</span><span class="phys-name">'+x[0]+'</span><div class="phys-bar-wrap"><div class="phys-bar" style="width:'+Math.round(x[1]/mx*100)+'%"></div></div><span class="phys-count">'+x[1]+'</span></li>';
   }).join('');
 
+  // Populate the Dropdown Filter with ALL physicians alphabetically
   var fp = document.getElementById('fphys');
   fp.innerHTML = '<option value="">All Physicians</option>';
-  sp.forEach(function(x){ if(x[0]!=='—'){var o=document.createElement('option');o.value=x[0];o.textContent=x[0];fp.appendChild(o);} });
+  var allPhysicians = Object.keys(pc).filter(function(name){ return name !== '—'; }).sort();
+  allPhysicians.forEach(function(name){
+    var o = document.createElement('option');
+    o.value = name;
+    o.textContent = name;
+    fp.appendChild(o);
+  });
 
   var ic = {};
   studies.forEach(function(s){ if(s.indication&&s.indication.trim()){var k=s.indication.trim().toLowerCase();ic[k]=(ic[k]||0)+1;} });

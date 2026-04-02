@@ -451,7 +451,7 @@ function parseAndImport(raw) {
     var status = (r[cStatus]||'').trim();
     var type   = (r[cType]||'').trim();
     var pid    = (r[cPID]||'').replace(/[\s\n\r]+/g,'');
-    if (status !== 'Scan started') { skip++; continue; }
+    if (status.toLowerCase().indexOf('scan') < 0) { skip++; continue; }
     if (type !== 'TTE' && type !== 'TEE') { skip++; continue; }
     if (!pid || pid.length < 3) { skip++; continue; }
     var date = (r[cDate]||'').trim();

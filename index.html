@@ -473,12 +473,9 @@ function parseAndImport(raw) {
     var type   = cType >= 0 ? (r[cType]||'').trim() : '';
     var pid    = cPID >= 0 ? (r[cPID]||'').replace(/[\s\n\r]+/g,'') : '';
 
-    // Accept any row that has "scan" in status
-    if (status.toLowerCase().indexOf('scan') < 0) { skip++; continue; }
-    // Accept TTE, TEE, or blank exam type
-    if (type !== '' && type !== 'TTE' && type !== 'TEE') { skip++; continue; }
-    // Need a valid patient ID
+    // Only skip rows with no patient ID and no date
     if (!pid || pid.length < 3) { skip++; continue; }
+    if (!date) { skip++; continue; }
 
     var date = cDate >= 0 ? (r[cDate]||'').trim() : '';
     var phys = '';

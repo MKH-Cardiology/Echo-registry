@@ -369,10 +369,10 @@ tbody td {
         <thead>
           <tr>
             <th>Patient ID</th>
-            <th>Age</th>
+            <th>Indication</th>
             <th>Date</th>
             <th>Type</th>
-            <th>Indication</th>
+            <th>Age</th>
             <th>Physician</th>
             <th style="text-align:right">Action</th>
           </tr>
@@ -483,6 +483,23 @@ var auth = firebase.auth();
 var studies = [], filtered = [], curPage = 1, PAGE = 25;
 var mChart = null, tChart = null, dayChart = null;
 var pendingEditId = null;
+var isSessionAdmin = false; // Prevents entering the PIN multiple times
+
+// Name normalization function
+function normalizePhysicianName(name) {
+  if (!name) return '—';
+  var lower = name.toLowerCase();
+  if (lower.includes('samir')) return 'Samir';
+  if (lower.includes('zaher')) return 'Zaher';
+  if (lower.includes('shafie')) return 'Shafie';
+  if (lower.includes('ashraf')) return 'Ashraf';
+  if (lower.includes('akmal')) return 'Akmal';
+  if (lower.includes('fawzy')) return 'Fawzy';
+  if (lower.includes('ibrahim')) return 'Ibrahim';
+  if (lower.includes('ehab')) return 'Ehab';
+  if (lower.includes('maged')) return 'Maged';
+  return name; // Returns original name if no match is found
+}
 
 document.getElementById('pageLogin').style.display = 'block';
 
@@ -521,7 +538,8 @@ function loadData() {
     studies = [];
     snap.forEach(function(d) { 
       var data = d.data();
-      data._docId = d.id; // Store the firestore document ID so we can edit it later
+      data._docId = d.id; 
+      data.physician = normalizePhysicianName(data.physician); // Instantly clean names from Firebase
       studies.push(data); 
     });
     document.getElementById('dbdot').className = 'db-dot on';
@@ -674,12 +692,13 @@ function renderTable() {
       ? '<span style="display:inline-block;padding:4px 8px;border-radius:6px;background:var(--surface2);color:var(--text2);font-size:0.65rem;font-weight:600;"><i class="fa fa-tag" style="margin-right:4px;color:var(--text3)"></i>'+s.indication+'</span>' 
       : '<span style="color:var(--border)">—</span>';
     
+    // AGE AND INDICATION COLUMNS HAVE BEEN SWAPPED HERE
     return '<tr>'+
       '<td style="font-weight:600;color:var(--accent);white-space:nowrap;">'+(s.pid||'—')+'</td>'+
-      '<td style="color:var(--text2)">'+(s.age !== undefined ? s.age : '—')+'</td>'+
+      '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+indDisplay+'</td>'+
       '<td style="font-weight:500;white-space:nowrap;">'+s.date+'</td>'+
       '<td><span class="'+typeBadge(s.type)+'">'+s.type+'</span></td>'+
-      '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+indDisplay+'</td>'+
+      '<td style="color:var(--text2)">'+(s.age !== undefined ? s.age : '—')+'</td>'+
       '<td style="color:var(--text2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(s.physician||'—')+'</td>'+
       '<td style="text-align:right"><button class="btn-icon" onclick="requirePin(\''+s._docId+'\')" title="Edit Study"><i class="fa fa-pen"></i></button></td>'+
     '</tr>';
@@ -698,21 +717,28 @@ function showTab(name, btn) {
 // ADMIN PIN LOGIC
 function requirePin(docId) {
   pendingEditId = docId;
-  document.getElementById('admin-pin').value = '';
-  document.getElementById('pinModal').classList.add('show');
-  setTimeout(function(){ document.getElementById('admin-pin').focus(); }, 100);
+  
+  // If the user already entered the PIN this session, bypass the PIN check
+  if (isSessionAdmin) {
+    openEditModal(docId);
+  } else {
+    document.getElementById('admin-pin').value = '';
+    document.getElementById('pinModal').classList.add('show');
+    setTimeout(function(){ document.getElementById('admin-pin').focus(); }, 100);
+  }
 }
 
 function closePinModal() {
   document.getElementById('pinModal').classList.remove('show');
-  pendingEditId = null;
 }
 
 function verifyPin() {
   var pin = document.getElementById('admin-pin').value;
   if (pin === '1234') {
+    isSessionAdmin = true; // Unlock for this session
     closePinModal();
-    openEditModal(pendingEditId);
+    // Use a slight delay to allow the CSS transition to close the PIN modal before opening the Edit modal
+    setTimeout(function() { openEditModal(pendingEditId); }, 150);
   } else {
     toast('Incorrect Admin PIN');
     document.getElementById('admin-pin').value = '';
@@ -742,7 +768,10 @@ function saveEdit() {
   if (!pendingEditId) return;
   
   var newPid = document.getElementById('edit-pid').value.trim();
-  var newPhys = document.getElementById('edit-phys').value.trim();
+  
+  // Clean the physician name using our new normalizer engine
+  var newPhys = normalizePhysicianName(document.getElementById('edit-phys').value.trim());
+  
   var newInd = document.getElementById('edit-ind').value.trim();
   
   var btn = document.getElementById('save-edit-btn');
@@ -755,7 +784,7 @@ function saveEdit() {
   
   var updates = {
     pid: newPid,
-    physician: newPhys,
+    physician: newPhys, // Saves the cleaned name
     indication: newInd,
     age: newAge
   };
@@ -860,9 +889,13 @@ function parseAndImport(raw) {
     if(type&&type!=='TTE'&&type!=='TEE'){skip++;continue;}
     if(!pid||pid.length<3){skip++;continue;}
     var date=cDate>=0?(r[cDate]||'').trim():'';
-    var phys='';
-    if(cPhysR>=0)phys=(r[cPhysR]||'').trim();
-    if(!phys&&cPhysP>=0)phys=(r[cPhysP]||'').trim();
+    var physRaw='';
+    if(cPhysR>=0)physRaw=(r[cPhysR]||'').trim();
+    if(!physRaw&&cPhysP>=0)physRaw=(r[cPhysP]||'').trim();
+    
+    // Normalize physician name upon import
+    var phys = normalizePhysicianName(physRaw);
+    
     var ind=cAcc>=0?(r[cAcc]||'').trim():'';
     var dob=cDOB>=0?(r[cDOB]||'').trim():'';
     

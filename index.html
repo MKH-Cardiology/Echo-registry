@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Echo Lab Registry — Mubarak Al-Kabeer Hospital</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --navy: #0a1628;
+  --navy2: #0f2040;
+  --blue: #1a4fd4;
+  --cyan: #00c2ff;
+  --teal: #00e5c3;
+  --gold: #f0c040;
+  --white: #f0f4ff;
+  --grey: #8899bb;
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--navy);
+  color: var(--white);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+background: linear-gradient(135deg, var(–navy2) 0%, #0d2a55 100%);
+border-bottom: 1px solid var(–border);
+padding: 18px 20px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+position: sticky;
+top: 0;
+z-index: 100;
+}
+.header-left h1 {
+font-family: ‘Syne’, sans-serif;
+font-size: 1.1rem;
+font-weight: 800;
+color: #fff;
+letter-spacing: -0.02em;
+}
+.header-left p {
+font-size: 0.7rem;
+color: var(–cyan);
+letter-spacing: 0.1em;
+text-transform: uppercase;
+margin-top: 2px;
+}
+.phase-badge {
+background: linear-gradient(135deg, var(–blue), var(–cyan));
+color: #fff;
+font-size: 0.65rem;
+font-weight: 600;
+padding: 4px 10px;
+border-radius: 20px;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+}
+
+/* NAV TABS */
+.nav-tabs {
+display: flex;
+background: var(–navy2);
+border-bottom: 1px solid var(–border);
+overflow-x: auto;
+scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.tab-btn {
+flex-shrink: 0;
+padding: 12px 20px;
+background: none;
+border: none;
+color: var(–grey);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.72rem;
+cursor: pointer;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+border-bottom: 2px solid transparent;
+transition: all 0.2s;
+}
+.tab-btn.active {
+color: var(–cyan);
+border-bottom-color: var(–cyan);
+}
+.tab-btn:hover { color: var(–white); }
+
+/* PAGES */
+.page { display: none; padding: 16px; }
+.page.active { display: block; }
+
+/* STATS GRID */
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+margin-bottom: 16px;
+}
+.stat-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 14px;
+position: relative;
+overflow: hidden;
+}
+.stat-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
+background: linear-gradient(90deg, var(–cyan), var(–teal));
+}
+.stat-label {
+font-size: 0.62rem;
+color: var(–grey);
+letter-spacing: 0.1em;
+text-transform: uppercase;
+margin-bottom: 6px;
+}
+.stat-value {
+font-family: ‘Syne’, sans-serif;
+font-size: 1.8rem;
+font-weight: 800;
+color: var(–white);
+line-height: 1;
+}
+.stat-sub {
+font-size: 0.65rem;
+color: var(–teal);
+margin-top: 4px;
+}
+
+/* CHART CARDS */
+.chart-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 16px;
+margin-bottom: 14px;
+}
+.chart-title {
+font-family: ‘Syne’, sans-serif;
+font-size: 0.8rem;
+font-weight: 700;
+color: var(–white);
+margin-bottom: 14px;
+letter-spacing: 0.02em;
+}
+.chart-wrap {
+position: relative;
+height: 200px;
+}
+
+/* PHYSICIAN BAR LIST */
+.phys-list { list-style: none; }
+.phys-item {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 10px;
+}
+.phys-name {
+font-size: 0.72rem;
+color: var(–white);
+width: 160px;
+flex-shrink: 0;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.phys-bar-wrap {
+flex: 1;
+background: rgba(255,255,255,0.06);
+border-radius: 4px;
+height: 8px;
+overflow: hidden;
+}
+.phys-bar {
+height: 100%;
+border-radius: 4px;
+background: linear-gradient(90deg, var(–blue), var(–cyan));
+transition: width 0.8s ease;
+}
+.phys-count {
+font-size: 0.72rem;
+color: var(–cyan);
+width: 30px;
+text-align: right;
+flex-shrink: 0;
+}
+
+/* SEARCH */
+.search-wrap {
+display: flex;
+gap: 8px;
+margin-bottom: 14px;
+}
+.search-input {
+flex: 1;
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 10px 14px;
+color: var(–white);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.8rem;
+outline: none;
+transition: border-color 0.2s;
+}
+.search-input::placeholder { color: var(–grey); }
+.search-input:focus { border-color: var(–cyan); }
+.search-btn {
+background: var(–blue);
+border: none;
+border-radius: 8px;
+padding: 10px 16px;
+color: #fff;
+cursor: pointer;
+font-size: 0.85rem;
+transition: background 0.2s;
+}
+.search-btn:hover { background: #2560f0; }
+
+/* FILTERS */
+.filter-row {
+display: flex;
+gap: 8px;
+margin-bottom: 14px;
+flex-wrap: wrap;
+}
+.filter-select {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 8px 12px;
+color: var(–white);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.75rem;
+outline: none;
+cursor: pointer;
+}
+.filter-select option { background: var(–navy2); }
+
+/* TABLE */
+.table-wrap {
+overflow-x: auto;
+border-radius: 10px;
+border: 1px solid var(–border);
+}
+table {
+width: 100%;
+border-collapse: collapse;
+font-size: 0.72rem;
+}
+thead th {
+background: rgba(26,79,212,0.3);
+color: var(–cyan);
+padding: 10px 12px;
+text-align: left;
+font-weight: 500;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+white-space: nowrap;
+border-bottom: 1px solid var(–border);
+}
+tbody tr {
+border-bottom: 1px solid var(–border);
+transition: background 0.15s;
+}
+tbody tr:hover { background: rgba(255,255,255,0.04); }
+tbody td {
+padding: 9px 12px;
+color: var(–white);
+white-space: nowrap;
+}
+.badge {
+display: inline-block;
+padding: 2px 8px;
+border-radius: 12px;
+font-size: 0.65rem;
+font-weight: 600;
+letter-spacing: 0.05em;
+}
+.badge-tte { background: rgba(0,194,255,0.15); color: var(–cyan); }
+.badge-tee { background: rgba(240,192,64,0.15); color: var(–gold); }
+.badge-ind { background: rgba(0,229,195,0.15); color: var(–teal); font-size: 0.6rem; }
+
+/* PAGINATION */
+.pagination {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-top: 12px;
+padding: 10px 0;
+}
+.page-info { font-size: 0.72rem; color: var(–grey); }
+.page-btns { display: flex; gap: 6px; }
+.page-btn {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 6px;
+padding: 6px 12px;
+color: var(–white);
+font-size: 0.72rem;
+cursor: pointer;
+transition: all 0.2s;
+}
+.page-btn:hover { border-color: var(–cyan); color: var(–cyan); }
+.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* UPLOAD SECTION */
+.upload-card {
+background: rgba(0,229,195,0.05);
+border: 1px dashed rgba(0,229,195,0.3);
+border-radius: 12px;
+padding: 20px;
+text-align: center;
+margin-bottom: 16px;
+}
+.upload-card h3 {
+font-family: ‘Syne’, sans-serif;
+font-size: 0.9rem;
+color: var(–teal);
+margin-bottom: 8px;
+}
+.upload-card p {
+font-size: 0.72rem;
+color: var(–grey);
+margin-bottom: 14px;
+line-height: 1.6;
+}
+.upload-btn {
+background: linear-gradient(135deg, var(–teal), var(–cyan));
+border: none;
+border-radius: 8px;
+padding: 10px 20px;
+color: var(–navy);
+font-family: ‘Syne’, sans-serif;
+font-weight: 700;
+font-size: 0.8rem;
+cursor: pointer;
+transition: opacity 0.2s;
+}
+.upload-btn:hover { opacity: 0.85; }
+#csvFileInput { display: none; }
+
+.info-box {
+background: rgba(26,79,212,0.1);
+border: 1px solid rgba(26,79,212,0.3);
+border-radius: 10px;
+padding: 14px;
+margin-bottom: 14px;
+font-size: 0.72rem;
+color: var(–grey);
+line-height: 1.7;
+}
+.info-box strong { color: var(–cyan); }
+
+/* EMPTY STATE */
+.empty-state {
+text-align: center;
+padding: 40px 20px;
+color: var(–grey);
+}
+.empty-state i { font-size: 2rem; margin-bottom: 12px; color: var(–border); }
+.empty-state p { font-size: 0.78rem; }
+
+/* TOAST */
+.toast {
+position: fixed;
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%);
+background: var(–teal);
+color: var(–navy);
+padding: 10px 20px;
+border-radius: 8px;
+font-weight: 600;
+font-size: 0.78rem;
+z-index: 9999;
+display: none;
+animation: fadeIn 0.3s;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+/* INDICATION TAG */
+.indication-tag {
+background: rgba(240,192,64,0.12);
+color: var(–gold);
+padding: 1px 6px;
+border-radius: 4px;
+font-size: 0.6rem;
+}
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Echo Lab Registry</h1>
+    <p>Mubarak Al-Kabeer Hospital · Cardiology</p>
+  </div>
+  <span class="phase-badge">Phase 1</span>
+</div>
+
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('dashboard')"><i class="fa fa-chart-bar me-1"></i> Dashboard</button>
+  <button class="tab-btn" onclick="showTab('registry')"><i class="fa fa-list me-1"></i> Registry</button>
+  <button class="tab-btn" onclick="showTab('import')"><i class="fa fa-upload me-1"></i> Import Data</button>
+</div>
+
+<!-- DASHBOARD -->
+
+<div id="tab-dashboard" class="page active">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Studies</div>
+      <div class="stat-value" id="stat-total">—</div>
+      <div class="stat-sub">2026 YTD</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Unique Patients</div>
+      <div class="stat-value" id="stat-patients">—</div>
+      <div class="stat-sub">distinct IDs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">TTE Studies</div>
+      <div class="stat-value" id="stat-tte">—</div>
+      <div class="stat-sub" id="stat-tte-pct">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">TEE Studies</div>
+      <div class="stat-value" id="stat-tee">—</div>
+      <div class="stat-sub" id="stat-tee-pct">—</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">📅 Studies by Month</div>
+    <div class="chart-wrap"><canvas id="monthChart"></canvas></div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">🏥 Workload by Reading Physician</div>
+    <ul class="phys-list" id="physList"></ul>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">🔬 Exam Type Distribution</div>
+    <div class="chart-wrap" style="height:160px"><canvas id="typeChart"></canvas></div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">🏷️ Top Indications / Clinical Notes</div>
+    <div id="indicationList"></div>
+  </div>
+
+  <div class="info-box">
+    <strong>Phase 2 — Coming when measurements export is available</strong><br>
+    EF distribution · LV function analytics · Valvular disease prevalence · Diastolic dysfunction grading · Longitudinal patient tracking · Research-ready dataset export
+  </div>
+</div>
+
+<!-- REGISTRY -->
+
+<div id="tab-registry" class="page">
+  <div class="search-wrap">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search by Patient ID, name, date..." oninput="filterStudies()">
+    <button class="search-btn" onclick="filterStudies()"><i class="fa fa-search"></i></button>
+  </div>
+  <div class="filter-row">
+    <select class="filter-select" id="filterType" onchange="filterStudies()">
+      <option value="">All Types</option>
+      <option value="TTE">TTE</option>
+      <option value="TEE">TEE</option>
+    </select>
+    <select class="filter-select" id="filterMonth" onchange="filterStudies()">
+      <option value="">All Months</option>
+      <option value="01">January</option>
+      <option value="02">February</option>
+      <option value="03">March</option>
+      <option value="04">April</option>
+    </select>
+    <select class="filter-select" id="filterPhys" onchange="filterStudies()">
+      <option value="">All Physicians</option>
+    </select>
+  </div>
+  <div id="resultsInfo" style="font-size:0.7rem; color:var(--grey); margin-bottom:10px;"></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Patient ID</th>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Physician</th>
+          <th>Indication</th>
+        </tr>
+      </thead>
+      <tbody id="studyTable"></tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span class="page-info" id="pageInfo"></span>
+    <div class="page-btns">
+      <button class="page-btn" id="prevBtn" onclick="changePage(-1)">← Prev</button>
+      <button class="page-btn" id="nextBtn" onclick="changePage(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT -->
+
+<div id="tab-import" class="page">
+  <div class="upload-card">
+    <h3><i class="fa fa-file-csv" style="margin-right:8px"></i>Import ViewPoint CSV Export</h3>
+    <p>
+      Export your echo studies from ViewPoint using the query export function.<br>
+      Select "Scan started" studies only. Include headers.<br>
+      The app will automatically filter completed TTE/TEE studies.
+    </p>
+    <input type="file" id="csvFileInput" accept=".csv" onchange="importCSV(event)">
+    <button class="upload-btn" onclick="document.getElementById('csvFileInput').click()">
+      <i class="fa fa-upload" style="margin-right:6px"></i>Choose CSV File
+    </button>
+  </div>
+
+  <div class="info-box">
+    <strong>Expected CSV columns from ViewPoint:</strong><br>
+    Patient ID · Exam date · Exam type · Exam status · Surname · First name · DOB · Accession No. · Sonographer · Performing physician · Reading physician<br><br>
+    <strong>Current dataset:</strong> 2026 studies (Jan–Apr) — loaded from initial export<br><br>
+    <strong>To add more data:</strong> Export additional date ranges from ViewPoint and import here. New records will be merged with existing data.
+  </div>
+
+  <div class="info-box" style="border-color:rgba(240,192,64,0.3); background:rgba(240,192,64,0.05)">
+    <strong style="color:var(--gold)">Phase 2 — Measurement Import</strong><br>
+    Once GE engineer enables the measurement query export, you'll import a second CSV containing:<br>
+    EF (biplane) · LV volumes · Wall thickness · LA volume index · E/e' · TR Vmax · Valvular findings<br>
+    These will automatically link to existing studies by Patient ID and date.
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DATA =====
+// Full dataset parsed from ViewPoint export — completed TTE/TEE studies only
+let ALL_STUDIES = [];
+let filteredStudies = [];
+let currentPage = 1;
+const PAGE_SIZE = 25;
+
+// Chart instances
+let monthChartInst = null, typeChartInst = null;
+
+// ===== PARSE EMBEDDED CSV DATA =====
+const RAW_CSV = `Patient ID,Exam date,Exam type,Exam status,Surname,First name,DOB,Accession No.,Sonographer,Performing physician,Reading physician
+285080801351,01/13/2026,TTE,Scan started,alshami,mona ghasan,08/8/1985,,USR,Dr. Mohamed Farouk,
+263080600122,02/23/2026,TTE,Scan started,jamal,dameiri,06/8/1963,,USR,Dr. Hany Basyony,
+238040600414,03/5/2026,TTE,Scan started,ahmad abboud,mahdiyah ahwazi,04/6/1938,,USR,Dr. Mohamed Samir,
+274050301205,02/11/2026,TTE,Scan started,Amal,Mohammad Saad,05/3/1974,,USR,Dr. Maged Yousef,
+273020800156,02/16/2026,TTE,Scan started,muna,abdulla,02/8/1973,,USR,Dr. Maged Yousef,
+273020800156,02/12/2026,TTE,Scan started,muna,abdulla,02/8/1973,,USR,,
+249091400125,02/11/2026,TTE,Scan started,HANAN,MOHAMED ELSHAWA,09/14/1949,,,,
+243120200193,02/15/2026,TTE,Scan started,hassan,karim,12/2/1943,IHD,USR,Dr. Akmal Abotaleb,
+276010400689,02/19/2026,TEE,Scan started,haya j kh,alshemeri,01/4/1976,,USR,Dr. Mohamed Samir,
+276010400689,02/15/2026,TEE,Scan started,haya j kh,alshemeri,01/4/1976,MS,USR,Dr. Akmal Abotaleb,
+262032401183,02/15/2026,TTE,Scan started,heshmat mounir,akldyous,03/24/1962,HCM pericardial effusion,USR,Dr. Akmal Abotaleb,
+283022600325,02/12/2026,TTE,Scan started,khaled mohammed,marzouq,02/26/1983,,USR,,
+264042401047,02/16/2026,TTE,Scan started,ahmad,jassim,,,USR,Dr. Mohamed Samir,
+272041607764,02/16/2026,TTE,Scan started,Akub,Sadik,04/16/1972,,USR,Dr. Ashraf Ahmed,
+284091700893,02/16/2026,TEE,Scan started,fatemah hussain,wabdan mohan,09/17/1984,,USR,Dr. Maged Yousef,
+253080300091,01/11/2026,TTE,Scan started,hammam,rabie,08/3/1953,,USR,Dr. Ihab Awwad,
+246040900185,03/16/2026,TTE,Scan started,muhammad,najat,04/9/1946,,USR,,
+277081900255,02/4/2026,TTE,Scan started,MUNIR,EMAN,08/19/1977,,USR,Dr. Hany Basyony,
+241042700707,04/1/2026,TTE,Scan started,Abbas,Ismail Eslah,04/27/1941,,USR,,
+251043001368,03/10/2026,TTE,Scan started,abdul rahman,ahmad,,,USR,,
+270031200144,03/18/2026,TTE,Scan started,tareq,khodar,03/12/1970,,USR,,
+276022504362,03/16/2026,TTE,Scan started,panthanalil,thomas,02/25/1976,,USR,Dr. Maged Yousef,
+268031003738,03/15/2026,TTE,Scan started,mohammad shahjahan,mohammad,03/10/1968,,USR,Ahmed Abdelshafie,
+251031200298,03/8/2026,TTE,Scan started,Elboubbo,Faida,,,USR,Dr. Fawzy Makled,
+269121100907,01/15/2026,TTE,Scan started,NANMUNIGE,DHANARNTNE,,,USR,Dr. Akmal Abotaleb,
+272042300385,01/15/2026,TTE,Scan started,waleed rushood,al shammari,04/23/1972,,USR,MS,
+286102301732,01/15/2026,TTE,Scan started,hamad khalid,ahmad,,,USR,Dr. Mohamed Samir,
+309020900474,01/15/2026,TTE,Scan started,hanan abdul rahman,al kandari,02/9/2009,,USR,Dr. Mohamed Samir,
+262020604012,01/19/2026,TTE,Scan started,JAGAN,MOHAN,,,USR,Dr. Ashraf Ahmed,
+248122700549,01/19/2026,TTE,Scan started,mariam,abdulrasoul,12/27/1948,,USR,Dr. Mohamed Samir,
+252122000931,01/19/2026,TTE,Scan started,habiba abdul nabi,al sayed,12/20/1952,,USR,Dr. Mohamed Samir,
+264051505139,01/13/2026,TTE,Scan started,KHALID IBRAHIM,ABDALLA AHMED,,,USR,,
+247121600111,01/5/2026,TTE,Scan started,najat mohammad,hasan,,,USR,Dr. Fawzy Makled,
+275092800541,01/20/2026,TEE,Scan started,marium akyad,zaal al dafiri,09/28/1975,,USR,Dr. Mohamed Samir,
+252051500364,01/25/2026,TTE,Scan started,farouk subhi,al jabban,05/15/1952,apical HCM,USR,Dr. Akmal Abotaleb,
+266061801512,01/26/2026,TTE,Scan started,marcus,marcelino,06/18/1966,,USR,Dr. Mohamed Samir,
+251040700411,01/6/2026,TTE,Scan started,SAADEYAH KHALAF,makki,04/7/1951,,USR,Dr. Akmal Abotaleb,
+242041200721,01/5/2026,TTE,Scan started,khalid hussein,al faqaan,04/12/1942,,USR,Dr. Mohamed Samir,
+310060603034,02/24/2026,TTE,Scan started,Iskander,Nahid,06/6/2010,,USR,,
+310060603034,01/26/2026,TTE,Scan started,Iskander,Nahid,06/6/2010,,,,,
+310060603034,01/6/2026,TTE,Scan started,Iskander,Nahid,06/6/2010,,USR,Dr. Fawzy Makled,
+234050100407,01/6/2026,TTE,Scan started,fatemah ali,hasan,05/10/1934,,USR,,
+255062600065,01/6/2026,TTE,Scan started,ali,alazmi,,,USR,Dr. Mohamed Farouk,
+258012100349,01/6/2026,TTE,Scan started,abbas abdullah,taleb,01/21/1958,,USR,Dr. Ihab Awwad,
+260012300087,01/6/2026,TTE,Scan started,zuhair,qasem ali,01/23/1960,MS AS,USR,Dr. Akmal Abotaleb,
+264011001112,01/7/2026,TTE,Scan started,adel,ibrahim,01/10/1964,,USR,Ahmed Abdelshafie,
+256102601236,01/7/2026,TTE,Scan started,Laila,Shayea,10/26/1956,,USR,Dr. Ahmed Abdelzaher,
+258123100472,03/11/2026,TTE,Scan started,hussien ali aldashti,fadel,12/31/1958,,USR,Dr. Ashraf Ahmed,
+247042001081,01/21/2026,TTE,Scan started,naeemah mubarak saleh,al snayen,04/20/1947,,USR,Dr. Akmal Abotaleb,
+244102000846,01/25/2026,TTE,Scan started,rajab,ali,10/20/1944,ICM,USR,Dr. Akmal Abotaleb,
+263082901842,01/13/2026,TTE,Scan started,kausar,hussain,08/29/1963,,USR,Dr. Fawzy Makled,
+282081501488,03/15/2026,TTE,Scan started,Aqeel,Ahmad Hasan,08/15/1982,,USR,MS,
+264012600088,02/4/2026,TTE,Scan started,ali,subhi drouz,01/26/1964,AS,USR,Dr. Maged Yousef,
+232030900037,03/24/2026,TTE,Scan started,abdulsamed,mohammad,03/9/1932,,USR,,
+252080101039,03/15/2026,TTE,Scan started,DR. SUHAIL NAJEM,AL SHAMMARI,08/1/1952,,USR,Dr. Ihab Awwad,
+276110902205,02/15/2026,TTE,Scan started,noha ahmad,mustafa,11/9/1976,PFO closure device,USR,Dr. Akmal Abotaleb,
+263012701167,01/29/2026,TTE,Scan started,BADESHA,DHAHIR,01/27/1963,,USR,Dr. Fawzy Makled,
+256111900625,01/7/2026,TTE,Scan started,ateyah,nadiah,11/19/1956,,USR,Dr. Hany Basyony,
+272072900349,03/10/2026,TEE,Scan started,MARIAM,ALI ALKANDARI,07/29/1972,,USR,Dr. Mohamed Farouk,
+272072900349,01/7/2026,TTE,Scan started,MARIAM,ALI ALKANDARI,07/29/1972,,USR,,
+267092200052,02/17/2026,TTE,Scan started,awatif ateyah abdulla,al qallaf,09/22/1967,,USR,Dr. Mohamed Farouk,
+241060600144,03/8/2026,TTE,Scan started,zainab,mohammad,,,USR,Dr. Fawzy Makled,
+273042602513,03/8/2026,TTE,Scan started,mohamed,mahmoud,,,USR,Dr. Fawzy Makled,
+269101701377,03/8/2026,TTE,Scan started,safwat,fathi,,,USR,,
+283112400044,03/9/2026,TTE,Scan started,abdullah,mohamad,11/24/1983,,USR,Ahmed Abdelshafie,
+272102506327,03/9/2026,TTE,Scan started,rita,sampayan,10/25/1972,,USR,Ahmed Abdelshafie,
+268031511214,03/9/2026,TTE,Scan started,mohammed ankar miah chandu,miah,03/15/1968,,USR,Dr. Ashraf Ahmed,
+230031500327,03/9/2026,TTE,Scan started,muhamad,yousaf,03/15/1930,,USR,Ahmed Abdelshafie,
+275080603217,03/9/2026,TTE,Scan started,haytham,abdelfatah,08/6/1975,,USR,Ahmed Abdelshafie,
+287060310394,03/10/2026,TTE,Scan started,Naeem,Rehmatullah,,,USR,Ahmed Abdelshafie,
+261102300763,03/8/2026,TTE,Scan started,MUFAAREJ,TURKI,10/23/1961,,USR,Dr. Mohamed Samir,
+261102300763,03/11/2026,TEE,Scan started,MUFAAREJ,TURKI,10/23/1961,,USR,,
+258020701283,03/10/2026,TTE,Scan started,HUSSEIN,SALEH,02/7/1958,,USR,Ahmed Abdelshafie,
+252050601489,03/10/2026,TTE,Scan started,Khaleel,Ibrahim,,,USR,Ahmed Abdelshafie,
+254042900592,03/10/2026,TTE,Scan started,Mezeyed,Alnuwaif,,,USR,Ahmed Abdelshafie,
+283050100563,02/19/2026,TTE,Scan started,mohammad mahmoud,husssai ali,05/10/1983,,USR,Dr. Mohamed Samir,
+260070301651,03/10/2026,TTE,Scan started,SAID,MOHAMMAD,,,USR,Dr. Fawzy Makled,
+244051700024,03/11/2026,TTE,Scan started,nagat,mohamed ahmed,05/17/1944,,USR,,
+266012102336,03/12/2026,TTE,Scan started,HARANKAHA,IRANGANIE,,,USR,Dr. Maged Yousef,
+301062701434,03/12/2026,TTE,Scan started,MOHAMMAD,MODI ALI,,,USR,Dr. Maged Yousef,
+258022300096,03/10/2026,TTE,Scan started,mukaram,alsahiouni,02/23/1958,,USR,Ahmed Abdelshafie,
+267082602293,01/14/2026,TTE,Scan started,WINNIE,ESGUERRA,08/26/1967,,USR,Dr. Ashraf Ahmed,
+267082602293,01/15/2026,TEE,Scan started,WINNIE,ESGUERRA,08/26/1967,,USR,MS,
+266091601554,03/11/2026,TTE,Scan started,HAZWANI,OBAEDA,09/16/1966,,USR,Dr. Ashraf Ahmed,
+297050601197,02/23/2026,TTE,Scan started,abdulla masoud,al rasheedi,05/6/1997,,USR,Dr. Mohamed Samir,
+254032600377,01/19/2026,TTE,Scan started,khalil,sida,03/26/1954,,USR,Dr. Mohamed Samir,
+250020301208,03/17/2026,TTE,Scan started,mohamed ahmed,mousa abu al kumsan,11/13/1950,,USR,Dr. Mohamed Farouk,
+252100400109,03/11/2026,TTE,Scan started,yousef,hasan,10/4/1952,,USR,,
+252100400109,02/23/2026,TTE,Scan started,yousef,hasan,10/4/1952,,USR,Dr. Ashraf Ahmed,
+260101900113,01/28/2026,TTE,Scan started,hassan,hossam,01/19/1960,,USR,Dr. Maged Yousef,
+259031900063,03/30/2026,TTE,Scan started,ali,wajih,,,USR,Ahmed Abdelshafie,
+262030500196,02/11/2026,TTE,Scan started,hasan,mohamed,10/20/1962,AS,USR,Dr. Maged Yousef,
+263012000977,03/17/2026,TTE,Scan started,ELWAN JABER,ALAJMI,,,USR,Dr. Ihab Awwad,
+256020102732,03/3/2026,TTE,Scan started,a rahman,saghrah,02/1/1956,,USR,Ahmed Abdelshafie,
+248060301023,03/2/2026,TTE,Scan started,JAMAAN,MUNEERAH,06/3/1948,,USR,,
+273070501445,04/1/2026,TTE,Scan started,Alhalawani,Wasim,07/5/1973,,USR,,
+253101001796,01/11/2026,TTE,Scan started,masooma hamza,abbas,,,USR,Dr. Ahmed Abdelzaher,
+268052000819,04/1/2026,TTE,Scan started,Raheem,Ahlam Ebrahim,05/20/1968,,USR,,
+271101200321,04/1/2026,TTE,Scan started,Iman,Kamal,,,USR,,
+260040101042,03/26/2026,TTE,Scan started,Salam,Alhijiawy,,,USR,Dr. Mohamed Samir,
+242030300102,04/2/2026,TTE,Scan started,mohammad ali,mohamed,03/30/1942,,USR,,
+274010145359,04/2/2026,TTE,Scan started,MD KAMAL,ABDUR ROB,01/1/1974,,USR,,
+243032900085,04/2/2026,TTE,Scan started,Aljabbar,Faridah,03/29/1943,,USR,,
+251091001071,03/26/2026,TTE,Scan started,Ahmad,Alhasawi,,,USR,,
+237071400154,02/3/2026,TTE,Scan started,jadan,fadel,01/1/1937,,USR,Dr. Mohamed Samir,
+262010129043,03/17/2026,TTE,Scan started,seyit,casim,01/1/1962,,USR,Ahmed Abdelshafie,
+257012300522,02/17/2026,TEE,Scan started,MAGDA HASHEM,ALY MEKI,,,USR,Dr. Mohamed Samir,
+257012300522,02/2/2026,TEE,Scan started,MAGDA HASHEM,ALY MEKI,,,USR,Dr. Maged Yousef,
+276081501209,01/11/2026,TTE,Scan started,ZAHRA,ABDUL MOHSEN,,,USR,,
+257031005975,01/12/2026,TTE,Scan started,Abdou,Afifi Moussa,03/10/1957,,USR,Dr. Ashraf Ahmed,
+242041700099,01/14/2026,TTE,Scan started,jaradah,mahmood,04/17/1942,,USR,Dr. Ashraf Ahmed,
+282100700336,01/14/2026,TTE,Scan started,alia mohammad,al rasheed,10/7/1982,,USR,Dr. Ahmed Abdelzaher,
+262081901176,01/14/2026,TTE,Scan started,azza moustafa hussein,ahmed,08/19/1962,,USR,Dr. Ahmed Abdelzaher,
+293090301721,01/14/2026,TTE,Scan started,batoul fathi jomaa,zabadneh,09/3/1993,,USR,Dr. Ahmed Abdelzaher,
+270061702196,01/14/2026,TTE,Scan started,haturusinghe dewage,iranganie,06/17/1970,HCM,USR,Dr. Ahmed Abdelzaher,
+248041400886,01/14/2026,TTE,Scan started,souad fahim,barakat,04/14/1948,,USR,Dr. Ahmed Abdelzaher,
+254091300729,01/14/2026,TTE,Scan started,zahia saad mohamed,ahmed,09/13/1954,ICM,USR,Dr. Ahmed Abdelzaher,
+255091800795,01/15/2026,TEE,Scan started,MAHMOUD KHALED,ALMOUSA,09/18/1955,,USR,Dr. Ihab Awwad,
+275120201459,01/21/2026,TTE,Scan started,habeeb makki,hussain,12/2/1975,,USR,Dr. Ashraf Ahmed,
+263051900484,01/20/2026,TTE,Scan started,rashid ismael,zayed,05/19/1963,,USR,Dr. Mohamed Samir,
+251043000795,01/20/2026,TTE,Scan started,haider ameen,ali khan,04/30/1951,,USR,Dr. Mohamed Samir,
+273080100522,02/8/2026,TTE,Scan started,eman fahad hussain,al mutairi,08/10/1973,low flow AS multivalvular,USR,Dr. Akmal Abotaleb,
+287070401193,02/11/2026,TTE,Scan started,OMAR,ABDULLAH ALAZMI,07/4/1987,BICUSPID AV,USR,Dr. Maged Yousef,
+270070600976,02/11/2026,TTE,Scan started,KHALED,ABDULLAH ALQATTAN,07/6/1970,,USR,Dr. Maged Yousef,
+258091900116,02/11/2026,TTE,Scan started,TALEB,MOHAMMAD ALKHARS,09/19/1958,,USR,Dr. Maged Yousef,
+240051500577,02/11/2026,TTE,Scan started,SAMIR,MOUSA QUTTAINEH,05/15/1940,ICM,USR,Dr. Maged Yousef,
+250122400354,02/11/2026,TTE,Scan started,Zahrah,Naser Alshakhs,12/24/1950,,USR,Dr. Maged Yousef,
+247072300285,02/11/2026,TTE,Scan started,JAMEELAH,SALEH ABDULLAH,07/23/1947,,USR,Dr. Maged Yousef,
+242120700361,02/11/2026,TTE,Scan started,MARIAM,SALEH JAMAL,12/7/1942,,USR,Dr. Maged Yousef,
+266102700241,03/24/2026,TEE,Scan started,HAISSAM,ABDOU,,LVOT mass,USR,Dr. Mohamed Samir,
+244040300404,01/29/2026,TTE,Scan started,abdul fattah,hamdan,04/3/1944,IE mitral mass,USR,Dr. Akmal Abotaleb,
+237102300333,01/29/2026,TTE,Scan started,aroussiak,karpouzian,10/23/1937,dilated Right side,USR,Dr. Akmal Abotaleb,
+264011007063,01/29/2026,TTE,Scan started,ram,khelawan,01/10/1964,ICM anterior MI,USR,Dr. Akmal Abotaleb,
+263063000619,01/29/2026,TTE,Scan started,suad,abdulrahman,06/30/1963,normal,USR,Dr. Akmal Abotaleb,
+283121506553,03/17/2026,TTE,Scan started,ahmed,maboosh,,,USR,Dr. Ihab Awwad,
+278070122325,03/17/2026,TTE,Scan started,aziz ahmad,khan,,,USR,Ahmed Abdelshafie,
+280041500684,03/17/2026,TTE,Scan started,majid hammad,hamed al azmi,04/15/1980,,USR,Ahmed Abdelshafie,
+310121100626,03/17/2026,TTE,Scan started,ali ahmed,mounis,12/11/2010,,USR,Dr. Mohamed Farouk,
+270091601062,03/17/2026,TTE,Scan started,khalid jadaan,al adwani,09/16/1970,,USR,Ahmed Abdelshafie,
+250012700436,03/18/2026,TTE,Scan started,Mohammad,Reda,,,USR,Dr. Ahmed Abdelzaher,
+251091900229,03/18/2026,TTE,Scan started,mahmoud,farid,09/19/1951,,USR,,
+262122600266,03/18/2026,TTE,Scan started,eman,jawad,,,USR,Dr. Mohamed Samir,
+300020901679,03/18/2026,TTE,Scan started,HASAN,KHALIFAH,,,USR,Dr. Mohamed Samir,
+266112301674,03/24/2026,TTE,Scan started,ABDELTAWAB,AHMAD ANTAR,11/23/1966,,USR,,
+291103105676,03/16/2026,TTE,Scan started,FANOSE,GEZA,,,USR,Dr. Fawzy Makled,
+235060200123,03/24/2026,TTE,Scan started,ALI AHMED,AESHAH,,,USR,Dr. Fawzy Makled,
+274060901749,03/24/2026,TTE,Scan started,THAHIR,MOHAMMAD,06/9/1974,,USR,,
+251051700177,03/24/2026,TTE,Scan started,HASHIMEYAH,MOHAMMAD,05/17/1951,,USR,,
+264091300621,03/24/2026,TTE,Scan started,MOSLEMIYAN,SHAKER,09/13/1964,,USR,Dr. Ihab Awwad,
+271032502886,03/24/2026,TTE,Scan started,azad,anowar,,,USR,Dr. Fawzy Makled,
+244021900172,03/24/2026,TTE,Scan started,BADREYAH,SALEH,02/19/1944,,USR,Dr. Fawzy Makled,
+257042900625,01/25/2026,TTE,Scan started,najat,mansour ahmad,04/29/1957,,USR,Dr. Akmal Abotaleb,
+248092400368,02/4/2026,TTE,Scan started,faisal,mansour,09/24/1948,,USR,Ahmed Abdelshafie,
+263070200184,01/26/2026,TTE,Scan started,hatim,Abid muraweh,07/20/1963,,USR,Dr. Hany Basyony,
+268050111822,02/4/2026,TTE,Scan started,mohammad edrees,abdul rasheed,,,USR,Dr. Hany Basyony,
+236100500097,02/4/2026,TTE,Scan started,BADER,ABDULLHA,,,USR,Dr. Maged Yousef,
+251073000075,02/4/2026,TTE,Scan started,taha el metwaly taha,el tanaihy,07/30/1951,,USR,Ahmed Abdelshafie,
+285070304765,02/4/2026,TTE,Scan started,shenoda awad wasfy,shahid,07/3/1985,,USR,Ahmed Abdelshafie,
+298082201301,02/4/2026,TTE,Scan started,ABDUL AZIZ MUSALLAM,MOHAMMAD,08/22/1998,,USR,Dr. Hany Basyony,
+267041603281,02/4/2026,TTE,Scan started,chandravathi,rudraraju,04/16/1967,,USR,Dr. Hany Basyony,
+274111505958,02/4/2026,TTE,Scan started,fredie caligang,acosta,11/15/1974,,USR,Dr. Hany Basyony,
+260041000243,02/4/2026,TTE,Scan started,heba nayef,al khateeb,04/10/1960,,USR,Dr. Hany Basyony,
+281070506246,02/4/2026,TTE,Scan started,shaiju valiya,valappil,07/5/1981,,USR,Dr. Hany Basyony,
+284090504823,02/4/2026,TTE,Scan started,reem bassam,abdul qader,09/5/1984,,USR,Dr. Hany Basyony,
+288101211056,02/4/2026,TTE,Scan started,raed salah ameen,zaka,10/12/1988,,USR,Dr. Hany Basyony,
+261042100507,02/4/2026,TTE,Scan started,Abdullah,Yousef,04/21/1961,,USR,Dr. Maged Yousef,
+265011503459,02/4/2026,TTE,Scan started,Ahmad,Youssef,01/15/1965,DCM,USR,Dr. Maged Yousef,
+260041400116,02/4/2026,TTE,Scan started,FAKRYAH,ABDULKAREEM,04/14/1960,,USR,Dr. Maged Yousef,
+260010119612,02/4/2026,TTE,Scan started,Syed,Hussien,01/1/1960,ICM,USR,Dr. Maged Yousef,
+266010700164,02/4/2026,TTE,Scan started,Suhailah,Mohammad Albannay,01/7/1966,,USR,Dr. Maged Yousef,
+266030601761,02/4/2026,TTE,Scan started,Nada,Jamel,03/6/1966,,USR,Dr. Maged Yousef,
+256112000987,02/4/2026,TTE,Scan started,Maher,Alhuneidi,11/20/1956,,USR,Dr. Maged Yousef,
+279090500199,02/5/2026,TTE,Scan started,mohamed,hassen,09/5/1979,,USR,Dr. Ahmed Abdelzaher,
+256052700251,02/5/2026,TTE,Scan started,khairiya mezel,abdulla,05/27/1956,,USR,,
+247062900121,02/5/2026,TTE,Scan started,ahmed ahmed,mohd hanifa,06/29/1947,,USR,Dr. Hany Basyony,
+296050806032,02/5/2026,TTE,Scan started,doaa,elsayed,,,USR,Dr. Mohamed Samir,
+257081000291,01/7/2026,TTE,Scan started,Ali,Abdulaziz Abdulwahab,,,USR,Dr. Ihab Awwad,
+243031100393,01/13/2026,TTE,Scan started,AHMED MOHAMMAD,ALI,,,USR,Dr. Mohamed Samir,
+243041400074,02/17/2026,TTE,Scan started,AHMAD,TAHA,04/14/1943,,USR,Dr. Mohamed Farouk,
+266052902741,01/5/2026,TTE,Scan started,HAMDY,AHMAD,05/29/1966,,USR,Dr. Ibrahim Hassan,
+278021301845,03/2/2026,TTE,Scan started,ABDALSHAQOUR,KAMANNARI,02/13/1978,,USR,Dr. Hany Basyony,
+269062700135,03/3/2026,TTE,Scan started,haleema mohammad,abdul qader,06/27/1969,,USR,,
+274040204639,03/3/2026,TTE,Scan started,ABDOU,REFAAY MOHAMED,04/2/1974,,USR,Dr. Mohamed Samir,
+251042000195,03/3/2026,TTE,Scan started,ali abbas,hajiani,,,USR,Ahmed Abdelshafie,
+273101009139,03/3/2026,TTE,Scan started,zuhair mohammad,dama,,,USR,Ahmed Abdelshafie,
+254012201336,03/4/2026,TTE,Scan started,HAIDER,GHOULAM,01/22/1954,,USR,Ahmed Abdelshafie,
+277021300194,03/4/2026,TTE,Scan started,hamoud,sadeq ahmad,02/13/1977,,USR,Dr. Mohamed Samir,
+254070102176,03/4/2026,TTE,Scan started,bhai,hakimuddin,07/1/1954,,USR,Ahmed Abdelshafie,
+247011900797,03/5/2026,TTE,Scan started,amnah,mohamad,01/19/1947,,USR,,
+266051208766,03/5/2026,TTE,Scan started,saad,abdelaal,05/12/1966,,USR,Dr. Ahmed Abdelzaher,
+262043000924,03/5/2026,TTE,Scan started,ajil,menshad,04/30/1962,,USR,Dr. Ahmed Abdelzaher,
+280092906684,03/5/2026,TTE,Scan started,harbi,shamseldin,09/29/1980,,USR,Dr. Ahmed Abdelzaher,
+279081015845,03/1/2026,TTE,Scan started,rudzma,mohamad,08/10/1979,,USR,Dr. Fawzy Makled,
+238030900368,01/27/2026,TTE,Scan started,batoul mohammad,baqer,03/9/1938,,USR,,
+253041701044,03/16/2026,TTE,Scan started,najat abdul aziz,ali al samhan,04/17/1953,,USR,Dr. Maged Yousef,
+264112201287,01/26/2026,TTE,Scan started,Abdullatif,Saeed,,,USR,Dr. Maged Yousef,
+279041901172,01/27/2026,TTE,Scan started,fajer,ali,,,USR,Dr. Mohamed Samir,
+246040800686,01/25/2026,TTE,Scan started,Loulwah,Yousef Alashash,04/8/1946,,USR,Dr. Mohamed Samir,
+260040600474,01/28/2026,TTE,Scan started,abbasi,rajab,04/6/1960,,USR,Dr. Akmal Abotaleb,
+272010126888,02/4/2026,TTE,Scan started,susan osama emran,abdeen,01/12/1972,AS,USR,Dr. Maged Yousef,
+268061801917,01/28/2026,TTE,Scan started,Gaid,Makary,06/18/1968,,USR,Ahmed Abdelshafie,
+259092600734,02/1/2026,TTE,Scan started,faisal,jumaah alnaddaf,09/26/1959,,USR,Dr. Ashraf Ahmed,
+261051402427,02/1/2026,TTE,Scan started,abdul,abdul wahab,05/14/1961,,USR,Dr. Mohamed Samir,
+257040203949,02/1/2026,TTE,Scan started,BASSAM,SHARIF,,,USR,Dr. Ashraf Ahmed,
+253040800032,02/2/2026,TTE,Scan started,BASMAH,ABUSIDOU,04/8/1953,,USR,Dr. Hany Basyony,
+251092300786,02/2/2026,TTE,Scan started,MOHAMMAD EID,SALEM,09/23/1951,,USR,Dr. Hany Basyony,
+265013001831,02/2/2026,TTE,Scan started,montaha abdullateef salem,mubarak,01/30/1965,,USR,Dr. Hany Basyony,
+268040301366,02/2/2026,TTE,Scan started,jamal mahmoud adeeb,abdul magid,03/4/1968,,USR,Dr. Hany Basyony,
+247062900244,02/2/2026,TTE,Scan started,nasima fadhil naser,al salhawi,06/29/1947,,USR,Dr. Hany Basyony,
+258033000443,02/3/2026,TTE,Scan started,ABBAS,ABDEEN,,,USR,Dr. Ashraf Ahmed,
+258040304592,01/15/2026,TTE,Scan started,HAMDAH,ALAZEMI,,,USR,Dr. Maged Yousef,
+273103001931,01/4/2026,TTE,Scan started,mohamed,nizam,10/30/1973,,USR,Dr. Mohamed Samir,
+270052509837,01/4/2026,TTE,Scan started,Ismail,Shaik Nabi,05/25/1970,,USR,Ahmed Abdelshafie,
+284083006498,02/3/2026,TTE,Scan started,NILANKA ROSHAN,GAMAETHIGE,,,USR,Dr. Ashraf Ahmed,
+278021600642,01/20/2026,TTE,Scan started,khalid abdul latif,sulaiman,02/16/1978,,USR,Dr. Mohamed Samir,
+265040200043,01/20/2026,TTE,Scan started,Mastan,Valli,04/2/1965,,USR,Dr. Ashraf Ahmed,
+264061400146,01/20/2026,TTE,Scan started,hussain,ali,06/14/1964,,USR,Dr. Fawzy Makled,
+242042000561,01/20/2026,TTE,Scan started,abdullah hassan,abdullah,04/20/1942,,USR,Ahmed Abdelshafie,
+270111400293,01/20/2026,TTE,Scan started,fatma ali,khalil,11/14/1970,,USR,Dr. Mohamed Samir,
+265092300097,02/2/2026,TTE,Scan started,muna mahmoud moustafa,mahmoud,09/23/1965,,USR,Dr. Hany Basyony,
+240092800373,03/1/2026,TTE,Scan started,hussein marafi,safar,09/28/1940,,USR,Dr. Mohamed Samir,
+252100400109,03/1/2026,TTE,Scan started,yousef hasan mohammad,sadeq,01/4/1952,,USR,Dr. Mohamed Samir,
+260121902423,03/1/2026,TTE,Scan started,ABBAS ALI,AL JABER,12/19/1960,,USR,Dr. Ashraf Ahmed,
+249040500329,03/1/2026,TTE,Scan started,mohammad dawood,hasan al shaer,04/5/1949,,USR,Dr. Ashraf Ahmed,
+277032200367,03/1/2026,TTE,Scan started,dalal hamadi,al alaw,03/22/1977,,USR,Dr. Ashraf Ahmed,
+237041500445,03/1/2026,TTE,Scan started,safia hussain,abdulla,04/15/1937,,USR,Dr. Mohamed Samir,
+265082100788,03/2/2026,TTE,Scan started,FADEELAH,TAQI HASHEM,08/21/1965,,USR,Dr. Hany Basyony,
+271082700776,03/2/2026,TTE,Scan started,saleh,sahmi sanad,08/27/1971,,USR,Dr. Hany Basyony,
+255041502386,01/21/2026,TTE,Scan started,Ismail,Redha Abdullah,04/15/1955,,USR,Dr. Ahmed Abdelzaher,
+268081000236,01/21/2026,TTE,Scan started,Laila,Hussin Alibrahim,08/10/1968,,USR,Dr. Maged Yousef,
+271101201025,01/21/2026,TTE,Scan started,Khaled,Zaid Altuwari,10/12/1971,,USR,Dr. Maged Yousef,
+261102200711,01/21/2026,TTE,Scan started,Hamed,Jaafar Ashkanan,10/22/1961,,USR,Dr. Maged Yousef,
+250042400143,01/21/2026,TTE,Scan started,Suad,Mohammad Shahdah,04/24/1950,,USR,Dr. Maged Yousef,
+258031301314,01/28/2026,TTE,Scan started,Ali,Mahmoud Yassine,03/13/1958,,USR,Ahmed Abdelshafie,
+275050604593,01/28/2026,TTE,Scan started,catherine,karga,05/6/1975,,USR,Dr. Akmal Abotaleb,
+262070110483,01/28/2026,TTE,Scan started,stuart,stanley,07/1/1962,,USR,Dr. Akmal Abotaleb,
+246012300035,01/28/2026,TTE,Scan started,Hussain,Eissa Boghaith,01/23/1946,,USR,Ahmed Abdelshafie,
+256112100574,01/28/2026,TTE,Scan started,Sameer,Jaber Abdulrazzaq,11/21/1956,,USR,Dr. Maged Yousef,
+269072700171,01/28/2026,TTE,Scan started,Barrak,Melfi Alhadeyah,07/27/1969,,USR,Dr. Maged Yousef,
+288022700273,01/28/2026,TTE,Scan started,Sarah,Abd Anabi Almatrouk,02/27/1988,,USR,Dr. Maged Yousef,
+274080900196,01/28/2026,TTE,Scan started,Mohammad,Ali Alsayed,08/9/1974,,USR,Dr. Maged Yousef,
+280010201446,01/28/2026,TTE,Scan started,LATIFAH,FADHL ALFADHL,01/2/1980,,USR,Dr. Maged Yousef,
+270082800879,02/12/2026,TTE,Scan started,HAMEDA,AHMAD,,,USR,,
+282121508191,02/15/2026,TTE,Scan started,Venkatraman,Harikrishnan,12/15/1982,,USR,Dr. Mohamed Samir,
+262011602541,02/15/2026,TTE,Scan started,Mohammad,Ibrahem,01/16/1962,,USR,Ahmed Abdelshafie,
+286020500383,02/15/2026,TTE,Scan started,Bodour,Abdullah Alazmi,02/5/1986,,USR,Dr. Mohamed Samir,
+277100402885,02/15/2026,TTE,Scan started,Mohammed,Sohel,10/4/1977,,USR,Ahmed Abdelshafie,
+272020110812,02/15/2026,TTE,Scan started,Golam,Sarwar Miah,02/1/1972,,USR,Dr. Mohamed Samir,
+270110301189,02/15/2026,TTE,Scan started,Hadeel,Khalifah,11/3/1970,,USR,Ahmed Abdelshafie,
+292090905408,02/15/2026,TTE,Scan started,Ralph,Georges,09/9/1992,,USR,Dr. Mohamed Samir,
+272092100488,02/15/2026,TTE,Scan started,Meaad,Hasan,09/21/1972,,USR,Ahmed Abdelshafie,
+286070610898,02/15/2026,TTE,Scan started,Jacquelyn,Bragasin,07/6/1986,,USR,Dr. Mohamed Samir,
+257040601605,02/15/2026,TTE,Scan started,Muneerah,Abdulrahman,04/6/1957,,USR,Dr. Mohamed Samir,
+291110905532,02/15/2026,TTE,Scan started,Eman,Mohamed Nagy,11/9/1991,,USR,Dr. Mohamed Samir,
+255121700112,02/15/2026,TTE,Scan started,fadhel j m,marafi,12/17/1955,,USR,Dr. Akmal Abotaleb,
+269020401647,02/15/2026,TTE,Scan started,Ashraf,Abdelhamid,02/4/1969,,USR,Ahmed Abdelshafie,
+283120604856,02/15/2026,TTE,Scan started,Mohamed,Abdelmonem Amin,12/6/1983,,USR,Dr. Maged Yousef,
+284110900533,02/15/2026,TTE,Scan started,Mohammad,Khalaf,11/9/1984,,USR,Ahmed Abdelshafie,
+253110500466,02/15/2026,TTE,Scan started,Kadem,Abbas Johar,11/5/1953,,USR,Dr. Maged Yousef,
+233051800013,02/15/2026,TTE,Scan started,Hisham,Kammash,05/18/1933,,USR,Ahmed Abdelshafie,
+284060401073,01/12/2026,TTE,Scan started,ALOSAMA,JARRAH,06/4/1984,,USR,Dr. Hany Basyony,
+252061100401,03/31/2026,TTE,Scan started,fouzeyah mohammad hasan,jamal,06/11/1952,,,,,
+258123100472,03/11/2026,TTE,Scan started,hussien ali aldashti,fadel,12/31/1958,,USR,Dr. Ashraf Ahmed,
+270021000552,03/11/2026,TTE,Scan started,abed khairallah mohammad,khadeejah,02/10/1970,,,,,
+252100400109,02/23/2026,TTE,Scan started,yousef,hasan,10/4/1952,,USR,Dr. Ashraf Ahmed,
+246040900185,03/16/2026,TTE,Scan started,muhammad,najat,04/9/1946,,USR,,
+283030312614,03/15/2026,TTE,Scan started,MOHAMED AHMED,HAMAD,03/3/1983,,USR,Ahmed Abdelshafie,
+255041600189,03/15/2026,TTE,Scan started,esam mohd,salim,04/16/1955,,USR,Ahmed Abdelshafie,
+280060128662,03/15/2026,TTE,Scan started,MOHAMMED ZAHIR,ULLAH,06/1/1980,,USR,Ahmed Abdelshafie,
+270033001413,03/15/2026,TTE,Scan started,MOSYEB ALI,MOHAMMAD HAJAT,03/30/1970,,USR,Ahmed Abdelshafie,
+270040210168,03/15/2026,TEE,Scan started,KALAVATHI,CHANDRAGIRI,04/21/1970,,USR,Dr. Mohamed Samir,
+297091800037,03/16/2026,TTE,Scan started,mousa albuloshi,ali adel,09/18/1997,,USR,Dr. Maged Yousef,
+284100105413,03/16/2026,TTE,Scan started,SEHAM,SALAH,10/1/1984,,USR,Dr. Ibrahim Hassan,
+247070200758,03/16/2026,TTE,Scan started,mohammed yazidi,saleh nasser,07/2/1947,,USR,Dr. Maged Yousef,
+270091103397,03/16/2026,TTE,Scan started,faisal mohammad aslam,mohammad,09/11/1970,,USR,Dr. Maged Yousef,
+262041504539,03/16/2026,TTE,Scan started,TAREQ,MOHAMAD,04/15/1962,,USR,Dr. Ibrahim Hassan,
+250010113588,02/12/2026,TTE,Scan started,khadra,najem,10/1/1950,,USR,Dr. Hany Basyony,
+259061700134,03/17/2026,TTE,Scan started,abouzeid ahmed,sanaa ahmed,06/17/1959,,USR,Ahmed Abdelshafie,
+259061700134,02/22/2026,TTE,Scan started,abouzeid ahmed,sanaa ahmed,06/17/1959,,USR,,
+255061600653,04/2/2026,TTE,Scan started,Mohammad,Ali,06/16/1955,,USR,,
+272042900129,04/1/2026,TTE,Scan started,asaed,fayz,04/29/1972,,USR,,
+258040101197,02/10/2026,TTE,Scan started,salim,ahmad alsroji,01/1/1958,,USR,Dr. Akmal Abotaleb,
+252013001177,03/26/2026,TTE,Scan started,ahmad,omar,01/30/1952,,,,,
+254041401556,02/4/2026,TTE,Scan started,abdulrasoul,abdulreda,04/14/1954,,USR,Dr. Maged Yousef,
+270042201425,03/9/2026,TTE,Scan started,mohamed,mahmoud,04/22/1970,,USR,Ahmed Abdelshafie,
+278070122325,03/17/2026,TTE,Scan started,aziz ahmad,khan,,,USR,Ahmed Abdelshafie,
+273111800151,03/25/2026,TTE,Scan started,SADIGHAH,SAFAR,,,USR,Ahmed Abdelshafie,
+286082102284,03/25/2026,TTE,Scan started,AHLAM ADIL,QASIM ALI,,,USR,Ahmed Abdelshafie,
+245040500443,01/13/2026,TTE,Scan started,aneesa dayekh,bijami,04/5/1945,,USR,Dr. Fawzy Makled,
+273090604759,03/25/2026,TTE,Scan started,DON SUNETHRA,JAYAS,,,USR,Ahmed Abdelshafie,
+262011100912,03/26/2026,TTE,Scan started,NASER,ABDULAZIZ,01/11/1962,,,,,
+261031500193,03/26/2026,TTE,Scan started,WASKIN,KARAVETIAN,03/12/1961,,USR,Dr. Maged Yousef,
+249112100253,03/26/2026,TTE,Scan started,mohamad,eslah,11/21/1949,,USR,Dr. Maged Yousef,
+252090802162,03/29/2026,TTE,Scan started,sayeda abdelaziz,saleh,09/8/1952,,USR,Ahmed Abdelshafie,
+278042600457,03/29/2026,TTE,Scan started,abdulaziz,eissa mohd,04/26/1978,,USR,Ahmed Abdelshafie,
+260021201021,03/29/2026,TTE,Scan started,yacoub akbar,mohammad ali,02/12/1960,,USR,Ahmed Abdelshafie,
+274041900388,03/29/2026,TTE,Scan started,bader salem ali,alkhatlan,04/19/1974,,USR,Ahmed Abdelshafie,
+275040805519,03/29/2026,TTE,Scan started,SELVA KUMARI,MUNIYANDI,,,USR,Ahmed Abdelshafie,
+282082801255,03/29/2026,TTE,Scan started,fayzah salem,alazmi,08/28/1982,,USR,Ahmed Abdelshafie,
+270113000154,03/29/2026,TTE,Scan started,ahmad mohamad,khanafer,,,USR,Ahmed Abdelshafie,
+255120500418,03/24/2026,TTE,Scan started,suad,mohd,,,USR,Dr. Mohamed Farouk,
+248120100021,01/28/2026,TTE,Scan started,Naeemah,Abdoh,,,USR,Dr. Maged Yousef,
+276030100392,02/9/2026,TTE,Scan started,Khaireyah,Mohammad,03/1/1976,,USR,,
+276030100392,02/1/2026,TTE,Scan started,Khaireyah,Mohammad,,,USR,Dr. Fawzy Makled,
+268022006945,02/8/2026,TTE,Scan started,darma,kumare,02/20/1968,,USR,,
+281041503038,01/28/2026,TTE,Scan started,Shella,Daggong Shalim,04/15/1981,,USR,Ahmed Abdelshafie,
+283090405361,02/11/2026,TTE,Scan started,marium ahmad,shameel,09/4/1983,,USR,,
+283090405361,02/8/2026,TTE,Scan started,marium ahmad,shameel,09/4/1983,,USR,,
+248022400194,02/11/2026,TTE,Scan started,Mahmoud,Zuhdi,02/24/1948,,USR,Dr. Hany Basyony,
+289070906908,02/5/2026,TTE,Scan started,nenita,berdin,,,USR,Dr. Mohamed Samir,
+287070401193,02/11/2026,TTE,Scan started,OMAR,ABDULLAH ALAZMI,07/4/1987,BICUSPID AV,USR,Dr. Maged Yousef,
+270070600976,02/11/2026,TTE,Scan started,KHALED,ABDULLAH ALQATTAN,07/6/1970,,USR,Dr. Maged Yousef,
+258091900116,02/11/2026,TTE,Scan started,TALEB,MOHAMMAD ALKHARS,09/19/1958,,USR,Dr. Maged Yousef,
+250122400354,02/11/2026,TTE,Scan started,Zahrah,Naser Alshakhs,12/24/1950,,USR,Dr. Maged Yousef,
+247072300285,02/11/2026,TTE,Scan started,JAMEELAH,SALEH ABDULLAH,07/23/1947,,USR,Dr. Maged Yousef,
+242120700361,02/11/2026,TTE,Scan started,MARIAM,SALEH JAMAL,12/7/1942,,USR,Dr. Maged Yousef,
+240110200321,03/18/2026,TTE,Scan started,Ensaf,Mustafa,02/11/1940,,USR,Dr. Mohamed Samir,
+270071801673,03/29/2026,TTE,Scan started,taleb fawaz,ainabuisi,07/18/1970,,USR,,
+243042000603,03/30/2026,TTE,Scan started,FATIMA,ISMAIL ABU NAHLA,04/20/1943,,USR,Ahmed Abdelshafie,
+276122101253,03/30/2026,TTE,Scan started,Nawaf Mousa,Ibrahim,12/21/1976,,USR,Ahmed Abdelshafie,
+276100103557,03/30/2026,TTE,Scan started,WALAA,MOHAMED,,,,,
+308111401182,03/12/2026,TTE,Scan started,abdul aziz saud,abdul sayed,,,USR,Dr. Fawzy Makled,
+275050907084,03/30/2026,TTE,Scan started,NANCY,LORICA,,,USR,Ahmed Abdelshafie,
+270120302679,03/30/2026,TTE,Scan started,HANAN,MOHAMED,,,USR,Ahmed Abdelshafie,
+236062300018,03/31/2026,TTE,Scan started,thoraya nimer,hussein kozaat,06/23/1936,,USR,Ahmed Abdelshafie,
+258092800248,03/31/2026,TTE,Scan started,sami amin,abdul maseih,09/28/1958,,USR,Ahmed Abdelshafie,
+258061200688,03/31/2026,TTE,Scan started,najat ibrahim,huseein,06/12/1958,,USR,,
+258112000126,03/31/2026,TTE,Scan started,ali eid,saeed,,,USR,,
+242033100325,03/31/2026,TTE,Scan started,Khadra,Moussa,03/13/1942,,USR,,
+269090300091,04/1/2026,TTE,Scan started,Ahmad,Mohammad Fathi,09/3/1969,,USR,,
+270090900079,04/1/2026,TTE,Scan started,Sabbagh,Tareq,09/9/1970,,USR,,
+252040900338,03/29/2026,TTE,Scan started,abulnabi,abass,,,USR,Dr. Akmal Abotaleb,
+259110900715,04/1/2026,TTE,Scan started,Husain,Kosar,11/9/1959,,USR,,
+242021500102,04/1/2026,TTE,Scan started,youssef,dimachk,02/15/1942,,USR,Dr. Ihab Awwad,
+234042300388,04/1/2026,TTE,Scan started,abdul razak,ahmed,04/23/1934,,USR,Dr. Ashraf Ahmed,
+270100900129,04/1/2026,TTE,Scan started,ADEEB,ROBEEN,10/9/1970,,USR,Dr. Hany Basyony,
+257042001021,04/1/2026,TTE,Scan started,aneesah rashed,alboareki,04/20/1957,,USR,Dr. Ashraf Ahmed,
+263071502926,04/1/2026,TTE,Scan started,mahmoud yassin,alhabbab,07/15/1963,,USR,Dr. Ashraf Ahmed,
+292082004968,04/1/2026,TTE,Scan started,ahmed,hamed,08/20/1992,,USR,Dr. Ihab Awwad,
+275041900147,04/2/2026,TTE,Scan started,ahmed,tamer,,,USR,Dr. Maged Yousef,
+268041102633,04/2/2026,TTE,Scan started,yohan,dondapati,04/11/1968,,USR,Dr. Ihab Awwad,
+257091400782,04/2/2026,TTE,Scan started,yasser,hussein,09/14/1957,,USR,Dr. Ihab Awwad,
+267102203362,04/2/2026,TTE,Scan started,ezzat,hesham,,,USR,Dr. Maged Yousef,
+261030800223,04/2/2026,TTE,Scan started,zahra,mohamad,03/8/1961,,USR,Dr. Ihab Awwad,
+301110400274,04/2/2026,TTE,Scan started,diana,chbib,11/4/2001,,USR,Dr. Ihab Awwad,
+255052100358,03/24/2026,TTE,Scan started,MOHAMMAD,BADREYAH,05/21/1955,,USR,Dr. Ihab Awwad,
+274020900303,03/24/2026,TTE,Scan started,ayman mohammed,ali,02/9/1974,,USR,Dr. Ihab Awwad,
+237081200092,03/24/2026,TTE,Scan started,DASHTI,AHMAD,08/12/1937,,USR,Dr. Ihab Awwad,
+305110100608,03/24/2026,TTE,Scan started,MOHAMED,ABDULKAREEM,11/1/2005,,USR,Dr. Ihab Awwad,
+275061515182,03/24/2026,TTE,Scan started,nihara,samsun,,,USR,Dr. Mohamed Farouk,
+273020802418,03/24/2026,TTE,Scan started,ahmed,jaber,,,USR,Dr. Mohamed Farouk,
+297091003134,03/24/2026,TTE,Scan started,md jilo,hadayel ullah,09/10/1997,,USR,Dr. Mohamed Samir,
+283051905048,03/24/2026,TTE,Scan started,GARB,SAFAA SAFWAT,05/19/1983,,USR,Dr. Mohamed Samir,
+272061002519,03/24/2026,TTE,Scan started,MOULANA,SHAIK,,,USR,Dr. Mohamed Farouk,
+270030501201,03/24/2026,TTE,Scan started,AHMAD,REDA,,,USR,Dr. Mohamed Farouk,
+276050300463,03/24/2026,TTE,Scan started,ahmed lulu,eman zuhair,05/3/1976,,USR,Dr. Mohamed Samir,
+280052203087,03/24/2026,TTE,Scan started,hassanein,hesham hassan,05/22/1980,,USR,Dr. Mohamed Samir,
+286093005228,03/24/2026,TTE,Scan started,mahmoud abdelghafar,ragab kamel,09/30/1986,,USR,Dr. Mohamed Samir,
+277081302482,03/25/2026,TTE,Scan started,ahmed abdelghani,ashraf mohamed,08/13/1977,,USR,Dr. Hany Basyony,
+283100802118,03/25/2026,TTE,Scan started,fouad hussein,ahmed salah,10/8/1983,,USR,Dr. Hany Basyony,
+275073101753,03/25/2026,TTE,Scan started,ali issa,Alaa elsayed,07/31/1975,,USR,Dr. Hany Basyony,
+280050300334,03/25/2026,TTE,Scan started,naser alqaban,mahmoud khalid,05/3/1980,,USR,Dr. Hany Basyony,
+291032505719,03/25/2026,TTE,Scan started,JAMAL WASTA,MUSHTAK,03/25/1991,,USR,Dr. Hany Basyony,
+263033001215,03/25/2026,TTE,Scan started,ibrahim,samir mahmoud,03/30/1963,,USR,Dr. Hany Basyony,
+253062501375,03/25/2026,TTE,Scan started,norman karam,awadah,,,USR,Dr. Maged Yousef,
+279081015845,03/25/2026,TTE,Scan started,rudzma mohamad,amil,08/10/1979,,USR,Dr. Maged Yousef,
+273060100824,03/26/2026,TTE,Scan started,MOHAMMAD,AMMASH,06/10/1973,,USR,Dr. Fawzy Makled,
+277061801196,03/26/2026,TTE,Scan started,ELHAM,ABDALREDAH,06/18/1977,,USR,Dr. Fawzy Makled,
+246050500871,03/26/2026,TTE,Scan started,HASSAN,HASHIM,05/5/1946,,USR,Dr. Fawzy Makled,
+284071516159,03/26/2026,TTE,Scan started,SUNITHA,KOTABAN,07/15/1984,,USR,Dr. Fawzy Makled,
+261080300462,03/26/2026,TTE,Scan started,AMEENAH,AWWAD,08/8/1961,,USR,Dr. Fawzy Makled,
+293100400652,03/26/2026,TTE,Scan started,mohammad,ibrahim,,,USR,Dr. Ihab Awwad,
+265090303761,03/26/2026,TTE,Scan started,Heshmat,Omar,,,USR,Dr. Mohamed Samir,
+287120306339,03/26/2026,TTE,Scan started,Mary,Porras,,,USR,Dr. Mohamed Samir,
+289090303426,03/26/2026,TTE,Scan started,Abdul,Bashid,,,USR,Dr. Mohamed Samir,
+257081900652,03/29/2026,TTE,Scan started,MOHAMMAD MAHMOOD,AL HARIRI,08/19/1957,,USR,Dr. Ahmed Abdelzaher,
+260032600853,03/29/2026,TTE,Scan started,faisal,ali,,,USR,Dr. Akmal Abotaleb,
+263062700103,03/29/2026,TTE,Scan started,badriya rashid,musaed,,,USR,Dr. Ahmed Abdelzaher,
+269121701665,03/29/2026,TTE,Scan started,raheemdeen,noordeen,,,USR,Dr. Ihab Awwad,
+278050303241,03/29/2026,TTE,Scan started,akter,parvin,,,USR,Dr. Ihab Awwad,
+241050500027,03/29/2026,TTE,Scan started,narjes,najaf,,,USR,Dr. Akmal Abotaleb,
+295111603833,03/29/2026,TTE,Scan started,abdul mabood,abdul samad,,,USR,Dr. Ihab Awwad,
+272070602209,03/29/2026,TTE,Scan started,emadeldin,ahmad,,,USR,Dr. Akmal Abotaleb,
+280121513063,03/29/2026,TTE,Scan started,renita,adviento,12/15/1980,,USR,Dr. Ahmed Abdelzaher,
+248122701293,03/29/2026,TTE,Scan started,saif,shiaif,,,USR,Dr. Akmal Abotaleb,
+248022400194,03/29/2026,TTE,Scan started,zuhdi,mahmoud,,,USR,Dr. Ihab Awwad,
+282041501694,03/29/2026,TTE,Scan started,YOUSEF ABDUL MOATI,SULAIMAN,04/15/1982,,USR,Dr. Ahmed Abdelzaher,
+260072300257,03/29/2026,TTE,Scan started,taleb,hasan,,,USR,Dr. Ihab Awwad,
+251011100716,03/29/2026,TTE,Scan started,marium mohammad,essa al khaleel,,,USR,Dr. Ahmed Abdelzaher,
+273030111477,03/30/2026,TTE,Scan started,mir,hossain,03/1/1973,,USR,,
+269062000278,03/30/2026,TTE,Scan started,SALAH,HUSSAIN,06/20/1969,,USR,Dr. Ibrahim Hassan,
+279091600669,03/30/2026,TTE,Scan started,NAHLAH,HAYYAL,09/16/1979,,USR,Dr. Ashraf Ahmed,
+277062406753,03/30/2026,TTE,Scan started,VIJAYA,LAKSHMI GAJENDRA,06/24/1977,,USR,Dr. Ibrahim Hassan,
+239102000057,03/30/2026,TTE,Scan started,MUSTAFA,MOHAMAD,10/20/1939,,USR,Dr. Ashraf Ahmed,
+299021400264,03/30/2026,TTE,Scan started,aseel,abdulkhaleq,02/14/1999,,USR,Dr. Ashraf Ahmed,
+262121700556,03/30/2026,TTE,Scan started,mohd,essam,,,USR,Dr. Hany Basyony,
+272123100676,03/30/2026,TTE,Scan started,AHMAD,ALI,01/23/1972,,USR,Dr. Ibrahim Hassan,
+257122200426,03/30/2026,TTE,Scan started,ALI,IBRAHIM,12/22/1957,,USR,Dr. Ashraf Ahmed,
+268051902386,03/30/2026,TTE,Scan started,MAHA,MOHAMAD,05/19/1968,,USR,Dr. Ibrahim Hassan,
+257030504289,03/30/2026,TTE,Scan started,merlita,dela,03/5/1957,,USR,Dr. Ashraf Ahmed,
+264112202052,03/30/2026,TTE,Scan started,ABDO,IBRAHIM,01/12/1964,,USR,Dr. Ibrahim Hassan,
+274091200857,03/30/2026,TTE,Scan started,HAIFAA,KHAMESS,09/12/1974,,USR,Dr. Ibrahim Hassan,
+275030906762,03/30/2026,TTE,Scan started,kamal,mohamed,,,USR,Dr. Hany Basyony,
+244060300145,03/30/2026,TTE,Scan started,bahiyyah khalaf,mahdi,06/30/1944,,USR,Dr. Ashraf Ahmed,
+274053000483,03/30/2026,TTE,Scan started,AQEEL,ABBAS,05/30/1974,,USR,Dr. Ibrahim Hassan,
+275081209422,03/31/2026,TTE,Scan started,rula,alahmadal,,,USR,Dr. Ashraf Ahmed,
+273052202812,03/31/2026,TTE,Scan started,mohammed hanif hassan,saheb,05/22/1973,,USR,Dr. Ihab Awwad,
+233050100285,03/31/2026,TTE,Scan started,abdullah mohammad hasan,bo al banat,05/10/1933,,USR,Dr. Ihab Awwad,
+255091800795,03/31/2026,TTE,Scan started,ALMOUSA,MOHAMOUD,09/18/1955,,USR,Dr. Mohamed Farouk,
+270111301172,03/31/2026,TTE,Scan started,mayada mohammad amin,kajak,11/30/1970,,USR,Dr. Ihab Awwad,
+261090301856,03/31/2026,TTE,Scan started,ALI DASHTI,EISSA,09/3/1961,,USR,Dr. Mohamed Farouk,
+291060608045,03/31/2026,TTE,Scan started,mina,safwat,,,USR,Dr. Ashraf Ahmed,
+289070300404,03/31/2026,TTE,Scan started,jumanah abdullah muhammad,alsayaf,07/30/1989,,USR,Dr. Ihab Awwad,
+283120500133,03/31/2026,TTE,Scan started,jarah abdul rahman saleh,al jeeran,12/5/1983,,USR,Dr. Ihab Awwad,
+255010301071,03/31/2026,TTE,Scan started,hussain moustafa radhi,al qallaf,01/3/1955,,USR,Dr. Ihab Awwad,
+263022801858,03/31/2026,TTE,Scan started,hazem,makram,,,USR,Dr. Ashraf Ahmed,
+285052905612,04/1/2026,TTE,Scan started,Giby,Kuriakose,05/29/1985,,USR,Dr. Hany Basyony,
+265071700112,04/1/2026,TTE,Scan started,mohamad,ali,07/17/1965,,USR,Dr. Ihab Awwad,
+269121303042,04/1/2026,TTE,Scan started,amin fawzy,eltelbany,12/13/1969,,USR,Dr. Ashraf Ahmed,
+261111602229,04/1/2026,TTE,Scan started,ALBINO,ANTONIO,01/11/1961,,USR,Dr. Hany Basyony,
+256040500535,04/1/2026,TTE,Scan started,fawzi mohammad,hamad jallad,04/5/1956,,USR,Dr. Ashraf Ahmed,
+258080801016,04/1/2026,TTE,Scan started,mariam,hasan,08/8/1958,,USR,Dr. Ihab Awwad,
+282010205673,04/1/2026,TTE,Scan started,MOHAMMAD,MAHMOUD,01/2/1982,,USR,Dr. Hany Basyony,
+232080700172,04/1/2026,TTE,Scan started,fatemah ali,abdulraheem,08/7/1932,,USR,Dr. Ashraf Ahmed,
+296112800921,04/1/2026,TTE,Scan started,ahmad,ali,11/28/1996,,USR,Dr. Ihab Awwad,
+273051606313,04/1/2026,TTE,Scan started,subba lakshmi,ullangi,05/16/1973,,USR,Dr. Ashraf Ahmed,
+268051012906,04/1/2026,TTE,Scan started,shanel,luis,05/10/1968,,USR,Dr. Ihab Awwad,
+280031809354,04/1/2026,TTE,Scan started,INDIRA,SARKI,03/18/1980,,USR,Dr. Hany Basyony,
+290121402792,04/1/2026,TTE,Scan started,Mohamed hazem,mohdammad,12/14/1990,,USR,Dr. Hany Basyony,
+263010302031,04/1/2026,TTE,Scan started,KHALED,ARAFAT,01/3/1963,,USR,Dr. Hany Basyony,
+264031100935,04/1/2026,TTE,Scan started,RANA,NASSER,03/11/1964,,USR,Dr. Hany Basyony,
+268051000809,04/1/2026,TTE,Scan started,ABDALAZIZ,AYESH,05/10/1968,,USR,Dr. Hany Basyony,`;
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',');
+  const result = [];
+  for (let i = 1; i < lines.length; i++) {
+    const vals = lines[i].split(',');
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h.trim()] = (vals[idx] || '').trim(); });
+    result.push(obj);
+  }
+  return result;
+}
+
+function loadData(csvText) {
+  const parsed = parseCSV(csvText);
+  ALL_STUDIES = parsed
+    .filter(r => r['Exam status'] === 'Scan started' && (r['Exam type'] === 'TTE' || r['Exam type'] === 'TEE'))
+    .map((r, i) => ({
+      idx: i,
+      pid: r['Patient ID'].replace(/\s+/g, ''),
+      date: r['Exam date'],
+      type: r['Exam type'],
+      physician: r['Reading physician'] || r['Performing physician'] || '',
+      indication: r['Accession No.'] || '',
+      month: r['Exam date'] ? r['Exam date'].substring(0, 2) : ''
+    }));
+  initDashboard();
+  initRegistry();
+}
+
+function initDashboard() {
+  const total = ALL_STUDIES.length;
+  const tteCount = ALL_STUDIES.filter(s => s.type === 'TTE').length;
+  const teeCount = ALL_STUDIES.filter(s => s.type === 'TEE').length;
+  const uniquePts = new Set(ALL_STUDIES.filter(s => s.pid).map(s => s.pid)).size;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-patients').textContent = uniquePts;
+  document.getElementById('stat-tte').textContent = tteCount;
+  document.getElementById('stat-tee').textContent = teeCount;
+  document.getElementById('stat-tte-pct').textContent = Math.round(tteCount/total*100) + '% of studies';
+  document.getElementById('stat-tee-pct').textContent = Math.round(teeCount/total*100) + '% of studies';
+
+  // Month chart
+  const monthNames = { '01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec' };
+  const months = {};
+  ALL_STUDIES.forEach(s => { if(s.month) months[s.month] = (months[s.month]||0)+1; });
+  const sortedMonths = Object.keys(months).sort();
+
+  if (monthChartInst) monthChartInst.destroy();
+  monthChartInst = new Chart(document.getElementById('monthChart'), {
+    type: 'bar',
+    data: {
+      labels: sortedMonths.map(m => monthNames[m]||m),
+      datasets: [{
+        data: sortedMonths.map(m => months[m]),
+        backgroundColor: 'rgba(0,194,255,0.3)',
+        borderColor: '#00c2ff',
+        borderWidth: 2,
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#8899bb', font: { family: 'DM Mono', size: 11 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#8899bb', font: { family: 'DM Mono', size: 11 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+
+  // Physician bar list
+  const physCounts = {};
+  ALL_STUDIES.forEach(s => {
+    const p = s.physician || 'Unassigned';
+    physCounts[p] = (physCounts[p]||0)+1;
+  });
+  const sorted = Object.entries(physCounts).sort((a,b) => b[1]-a[1]).slice(0,12);
+  const maxCount = sorted[0]?.[1] || 1;
+  const physList = document.getElementById('physList');
+  physList.innerHTML = sorted.map(([name, count]) => `
+    <li class="phys-item">
+      <span class="phys-name">${name}</span>
+      <div class="phys-bar-wrap"><div class="phys-bar" style="width:${Math.round(count/maxCount*100)}%"></div></div>
+      <span class="phys-count">${count}</span>
+    </li>
+  `).join('');
+
+  // Type donut
+  if (typeChartInst) typeChartInst.destroy();
+  typeChartInst = new Chart(document.getElementById('typeChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['TTE', 'TEE'],
+      datasets: [{
+        data: [tteCount, teeCount],
+        backgroundColor: ['rgba(0,194,255,0.6)', 'rgba(240,192,64,0.6)'],
+        borderColor: ['#00c2ff', '#f0c040'],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { color: '#f0f4ff', font: { family: 'DM Mono', size: 12 }, padding: 16 } }
+      }
+    }
+  });
+
+  // Indications
+  const indications = {};
+  ALL_STUDIES.forEach(s => {
+    if (s.indication && s.indication.trim()) {
+      const ind = s.indication.trim().toLowerCase().replace(/\s+/g,' ');
+      indications[ind] = (indications[ind]||0)+1;
+    }
+  });
+  const sortedInd = Object.entries(indications).sort((a,b) => b[1]-a[1]).slice(0,15);
+  const indDiv = document.getElementById('indicationList');
+  if (sortedInd.length === 0) {
+    indDiv.innerHTML = '<p style="color:var(--grey);font-size:0.72rem">No indication notes found in this export</p>';
+  } else {
+    indDiv.innerHTML = sortedInd.map(([ind, count]) =>
+      `<span class="badge badge-ind" style="margin:3px">${ind} <span style="opacity:0.6">(${count})</span></span>`
+    ).join('');
+  }
+
+  // Populate physician filter
+  const physFilter = document.getElementById('filterPhys');
+  sorted.forEach(([name]) => {
+    if (name !== 'Unassigned') {
+      const opt = document.createElement('option');
+      opt.value = name; opt.textContent = name;
+      physFilter.appendChild(opt);
+    }
+  });
+}
+
+function initRegistry() {
+  filteredStudies = [...ALL_STUDIES];
+  currentPage = 1;
+  renderTable();
+}
+
+function filterStudies() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const type = document.getElementById('filterType').value;
+  const month = document.getElementById('filterMonth').value;
+  const phys = document.getElementById('filterPhys').value;
+
+  filteredStudies = ALL_STUDIES.filter(s => {
+    if (type && s.type !== type) return false;
+    if (month && s.month !== month) return false;
+    if (phys && s.physician !== phys) return false;
+    if (q) {
+      const searchable = `${s.pid} ${s.date} ${s.physician} ${s.indication}`.toLowerCase();
+      if (!searchable.includes(q)) return false;
+    }
+    return true;
+  });
+  currentPage = 1;
+  renderTable();
+}
+
+function renderTable() {
+  const tbody = document.getElementById('studyTable');
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
+  const page = filteredStudies.slice(start, end);
+  const total = filteredStudies.length;
+
+  document.getElementById('resultsInfo').textContent = `Showing ${Math.min(start+1, total)}–${Math.min(end, total)} of ${total} studies`;
+  document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${Math.max(1, Math.ceil(total/PAGE_SIZE))}`;
+  document.getElementById('prevBtn').disabled = currentPage === 1;
+  document.getElementById('nextBtn').disabled = end >= total;
+
+  if (page.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--grey)">No studies found</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = page.map(s => `
+    <tr>
+      <td style="font-family:'DM Mono',monospace;color:var(--cyan);font-size:0.7rem">${s.pid || '<span style="color:var(--grey)">—</span>'}</td>
+      <td>${s.date}</td>
+      <td><span class="badge badge-${s.type.toLowerCase()}">${s.type}</span></td>
+      <td style="color:var(--grey);max-width:150px;overflow:hidden;text-overflow:ellipsis">${s.physician || '<span style="opacity:0.4">—</span>'}</td>
+      <td>${s.indication ? `<span class="indication-tag">${s.indication}</span>` : '<span style="opacity:0.3">—</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+function changePage(dir) {
+  const maxPage = Math.ceil(filteredStudies.length / PAGE_SIZE);
+  currentPage = Math.max(1, Math.min(maxPage, currentPage + dir));
+  renderTable();
+}
+
+function showTab(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function importCSV(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      loadData(ev.target.result);
+      showToast('✓ Imported ' + ALL_STUDIES.length + ' completed studies');
+    } catch(err) {
+      showToast('Error reading CSV — check format');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+// Load embedded data on start
+loadData(RAW_CSV);
+</script>
+
+</body>
+</html>

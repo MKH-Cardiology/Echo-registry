@@ -49,8 +49,9 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
 .lf label { display: block; font-size: 0.7rem; font-weight: 600; color: var(--text2); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 5px; }
 .lf .iw { position: relative; }
 .lf .iw i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 0.8rem; }
-.lf input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px 11px 36px; color: var(--text); font-size: 0.85rem; font-family: 'Plus Jakarta Sans', sans-serif; outline: none; transition: border-color 0.2s; box-shadow: inset 0 1px 2px rgba(0,0,0,0.01); }
-.lf input:focus { border-color: var(--accent); background: #fff; }
+.lf input, .lf select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px 11px 36px; color: var(--text); font-size: 0.85rem; font-family: 'Plus Jakarta Sans', sans-serif; outline: none; transition: border-color 0.2s; box-shadow: inset 0 1px 2px rgba(0,0,0,0.01); }
+.lf select { padding-left: 12px; } /* Dropdowns don't always need icon space */
+.lf input:focus, .lf select:focus { border-color: var(--accent); background: #fff; }
 .lf input::placeholder { color: var(--text3); }
 .lbtn { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 10px; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 6px; transition: background 0.2s; }
 .lbtn:hover { background: var(--accent2); }
@@ -86,17 +87,9 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
 .pg { display: none; padding: 24px; }
 .pg.active { display: block; }
 
-/* CLEANER CARDS & KPI BLOCKS */
+/* CARDS */
 .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-.card, .kpi, .table-card { 
-  background: var(--surface); 
-  border: 1px solid #f1f5f9; 
-  border-radius: 16px; 
-  padding: 24px; 
-  margin-bottom: 16px; 
-  box-shadow: var(--shadow); 
-  position: relative;
-}
+.card, .kpi, .table-card { background: var(--surface); border: 1px solid #f1f5f9; border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow); position: relative; }
 .table-card { padding: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .kpi-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 12px; }
@@ -124,7 +117,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
 .phys-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--teal)); }
 .phys-count { font-size: 0.75rem; color: var(--accent); font-weight: 700; width: 36px; text-align: right; flex-shrink: 0; }
 
-/* INDICATIONS */
+/* DIAGNOSIS CLOUD */
 .ind-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
 .ind-tag { padding: 5px 12px; border-radius: 20px; font-size: 0.68rem; font-weight: 500; border: none; background: var(--surface2); color: var(--text2); }
 .ind-tag b { margin-left: 4px; }
@@ -142,27 +135,12 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
 .fsel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.75rem; outline: none; cursor: pointer; transition: all 0.2s; }
 .fsel:focus { border-color: var(--accent); }
 
-/* ENTERPRISE DATA TABLES */
+/* DATA TABLES */
 table { width: 100%; min-width: 750px; border-collapse: collapse; font-size: 0.75rem; }
-thead th { 
-  background: transparent; 
-  color: var(--text3); 
-  padding: 12px 16px; 
-  text-align: left; 
-  font-weight: 600; 
-  font-size: 0.65rem; 
-  letter-spacing: 0.05em; 
-  text-transform: uppercase; 
-  border-bottom: 2px solid var(--border); 
-  white-space: nowrap; 
-}
+thead th { background: transparent; color: var(--text3); padding: 12px 16px; text-align: left; font-weight: 600; font-size: 0.65rem; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 2px solid var(--border); white-space: nowrap; }
 tbody tr { transition: background 0.15s; }
 tbody tr:hover { background: #f8fafc; }
-tbody td { 
-  padding: 12px 16px; 
-  color: var(--text); 
-  border-bottom: 1px solid #f1f5f9; 
-}
+tbody td { padding: 12px 16px; color: var(--text); border-bottom: 1px solid #f1f5f9; }
 .badge-tte { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; background: #eff6ff; color: var(--accent); }
 .badge-tee { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; background: #fffbeb; color: var(--amber); }
 .badge-other { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; background: var(--surface2); color: var(--text2); }
@@ -184,8 +162,6 @@ tbody td {
 .import-btn:hover { background: var(--accent2); }
 .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; font-size: 0.8rem; color: var(--text2); line-height: 1.8; box-shadow: var(--shadow); }
 .info-card strong { color: var(--text); }
-.phase2-card { background: linear-gradient(135deg, #fffbeb, #fff7ed); border: 1px solid #fde68a; border-radius: 16px; padding: 20px; margin-bottom: 16px; font-size: 0.8rem; color: #92400e; line-height: 1.8; }
-.phase2-card strong { color: #d97706; }
 .pr-wrap { margin-top: 20px; display: none; }
 .pr-bg { background: #e0e7ff; border-radius: 8px; height: 10px; overflow: hidden; margin-bottom: 8px; }
 .pr-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 8px; transition: width 0.3s; width: 0; }
@@ -194,15 +170,35 @@ tbody td {
 /* MODALS */
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.2s; }
 .modal-overlay.show { display: flex; opacity: 1; }
-.modal-card { background: var(--surface); border-radius: 16px; width: 100%; max-width: 400px; box-shadow: var(--shadow-md); overflow: hidden; transform: translateY(20px); transition: transform 0.2s; }
+.modal-card { background: var(--surface); border-radius: 16px; width: 100%; max-width: 450px; box-shadow: var(--shadow-md); overflow: hidden; transform: translateY(20px); transition: transform 0.2s; max-height: 90vh; display: flex; flex-direction: column; }
 .modal-overlay.show .modal-card { transform: translateY(0); }
-.modal-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .modal-header h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; color: var(--text); font-weight: 600; margin: 0; }
 .modal-close { background: none; border: none; color: var(--text3); font-size: 1.1rem; cursor: pointer; padding: 4px; border-radius: 6px; transition: all 0.2s; }
 .modal-close:hover { background: var(--surface2); color: var(--text); }
-.modal-body { padding: 24px; }
+.modal-body { padding: 24px; overflow-y: auto; flex: 1; } /* Scrollable body */
 .modal-body .lf input { padding: 11px 16px; margin-top: 4px; }
-.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); background: #f8fafc; display: flex; justify-content: flex-end; gap: 10px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); background: #f8fafc; display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
+
+/* ADVANCED FIELDS UI */
+.adv-section { border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-top: 20px; background: #fafafa; transition: opacity 0.3s; }
+.adv-section.disabled { opacity: 0.4; pointer-events: none; }
+.cb-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-weight: 600; color: var(--green); font-size: 0.85rem; cursor: pointer; }
+.cb-wrap input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--green); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* VALVULAR CHECKBOX GRID */
+.valve-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+.valve-lb { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text2); background: var(--surface); border: 1px solid var(--border); padding: 8px 10px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+.valve-lb:hover { border-color: var(--accent); background: #eff6ff; }
+.valve-lb input { accent-color: var(--accent); cursor: pointer; }
+
+/* PATIENT VIEW CARD */
+.vc-row { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding: 12px 0; }
+.vc-row:last-child { border-bottom: none; }
+.vc-label { font-size: 0.75rem; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; width: 120px; flex-shrink: 0; }
+.vc-val { font-size: 0.85rem; color: var(--text); font-weight: 500; text-align: right; flex: 1; }
+.badge-normal { display: inline-block; padding: 6px 12px; background: #dcfce7; color: #166534; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 16px; }
 
 /* SECTION LABEL */
 .section-label { font-size: 0.7rem; font-weight: 700; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; margin-top: 10px; }
@@ -325,18 +321,13 @@ tbody td {
       <ul class="phys-list" id="physList"></ul>
     </div>
 
-    <div class="section-label">Clinical Indications</div>
+    <div class="section-label">Clinical Diagnoses</div>
     <div class="card">
       <div class="card-header">
-        <div class="card-title">Indication Distribution</div>
+        <div class="card-title">Diagnosis Distribution</div>
         <span class="card-badge" id="ind-count">—</span>
       </div>
       <div class="ind-cloud" id="indCloud"></div>
-    </div>
-
-    <div class="phase2-card">
-      <strong>Phase 2 — Pending measurement export from GE ViewPoint</strong><br>
-      EF distribution · LV volumes · LAVI · E/e' ratio · TR Vmax · Valvular disease prevalence · Diastolic dysfunction grading · GLS
     </div>
   </div>
 
@@ -344,7 +335,7 @@ tbody td {
     <div class="search-bar">
       <div class="search-wrap">
         <i class="fa fa-search"></i>
-        <input type="text" class="search-input" id="srch" placeholder="Search Patient ID, date, physician, indication..." oninput="doFilter()">
+        <input type="text" class="search-input" id="srch" placeholder="Search Patient ID, date, physician, diagnosis..." oninput="doFilter()">
       </div>
     </div>
     
@@ -407,13 +398,6 @@ tbody td {
       Last import: <span style="color:var(--green)" id="dblast">—</span><br>
       Project: echo-registry · Collection: echo_studies
     </div>
-
-    <div class="phase2-card">
-      <strong>Phase 2 — Measurement Import</strong><br>
-      Once GE engineer configures ViewPoint measurement export:<br>
-      EF · LV dimensions · Doppler values · Valvular findings<br>
-      Will link to existing studies automatically by Patient ID + Date.
-    </div>
   </div>
 </div>
 
@@ -438,6 +422,20 @@ tbody td {
   </div>
 </div>
 
+<div id="viewModal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Patient Summary</h3>
+      <button class="modal-close" onclick="closeViewModal()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="view-body">
+      </div>
+    <div class="modal-footer">
+      <button class="pgb" onclick="closeViewModal()">Close</button>
+    </div>
+  </div>
+</div>
+
 <div id="editModal" class="modal-overlay">
   <div class="modal-card">
     <div class="modal-header">
@@ -445,6 +443,7 @@ tbody td {
       <button class="modal-close" onclick="closeEditModal()"><i class="fa fa-times"></i></button>
     </div>
     <div class="modal-body">
+      <div class="section-label" style="margin-top:0">Basic Info</div>
       <div class="lf">
         <label>Patient ID (Civil ID)</label>
         <input type="text" id="edit-pid">
@@ -454,8 +453,51 @@ tbody td {
         <input type="text" id="edit-phys">
       </div>
       <div class="lf">
-        <label>Indication</label>
+        <label>Diagnosis</label>
         <input type="text" id="edit-ind">
+      </div>
+
+      <div class="adv-section" id="adv-box">
+        <label class="cb-wrap">
+          <input type="checkbox" id="edit-normal" onchange="toggleNormalStudy()">
+          Mark as Normal Study
+        </label>
+        
+        <div class="section-label">Measurements</div>
+        <div class="grid-2">
+          <div class="lf"><label>LVEF (%)</label><input type="number" id="edit-ef" placeholder="e.g. 55"></div>
+          <div class="lf"><label>LV Diameter (mm)</label><input type="number" id="edit-lv" placeholder="e.g. 48"></div>
+          <div class="lf"><label>LAVI (ml/m²)</label><input type="number" id="edit-lavi" placeholder="e.g. 28"></div>
+          <div class="lf"><label>E/e' Ratio</label><input type="number" step="0.1" id="edit-ee" placeholder="e.g. 12.5"></div>
+          <div class="lf"><label>TR Vmax (m/s)</label><input type="number" step="0.1" id="edit-tr" placeholder="e.g. 2.6"></div>
+          <div class="lf"><label>GLS (%)</label><input type="number" step="0.1" id="edit-gls" placeholder="e.g. -18"></div>
+        </div>
+
+        <div class="section-label">Diastolic Function</div>
+        <div class="lf">
+          <select id="edit-diastolic">
+            <option value="">Select Grade...</option>
+            <option>Normal</option>
+            <option>Grade I</option>
+            <option>Grade II</option>
+            <option>Grade III</option>
+            <option>Indeterminate</option>
+          </select>
+        </div>
+
+        <div class="section-label">Significant Valvular Lesions</div>
+        <div class="valve-grid">
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AS"> Mod AS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS"> Severe AS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AR"> Mod AR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AR"> Severe AR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MS"> Mod MS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MS"> Severe MS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MR"> Mod MR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MR"> Severe MR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate TR"> Mod TR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe TR"> Severe TR</label>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -488,7 +530,6 @@ function normalizePhysicianName(name) {
   if (!name || name.trim() === '') return '—';
   var lower = name.toLowerCase();
   
-  // Specific doctor mappings
   if (lower.includes('samir')) return 'Dr. Samir';
   if (lower.includes('zaher')) return 'Dr. Zaher';
   if (lower.includes('shafie')) return 'Dr. Shafie';
@@ -502,18 +543,13 @@ function normalizePhysicianName(name) {
   if (lower.includes('farouk')) return 'Dr. Farouk';
 
   var cleaned = name.trim();
-  
-  // Automatically add "Dr." if it's missing from any other name
   if (!lower.startsWith('dr') && !lower.startsWith('dr.')) {
      return 'Dr. ' + cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
   }
-  
-  // Ensure "Dr. Name" formatting if they imported it weirdly
   if (lower.startsWith('dr ') || lower.startsWith('dr. ')) {
      var rest = cleaned.replace(/^dr\.?\s*/i, '');
      if (rest) return 'Dr. ' + rest.charAt(0).toUpperCase() + rest.slice(1);
   }
-  
   return cleaned;
 }
 
@@ -555,7 +591,9 @@ function loadData() {
     snap.forEach(function(d) { 
       var data = d.data();
       data._docId = d.id; 
-      data.physician = normalizePhysicianName(data.physician); // Instantly clean names from Firebase
+      // Ensure backward compatibility and map old 'indication' to 'diagnosis' logic safely
+      data.diagnosis = data.diagnosis || data.indication || ''; 
+      data.physician = normalizePhysicianName(data.physician); 
       studies.push(data); 
     });
     document.getElementById('dbdot').className = 'db-dot on';
@@ -649,8 +687,6 @@ function buildDash() {
 
   var pc = {};
   studies.forEach(function(s){ var p=s.physician||'—'; pc[p]=(pc[p]||0)+1; });
-  
-  // Create Top 10 list for Dashboard UI
   var sp = Object.entries(pc).sort(function(a,b){return b[1]-a[1];});
   var top10 = sp.slice(0, 10);
   var mx = top10[0] ? top10[0][1] : 1;
@@ -659,7 +695,6 @@ function buildDash() {
     return '<li class="phys-item"><span class="phys-rank">'+(i+1)+'</span><span class="phys-name">'+x[0]+'</span><div class="phys-bar-wrap"><div class="phys-bar" style="width:'+Math.round(x[1]/mx*100)+'%"></div></div><span class="phys-count">'+x[1]+'</span></li>';
   }).join('');
 
-  // Populate the Dropdown Filter with ALL physicians alphabetically
   var fp = document.getElementById('fphys');
   fp.innerHTML = '<option value="">All Physicians</option>';
   var allPhysicians = Object.keys(pc).filter(function(name){ return name !== '—'; }).sort();
@@ -671,7 +706,7 @@ function buildDash() {
   });
 
   var ic = {};
-  studies.forEach(function(s){ if(s.indication&&s.indication.trim()){var k=s.indication.trim().toLowerCase();ic[k]=(ic[k]||0)+1;} });
+  studies.forEach(function(s){ if(s.diagnosis&&s.diagnosis.trim()){var k=s.diagnosis.trim().toLowerCase();ic[k]=(ic[k]||0)+1;} });
   var si = Object.entries(ic).sort(function(a,b){return b[1]-a[1];}).slice(0,25);
   document.getElementById('ind-count').textContent = si.length + ' types found';
   var maxInd = si[0] ? si[0][1] : 1;
@@ -692,22 +727,21 @@ function doFilter() {
     if(ft && s.type!==ft) return false;
     if(fm && s.month!==fm) return false;
     if(fp && s.physician!==fp) return false;
-    if(q && !(s.pid+' '+s.date+' '+s.physician+' '+s.indication+' '+(s.dob||'')).toLowerCase().includes(q)) return false;
+    if(q && !(s.pid+' '+s.date+' '+s.physician+' '+(s.diagnosis||'')+' '+(s.dob||'')).toLowerCase().includes(q)) return false;
     return true;
   });
   curPage=1; renderTable();
 }
 
 function renderTable() {
-  // Dynamically set headers to show/hide action column
   document.getElementById('thead-row').innerHTML = '<tr>' +
     '<th>Patient ID</th>' +
-    '<th>Indication</th>' +
+    '<th>Diagnosis</th>' +
     '<th>Date</th>' +
     '<th>Type</th>' +
     '<th>Age</th>' +
     '<th>Physician</th>' +
-    (isSessionAdmin ? '<th style="text-align:right">Action</th>' : '') +
+    '<th style="text-align:right">Action</th>' +
   '</tr>';
 
   var s=(curPage-1)*PAGE, e=s+PAGE, pg=filtered.slice(s,e), n=filtered.length;
@@ -717,8 +751,7 @@ function renderTable() {
   document.getElementById('pbnext').disabled = e>=n;
   
   if(!pg.length){
-    var colSpan = isSessionAdmin ? 7 : 6;
-    document.getElementById('tbody').innerHTML='<tr><td colspan="'+colSpan+'" style="text-align:center;padding:40px;color:var(--text3)">No studies match your filters</td></tr>';
+    document.getElementById('tbody').innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">No studies match your filters</td></tr>';
     return;
   }
   
@@ -726,18 +759,21 @@ function renderTable() {
   
   document.getElementById('tbody').innerHTML = pg.map(function(s){
     
-    var indDisplay = s.indication 
-      ? '<span style="display:inline-block;padding:4px 8px;border-radius:6px;background:var(--surface2);color:var(--text2);font-size:0.65rem;font-weight:600;"><i class="fa fa-tag" style="margin-right:4px;color:var(--text3)"></i>'+s.indication+'</span>' 
+    var indDisplay = s.diagnosis 
+      ? '<span style="display:inline-block;padding:4px 8px;border-radius:6px;background:var(--surface2);color:var(--text2);font-size:0.65rem;font-weight:600;"><i class="fa fa-tag" style="margin-right:4px;color:var(--text3)"></i>'+s.diagnosis+'</span>' 
       : '<span style="color:var(--border)">—</span>';
     
-    var actionCell = isSessionAdmin 
-      ? '<td style="text-align:right; white-space:nowrap;">' +
-        '<button class="btn-icon" onclick="openEditModal(\''+s._docId+'\')" title="Edit Study"><i class="fa fa-pen"></i></button>' +
-        '<button class="btn-icon" style="color:var(--red); margin-left:4px;" onclick="deleteStudy(\''+s._docId+'\')" title="Delete Study"><i class="fa fa-trash"></i></button>' +
-        '</td>'
+    // View icon available to everyone. Edit/Delete only in Admin Mode.
+    var adminActions = isSessionAdmin 
+      ? '<button class="btn-icon" onclick="openEditModal(\''+s._docId+'\')" title="Edit Study"><i class="fa fa-pen"></i></button>' +
+        '<button class="btn-icon" style="color:var(--red); margin-left:2px;" onclick="deleteStudy(\''+s._docId+'\')" title="Delete Study"><i class="fa fa-trash"></i></button>' 
       : '';
+      
+    var actionCell = '<td style="text-align:right; white-space:nowrap;">' +
+        '<button class="btn-icon" onclick="openViewModal(\''+s._docId+'\')" title="View Clinical Data"><i class="fa fa-eye"></i></button>' +
+        adminActions +
+        '</td>';
     
-    // AGE AND INDICATION COLUMNS HAVE BEEN SWAPPED HERE
     return '<tr>'+
       '<td style="font-weight:600;color:var(--accent);white-space:nowrap;">'+(s.pid||'—')+'</td>'+
       '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+indDisplay+'</td>'+
@@ -762,15 +798,13 @@ function showTab(name, btn) {
 // ADMIN MODE TOGGLE
 function toggleAdmin() {
   if (isSessionAdmin) {
-    // Turn Admin Mode Off
     isSessionAdmin = false;
     toast("Admin Mode Disabled");
     var btn = document.getElementById('btn-admin-toggle');
     btn.innerHTML = '<i class="fa fa-lock"></i> Admin Mode';
     btn.classList.remove('btn-admin-active');
-    renderTable(); // Hides action columns
+    renderTable(); 
   } else {
-    // Turn Admin Mode On
     document.getElementById('admin-pin').value = '';
     document.getElementById('pinModal').classList.add('show');
     setTimeout(function(){ document.getElementById('admin-pin').focus(); }, 100);
@@ -790,7 +824,7 @@ function verifyPin() {
     var btn = document.getElementById('btn-admin-toggle');
     btn.innerHTML = '<i class="fa fa-unlock"></i> Admin Mode ON';
     btn.classList.add('btn-admin-active');
-    renderTable(); // Reveals edit and delete buttons for all rows
+    renderTable(); 
   } else {
     toast('Incorrect Admin PIN');
     document.getElementById('admin-pin').value = '';
@@ -798,18 +832,88 @@ function verifyPin() {
   }
 }
 
-// DELETE STUDY LOGIC
 function deleteStudy(docId) {
   if (!isSessionAdmin) return;
   if (confirm("Are you sure you want to permanently delete this study? This cannot be undone.")) {
     db.collection('echo_studies').doc(docId).delete().then(function() {
       toast('Study completely deleted');
-      loadData(); // Refresh the data to update tables and charts
+      loadData(); 
     }).catch(function(error) {
       toast('Error deleting: ' + error.message);
     });
   }
 }
+
+// VIEW MODAL LOGIC (OPTION B)
+function openViewModal(docId) {
+  var s = studies.find(function(x) { return x._docId === docId; });
+  if (!s) return;
+  
+  var vBody = document.getElementById('view-body');
+  var html = '';
+  
+  // Basic Info Row
+  html += '<div class="vc-row"><span class="vc-label">Patient ID</span><span class="vc-val">'+(s.pid||'—')+'</span></div>';
+  html += '<div class="vc-row"><span class="vc-label">Date</span><span class="vc-val">'+(s.date||'—')+'</span></div>';
+  html += '<div class="vc-row"><span class="vc-label">Exam Type</span><span class="vc-val">'+(s.type||'—')+'</span></div>';
+  html += '<div class="vc-row"><span class="vc-label">Physician</span><span class="vc-val">'+(s.physician||'—')+'</span></div>';
+  html += '<div class="vc-row" style="margin-bottom:16px"><span class="vc-label">Diagnosis</span><span class="vc-val">'+(s.diagnosis||'—')+'</span></div>';
+
+  if (s.is_normal) {
+    html += '<div style="text-align:center"><span class="badge-normal"><i class="fa fa-check-circle"></i> Normal Study</span></div>';
+  } else {
+    // Only show advanced fields if they have data
+    var hasAdv = s.lvef || s.lv_diam || s.lavi || s.ee_ratio || s.tr_vmax || s.gls || s.diastolic || (s.valvular && s.valvular.length);
+    if (hasAdv) {
+      html += '<div class="section-label">Clinical Data</div>';
+      if(s.lvef) html += '<div class="vc-row"><span class="vc-label">LVEF</span><span class="vc-val">'+s.lvef+' %</span></div>';
+      if(s.lv_diam) html += '<div class="vc-row"><span class="vc-label">LV Diameter</span><span class="vc-val">'+s.lv_diam+' mm</span></div>';
+      if(s.lavi) html += '<div class="vc-row"><span class="vc-label">LAVI</span><span class="vc-val">'+s.lavi+' ml/m²</span></div>';
+      if(s.ee_ratio) html += '<div class="vc-row"><span class="vc-label">E/e\' Ratio</span><span class="vc-val">'+s.ee_ratio+'</span></div>';
+      if(s.tr_vmax) html += '<div class="vc-row"><span class="vc-label">TR Vmax</span><span class="vc-val">'+s.tr_vmax+' m/s</span></div>';
+      if(s.gls) html += '<div class="vc-row"><span class="vc-label">GLS</span><span class="vc-val">'+s.gls+' %</span></div>';
+      if(s.diastolic) html += '<div class="vc-row"><span class="vc-label">Diastolic Fn</span><span class="vc-val">'+s.diastolic+'</span></div>';
+      
+      if(s.valvular && s.valvular.length > 0) {
+        var tags = s.valvular.map(function(v){ return '<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">'+v+'</span>'; }).join(' ');
+        html += '<div class="vc-row" style="flex-direction:column; gap:8px"><span class="vc-label">Valvular Lesions</span><div class="ind-cloud">'+tags+'</div></div>';
+      }
+    } else {
+      html += '<div style="text-align:center;color:var(--text3);font-size:0.8rem;padding:20px;">No advanced clinical data entered yet.</div>';
+    }
+  }
+
+  vBody.innerHTML = html;
+  document.getElementById('viewModal').classList.add('show');
+}
+
+function closeViewModal() {
+  document.getElementById('viewModal').classList.remove('show');
+}
+
+
+// NORMAL STUDY TOGGLE
+function toggleNormalStudy() {
+  var isNormal = document.getElementById('edit-normal').checked;
+  var advBox = document.getElementById('adv-box');
+  
+  if(isNormal) {
+    advBox.classList.add('disabled');
+    // Clear the advanced inputs when locked to normal
+    document.getElementById('edit-ef').value = '';
+    document.getElementById('edit-lv').value = '';
+    document.getElementById('edit-lavi').value = '';
+    document.getElementById('edit-ee').value = '';
+    document.getElementById('edit-tr').value = '';
+    document.getElementById('edit-gls').value = '';
+    document.getElementById('edit-diastolic').value = '';
+    var cbs = document.querySelectorAll('.v-cb');
+    cbs.forEach(function(cb){ cb.checked = false; });
+  } else {
+    advBox.classList.remove('disabled');
+  }
+}
+
 
 // EDIT MODAL LOGIC
 function openEditModal(docId) {
@@ -819,8 +923,26 @@ function openEditModal(docId) {
   pendingEditId = docId;
   document.getElementById('edit-pid').value = study.pid || '';
   document.getElementById('edit-phys').value = study.physician || '';
-  document.getElementById('edit-ind').value = study.indication || '';
-  
+  document.getElementById('edit-ind').value = study.diagnosis || '';
+
+  // Advanced fields
+  document.getElementById('edit-normal').checked = study.is_normal || false;
+  document.getElementById('edit-ef').value = study.lvef || '';
+  document.getElementById('edit-lv').value = study.lv_diam || '';
+  document.getElementById('edit-lavi').value = study.lavi || '';
+  document.getElementById('edit-ee').value = study.ee_ratio || '';
+  document.getElementById('edit-tr').value = study.tr_vmax || '';
+  document.getElementById('edit-gls').value = study.gls || '';
+  document.getElementById('edit-diastolic').value = study.diastolic || '';
+
+  // Valvular checkboxes
+  var savedValves = study.valvular || [];
+  var cbs = document.querySelectorAll('.v-cb');
+  cbs.forEach(function(cb) {
+    cb.checked = savedValves.includes(cb.value);
+  });
+
+  toggleNormalStudy(); // Appy UI state
   document.getElementById('editModal').classList.add('show');
 }
 
@@ -833,25 +955,44 @@ function saveEdit() {
   if (!pendingEditId) return;
   
   var newPid = document.getElementById('edit-pid').value.trim();
-  
-  // Clean the physician name using our new normalizer engine
   var newPhys = normalizePhysicianName(document.getElementById('edit-phys').value.trim());
-  
   var newInd = document.getElementById('edit-ind').value.trim();
+  
+  // Advanced fields
+  var isNormal = document.getElementById('edit-normal').checked;
+  var lvef = document.getElementById('edit-ef').value;
+  var lv = document.getElementById('edit-lv').value;
+  var lavi = document.getElementById('edit-lavi').value;
+  var ee = document.getElementById('edit-ee').value;
+  var tr = document.getElementById('edit-tr').value;
+  var gls = document.getElementById('edit-gls').value;
+  var diast = document.getElementById('edit-diastolic').value;
+  
+  var valves = [];
+  document.querySelectorAll('.v-cb:checked').forEach(function(cb){ valves.push(cb.value); });
   
   var btn = document.getElementById('save-edit-btn');
   btn.disabled = true;
   btn.textContent = 'Saving...';
   
-  // Recalculate age in case the PID (Civil ID) was updated
   var study = studies.find(function(s) { return s._docId === pendingEditId; });
   var newAge = calculateAgeAtScan(study.dob, study.date, newPid);
   
   var updates = {
     pid: newPid,
-    physician: newPhys, // Saves the cleaned name
-    indication: newInd,
-    age: newAge
+    physician: newPhys,
+    diagnosis: newInd,
+    indication: newInd, // Backup for old data references
+    age: newAge,
+    is_normal: isNormal,
+    lvef: isNormal ? null : lvef,
+    lv_diam: isNormal ? null : lv,
+    lavi: isNormal ? null : lavi,
+    ee_ratio: isNormal ? null : ee,
+    tr_vmax: isNormal ? null : tr,
+    gls: isNormal ? null : gls,
+    diastolic: isNormal ? null : diast,
+    valvular: isNormal ? [] : valves
   };
   
   db.collection('echo_studies').doc(pendingEditId).update(updates).then(function() {
@@ -859,7 +1000,7 @@ function saveEdit() {
     closeEditModal();
     btn.disabled = false;
     btn.textContent = 'Save Changes';
-    loadData(); // Refresh the data to update tables and charts
+    loadData(); 
   }).catch(function(error) {
     toast('Error updating: ' + error.message);
     btn.disabled = false;
@@ -867,24 +1008,19 @@ function saveEdit() {
   });
 }
 
-// Calculate age helper (Updated for Kuwait Civil ID)
 function calculateAgeAtScan(dobStr, scanDateStr, pid) {
   if (!scanDateStr) return '—';
   let scanDate = new Date(scanDateStr);
   if (isNaN(scanDate)) return '—';
 
   let dob;
-
-  // 1. Try to extract DOB from Kuwait Civil ID (12 digits)
   if (pid && pid.length === 12 && (pid.startsWith('2') || pid.startsWith('3'))) {
     let century = pid[0] === '2' ? 1900 : 2000;
     let year = century + parseInt(pid.substring(1, 3));
-    let month = parseInt(pid.substring(3, 5)) - 1; // JS months are 0-indexed
+    let month = parseInt(pid.substring(3, 5)) - 1; 
     let day = parseInt(pid.substring(5, 7));
     dob = new Date(year, month, day);
-  } 
-  // 2. Fallback to exported DOB string if available
-  else if (dobStr) {
+  } else if (dobStr) {
     dob = new Date(dobStr);
   }
 
@@ -893,8 +1029,7 @@ function calculateAgeAtScan(dobStr, scanDateStr, pid) {
   let age = scanDate.getFullYear() - dob.getFullYear();
   let m = scanDate.getMonth() - dob.getMonth();
   if (m < 0 || (m === 0 && scanDate.getDate() < dob.getDate())) { age--; }
-  
-  return age >= 0 ? age : '—'; // Prevent negative ages from bad data
+  return age >= 0 ? age : '—';
 }
 
 // CSV Import
@@ -940,10 +1075,7 @@ function parseAndImport(raw) {
     var status=cStatus>=0?(r[cStatus]||'').trim():'';
     var type=cType>=0?(r[cType]||'').trim():'';
     
-    // Extract PID
     var pid=cPID>=0?(r[cPID]||'').replace(/[\s\n\r]+/g,''):'';
-    
-    // FIX: Handle ViewPoint duplicated ID bug (e.g. 24 digits where half1 == half2)
     if (pid.length > 12 && pid.length % 2 === 0) {
       var half1 = pid.substring(0, pid.length / 2);
       var half2 = pid.substring(pid.length / 2);
@@ -957,14 +1089,10 @@ function parseAndImport(raw) {
     var physRaw='';
     if(cPhysR>=0)physRaw=(r[cPhysR]||'').trim();
     if(!physRaw&&cPhysP>=0)physRaw=(r[cPhysP]||'').trim();
-    
-    // Normalize physician name upon import
     var phys = normalizePhysicianName(physRaw);
     
     var ind=cAcc>=0?(r[cAcc]||'').trim():'';
     var dob=cDOB>=0?(r[cDOB]||'').trim():'';
-    
-    // Updated age calculation passes the PID
     var ageAtScan = calculateAgeAtScan(dob, date, pid);
 
     list.push({
@@ -972,7 +1100,8 @@ function parseAndImport(raw) {
       date:date,
       type:type||'TTE',
       physician:phys,
-      indication:ind,
+      diagnosis:ind,
+      indication:ind, // Backup
       dob:dob,
       age:ageAtScan,
       month:date?date.substring(0,2):'',

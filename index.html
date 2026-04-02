@@ -448,8 +448,10 @@ function parseAndImport(raw) {
   console.log('Sample rows:', sample.join(' | '));
   toast('Debug: '+sample[0]);
 
-  if (cPID<0||cDate<0||cType<0||cStatus<0) {
-    toast('Required columns not found. Check CSV format.');
+  // Show what columns were found
+  toast('Cols found: PID='+cPID+' Status='+cStatus+' Type='+cType+' | Hdrs: '+hdrs.slice(0,4).join('|'));
+  if (cPID<0||cDate<0||cStatus<0) {
+    toast('MISSING cols: PID='+cPID+' Date='+cDate+' Status='+cStatus);
     return;
   }
 

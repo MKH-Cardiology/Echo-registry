@@ -439,6 +439,15 @@ function parseAndImport(raw) {
 
   console.log('Cols: PID='+cPID+' Date='+cDate+' Type='+cType+' Status='+cStatus);
 
+  // Debug: show sample values from first 5 data rows
+  var sample = [];
+  for (var si=1; si<Math.min(6,rows.length); si++) {
+    var sr = rows[si];
+    sample.push('status='+JSON.stringify((sr[cStatus]||'').trim())+' type='+JSON.stringify((sr[cType]||'').trim()));
+  }
+  console.log('Sample rows:', sample.join(' | '));
+  toast('Debug: '+sample[0]);
+
   if (cPID<0||cDate<0||cType<0||cStatus<0) {
     toast('Required columns not found. Check CSV format.');
     return;
@@ -452,7 +461,8 @@ function parseAndImport(raw) {
     var type   = (r[cType]||'').trim();
     var pid    = (r[cPID]||'').replace(/[\s\n\r]+/g,'');
     if (status.toLowerCase().indexOf('scan') < 0) { skip++; continue; }
-    if (type !== 'TTE' && type !== 'TEE') { skip++; continue; }
+    // Accept TTE, TEE, or blank type (ViewPoint sometimes leaves type empty)
+    if (type && type !== 'TTE' && type !== 'TEE') { skip++; continue; }
     if (!pid || pid.length < 3) { skip++; continue; }
     var date = (r[cDate]||'').trim();
     var phys = '';

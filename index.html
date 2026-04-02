@@ -119,7 +119,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
 
 /* DIAGNOSIS CLOUD */
 .ind-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
-.ind-tag { padding: 5px 12px; border-radius: 20px; font-size: 0.68rem; font-weight: 500; border: none; background: var(--surface2); color: var(--text2); }
+.ind-tag { padding: 5px 12px; border-radius: 20px; font-size: 0.68rem; font-weight: 500; border: none; background: var(--surface2); color: var(--text2); display: inline-flex; align-items: center; white-space: nowrap; }
 .ind-tag b { margin-left: 4px; }
 .ind-tag.lg { font-size: 0.85rem; padding: 8px 16px; }
 .ind-tag.md { font-size: 0.75rem; padding: 6px 14px; }
@@ -140,7 +140,7 @@ table { width: 100%; min-width: 750px; border-collapse: collapse; font-size: 0.7
 thead th { background: transparent; color: var(--text3); padding: 12px 16px; text-align: left; font-weight: 600; font-size: 0.65rem; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 2px solid var(--border); white-space: nowrap; }
 tbody tr { transition: background 0.15s; }
 tbody tr:hover { background: #f8fafc; }
-tbody td { padding: 12px 16px; color: var(--text); border-bottom: 1px solid #f1f5f9; }
+tbody td { padding: 12px 16px; color: var(--text); border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
 .badge-tte { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; background: #eff6ff; color: var(--accent); }
 .badge-tee { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; background: #fffbeb; color: var(--amber); }
 .badge-other { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; background: var(--surface2); color: var(--text2); }
@@ -335,7 +335,7 @@ tbody td { padding: 12px 16px; color: var(--text); border-bottom: 1px solid #f1f
     <div class="search-bar">
       <div class="search-wrap">
         <i class="fa fa-search"></i>
-        <input type="text" class="search-input" id="srch" placeholder="Search Patient ID, date, physician, diagnosis..." oninput="doFilter()">
+        <input type="text" class="search-input" id="srch" placeholder="Search Patient ID, date, physician, diagnosis, diseases..." oninput="doFilter()">
       </div>
     </div>
     
@@ -473,19 +473,56 @@ tbody td { padding: 12px 16px; color: var(--text); border-bottom: 1px solid #f1f
           <div class="lf"><label>GLS (%)</label><input type="number" step="0.1" id="edit-gls" placeholder="e.g. -18"></div>
         </div>
 
-        <div class="section-label">Diastolic Function</div>
-        <div class="lf">
-          <select id="edit-diastolic">
-            <option value="">Select Grade...</option>
-            <option>Normal</option>
-            <option>Grade I</option>
-            <option>Grade II</option>
-            <option>Grade III</option>
-            <option>Indeterminate</option>
-          </select>
+        <div class="section-label">Pathology & Structural Findings</div>
+        <div class="grid-2">
+          <div class="lf">
+            <label>Diastolic Function</label>
+            <select id="edit-diastolic">
+              <option value="">Select Grade...</option>
+              <option>Normal</option>
+              <option>Grade I</option>
+              <option>Grade II</option>
+              <option>Grade III</option>
+              <option>Indeterminate</option>
+            </select>
+          </div>
+          <div class="lf">
+            <label>Cardiomyopathy</label>
+            <select id="edit-cm">
+              <option value="">None</option>
+              <option>Hypertrophic (HCM)</option>
+              <option>Dilated (DCM)</option>
+              <option>Restrictive CM</option>
+              <option>Takotsubo</option>
+              <option>Non-compaction</option>
+            </select>
+          </div>
+          <div class="lf">
+            <label>Pericardial Disease</label>
+            <select id="edit-peri">
+              <option value="">None</option>
+              <option>Pericardial Effusion</option>
+              <option>Cardiac Tamponade</option>
+              <option>Constrictive Pericarditis</option>
+            </select>
+          </div>
+          <div class="lf">
+            <label>Congenital Heart Disease</label>
+            <select id="edit-cong">
+              <option value="">None</option>
+              <option>Bicuspid Aortic Valve (BAV)</option>
+              <option>Atrial Septal Defect (ASD)</option>
+              <option>Ventricular Septal Defect (VSD)</option>
+              <option>Patent Foramen Ovale (PFO)</option>
+              <option>Patent Ductus Arteriosus (PDA)</option>
+              <option>Tetralogy of Fallot (TOF)</option>
+              <option>Coarctation of Aorta</option>
+              <option>Ebstein's Anomaly</option>
+            </select>
+          </div>
         </div>
 
-        <div class="section-label">Significant Valvular Lesions</div>
+        <div class="section-label" style="margin-top: 16px;">Significant Valvular Lesions</div>
         <div class="valve-grid">
           <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AS"> Mod AS</label>
           <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS"> Severe AS</label>
@@ -591,7 +628,6 @@ function loadData() {
     snap.forEach(function(d) { 
       var data = d.data();
       data._docId = d.id; 
-      // Ensure backward compatibility and map old 'indication' to 'diagnosis' logic safely
       data.diagnosis = data.diagnosis || data.indication || ''; 
       data.physician = normalizePhysicianName(data.physician); 
       studies.push(data); 
@@ -706,7 +742,13 @@ function buildDash() {
   });
 
   var ic = {};
-  studies.forEach(function(s){ if(s.diagnosis&&s.diagnosis.trim()){var k=s.diagnosis.trim().toLowerCase();ic[k]=(ic[k]||0)+1;} });
+  studies.forEach(function(s){ 
+    if(s.diagnosis&&s.diagnosis.trim()){ ic[s.diagnosis.trim().toLowerCase()]=(ic[s.diagnosis.trim().toLowerCase()]||0)+1; }
+    if(s.cardiomyopathy){ ic[s.cardiomyopathy.toLowerCase()]=(ic[s.cardiomyopathy.toLowerCase()]||0)+1; }
+    if(s.pericardial){ ic[s.pericardial.toLowerCase()]=(ic[s.pericardial.toLowerCase()]||0)+1; }
+    if(s.congenital){ ic[s.congenital.toLowerCase()]=(ic[s.congenital.toLowerCase()]||0)+1; }
+    if(s.valvular){ s.valvular.forEach(function(v){ ic[v.toLowerCase()]=(ic[v.toLowerCase()]||0)+1; }); }
+  });
   var si = Object.entries(ic).sort(function(a,b){return b[1]-a[1];}).slice(0,25);
   document.getElementById('ind-count').textContent = si.length + ' types found';
   var maxInd = si[0] ? si[0][1] : 1;
@@ -723,11 +765,17 @@ function doFilter() {
   var ft = document.getElementById('ftype').value;
   var fm = document.getElementById('fmonth').value;
   var fp = document.getElementById('fphys').value;
+  
   filtered = studies.filter(function(s){
     if(ft && s.type!==ft) return false;
     if(fm && s.month!==fm) return false;
     if(fp && s.physician!==fp) return false;
-    if(q && !(s.pid+' '+s.date+' '+s.physician+' '+(s.diagnosis||'')+' '+(s.dob||'')).toLowerCase().includes(q)) return false;
+    
+    var searchStr = s.pid+' '+s.date+' '+s.physician+' '+(s.diagnosis||'')+' '+(s.dob||'');
+    searchStr += ' ' + (s.cardiomyopathy||'') + ' ' + (s.pericardial||'') + ' ' + (s.congenital||'');
+    if (s.valvular) searchStr += ' ' + s.valvular.join(' ');
+    
+    if(q && !searchStr.toLowerCase().includes(q)) return false;
     return true;
   });
   curPage=1; renderTable();
@@ -736,7 +784,7 @@ function doFilter() {
 function renderTable() {
   document.getElementById('thead-row').innerHTML = '<tr>' +
     '<th>Patient ID</th>' +
-    '<th>Diagnosis</th>' +
+    '<th>Diagnosis / Findings</th>' +
     '<th>Date</th>' +
     '<th>Type</th>' +
     '<th>Age</th>' +
@@ -759,11 +807,19 @@ function renderTable() {
   
   document.getElementById('tbody').innerHTML = pg.map(function(s){
     
-    var indDisplay = s.diagnosis 
-      ? '<span style="display:inline-block;padding:4px 8px;border-radius:6px;background:var(--surface2);color:var(--text2);font-size:0.65rem;font-weight:600;"><i class="fa fa-tag" style="margin-right:4px;color:var(--text3)"></i>'+s.diagnosis+'</span>' 
-      : '<span style="color:var(--border)">—</span>';
+    // BUILD THE DYNAMIC DIAGNOSIS & TAGS COLUMN
+    var tags = [];
+    if (s.diagnosis) tags.push('<span class="ind-tag" style="background:var(--surface2);color:var(--text2);margin-bottom:4px;"><i class="fa fa-tag" style="margin-right:4px;color:var(--text3)"></i>'+s.diagnosis+'</span>');
     
-    // View icon available to everyone. Edit/Delete only in Admin Mode.
+    if (s.cardiomyopathy) tags.push('<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;margin-bottom:4px;">'+s.cardiomyopathy+'</span>');
+    if (s.pericardial) tags.push('<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;margin-bottom:4px;">'+s.pericardial+'</span>');
+    if (s.congenital) tags.push('<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;margin-bottom:4px;">'+s.congenital+'</span>');
+    if (s.valvular && s.valvular.length) {
+      s.valvular.forEach(function(v){ tags.push('<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;margin-bottom:4px;">'+v+'</span>'); });
+    }
+    
+    var indDisplay = tags.length ? tags.join(' ') : '<span style="color:var(--border)">—</span>';
+    
     var adminActions = isSessionAdmin 
       ? '<button class="btn-icon" onclick="openEditModal(\''+s._docId+'\')" title="Edit Study"><i class="fa fa-pen"></i></button>' +
         '<button class="btn-icon" style="color:var(--red); margin-left:2px;" onclick="deleteStudy(\''+s._docId+'\')" title="Delete Study"><i class="fa fa-trash"></i></button>' 
@@ -776,7 +832,7 @@ function renderTable() {
     
     return '<tr>'+
       '<td style="font-weight:600;color:var(--accent);white-space:nowrap;">'+(s.pid||'—')+'</td>'+
-      '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+indDisplay+'</td>'+
+      '<td style="max-width:280px; padding: 8px 16px;">'+indDisplay+'</td>'+
       '<td style="font-weight:500;white-space:nowrap;">'+s.date+'</td>'+
       '<td><span class="'+typeBadge(s.type)+'">'+s.type+'</span></td>'+
       '<td style="color:var(--text2)">'+(s.age !== undefined ? s.age : '—')+'</td>'+
@@ -795,7 +851,6 @@ function showTab(name, btn) {
   if(btn) btn.classList.add('active');
 }
 
-// ADMIN MODE TOGGLE
 function toggleAdmin() {
   if (isSessionAdmin) {
     isSessionAdmin = false;
@@ -844,7 +899,6 @@ function deleteStudy(docId) {
   }
 }
 
-// VIEW MODAL LOGIC (OPTION B)
 function openViewModal(docId) {
   var s = studies.find(function(x) { return x._docId === docId; });
   if (!s) return;
@@ -852,20 +906,19 @@ function openViewModal(docId) {
   var vBody = document.getElementById('view-body');
   var html = '';
   
-  // Basic Info Row
   html += '<div class="vc-row"><span class="vc-label">Patient ID</span><span class="vc-val">'+(s.pid||'—')+'</span></div>';
   html += '<div class="vc-row"><span class="vc-label">Date</span><span class="vc-val">'+(s.date||'—')+'</span></div>';
   html += '<div class="vc-row"><span class="vc-label">Exam Type</span><span class="vc-val">'+(s.type||'—')+'</span></div>';
   html += '<div class="vc-row"><span class="vc-label">Physician</span><span class="vc-val">'+(s.physician||'—')+'</span></div>';
-  html += '<div class="vc-row" style="margin-bottom:16px"><span class="vc-label">Diagnosis</span><span class="vc-val">'+(s.diagnosis||'—')+'</span></div>';
+  html += '<div class="vc-row" style="margin-bottom:16px"><span class="vc-label">Original Indication</span><span class="vc-val">'+(s.diagnosis||'—')+'</span></div>';
 
   if (s.is_normal) {
     html += '<div style="text-align:center"><span class="badge-normal"><i class="fa fa-check-circle"></i> Normal Study</span></div>';
   } else {
-    // Only show advanced fields if they have data
-    var hasAdv = s.lvef || s.lv_diam || s.lavi || s.ee_ratio || s.tr_vmax || s.gls || s.diastolic || (s.valvular && s.valvular.length);
+    var hasAdv = s.lvef || s.lv_diam || s.lavi || s.ee_ratio || s.tr_vmax || s.gls || s.diastolic || s.cardiomyopathy || s.pericardial || s.congenital || (s.valvular && s.valvular.length);
+    
     if (hasAdv) {
-      html += '<div class="section-label">Clinical Data</div>';
+      html += '<div class="section-label">Measurements & Function</div>';
       if(s.lvef) html += '<div class="vc-row"><span class="vc-label">LVEF</span><span class="vc-val">'+s.lvef+' %</span></div>';
       if(s.lv_diam) html += '<div class="vc-row"><span class="vc-label">LV Diameter</span><span class="vc-val">'+s.lv_diam+' mm</span></div>';
       if(s.lavi) html += '<div class="vc-row"><span class="vc-label">LAVI</span><span class="vc-val">'+s.lavi+' ml/m²</span></div>';
@@ -874,9 +927,17 @@ function openViewModal(docId) {
       if(s.gls) html += '<div class="vc-row"><span class="vc-label">GLS</span><span class="vc-val">'+s.gls+' %</span></div>';
       if(s.diastolic) html += '<div class="vc-row"><span class="vc-label">Diastolic Fn</span><span class="vc-val">'+s.diastolic+'</span></div>';
       
-      if(s.valvular && s.valvular.length > 0) {
-        var tags = s.valvular.map(function(v){ return '<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">'+v+'</span>'; }).join(' ');
-        html += '<div class="vc-row" style="flex-direction:column; gap:8px"><span class="vc-label">Valvular Lesions</span><div class="ind-cloud">'+tags+'</div></div>';
+      var diseaseTags = '';
+      if (s.cardiomyopathy) diseaseTags += '<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">'+s.cardiomyopathy+'</span> ';
+      if (s.pericardial) diseaseTags += '<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">'+s.pericardial+'</span> ';
+      if (s.congenital) diseaseTags += '<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">'+s.congenital+'</span> ';
+      
+      if (s.valvular && s.valvular.length > 0) {
+        diseaseTags += s.valvular.map(function(v){ return '<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">'+v+'</span>'; }).join(' ');
+      }
+      
+      if (diseaseTags) {
+        html += '<div class="vc-row" style="flex-direction:column; gap:8px; margin-top:10px;"><span class="vc-label">Pathological Findings</span><div class="ind-cloud">'+diseaseTags+'</div></div>';
       }
     } else {
       html += '<div style="text-align:center;color:var(--text3);font-size:0.8rem;padding:20px;">No advanced clinical data entered yet.</div>';
@@ -891,15 +952,12 @@ function closeViewModal() {
   document.getElementById('viewModal').classList.remove('show');
 }
 
-
-// NORMAL STUDY TOGGLE
 function toggleNormalStudy() {
   var isNormal = document.getElementById('edit-normal').checked;
   var advBox = document.getElementById('adv-box');
   
   if(isNormal) {
     advBox.classList.add('disabled');
-    // Clear the advanced inputs when locked to normal
     document.getElementById('edit-ef').value = '';
     document.getElementById('edit-lv').value = '';
     document.getElementById('edit-lavi').value = '';
@@ -907,6 +965,9 @@ function toggleNormalStudy() {
     document.getElementById('edit-tr').value = '';
     document.getElementById('edit-gls').value = '';
     document.getElementById('edit-diastolic').value = '';
+    document.getElementById('edit-cm').value = '';
+    document.getElementById('edit-peri').value = '';
+    document.getElementById('edit-cong').value = '';
     var cbs = document.querySelectorAll('.v-cb');
     cbs.forEach(function(cb){ cb.checked = false; });
   } else {
@@ -914,8 +975,6 @@ function toggleNormalStudy() {
   }
 }
 
-
-// EDIT MODAL LOGIC
 function openEditModal(docId) {
   var study = studies.find(function(s) { return s._docId === docId; });
   if (!study) return;
@@ -934,6 +993,9 @@ function openEditModal(docId) {
   document.getElementById('edit-tr').value = study.tr_vmax || '';
   document.getElementById('edit-gls').value = study.gls || '';
   document.getElementById('edit-diastolic').value = study.diastolic || '';
+  document.getElementById('edit-cm').value = study.cardiomyopathy || '';
+  document.getElementById('edit-peri').value = study.pericardial || '';
+  document.getElementById('edit-cong').value = study.congenital || '';
 
   // Valvular checkboxes
   var savedValves = study.valvular || [];
@@ -942,7 +1004,7 @@ function openEditModal(docId) {
     cb.checked = savedValves.includes(cb.value);
   });
 
-  toggleNormalStudy(); // Appy UI state
+  toggleNormalStudy(); 
   document.getElementById('editModal').classList.add('show');
 }
 
@@ -967,6 +1029,9 @@ function saveEdit() {
   var tr = document.getElementById('edit-tr').value;
   var gls = document.getElementById('edit-gls').value;
   var diast = document.getElementById('edit-diastolic').value;
+  var cm = document.getElementById('edit-cm').value;
+  var peri = document.getElementById('edit-peri').value;
+  var cong = document.getElementById('edit-cong').value;
   
   var valves = [];
   document.querySelectorAll('.v-cb:checked').forEach(function(cb){ valves.push(cb.value); });
@@ -982,7 +1047,7 @@ function saveEdit() {
     pid: newPid,
     physician: newPhys,
     diagnosis: newInd,
-    indication: newInd, // Backup for old data references
+    indication: newInd, 
     age: newAge,
     is_normal: isNormal,
     lvef: isNormal ? null : lvef,
@@ -992,6 +1057,9 @@ function saveEdit() {
     tr_vmax: isNormal ? null : tr,
     gls: isNormal ? null : gls,
     diastolic: isNormal ? null : diast,
+    cardiomyopathy: isNormal ? null : cm,
+    pericardial: isNormal ? null : peri,
+    congenital: isNormal ? null : cong,
     valvular: isNormal ? [] : valves
   };
   
@@ -1032,7 +1100,6 @@ function calculateAgeAtScan(dobStr, scanDateStr, pid) {
   return age >= 0 ? age : '—';
 }
 
-// CSV Import
 function onFile(e) {
   var file = e.target.files[0];
   if (!file) return;
@@ -1101,7 +1168,7 @@ function parseAndImport(raw) {
       type:type||'TTE',
       physician:phys,
       diagnosis:ind,
-      indication:ind, // Backup
+      indication:ind, 
       dob:dob,
       age:ageAtScan,
       month:date?date.substring(0,2):'',

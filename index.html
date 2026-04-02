@@ -169,8 +169,8 @@ tbody td {
 .btn-icon { background: none; border: none; color: var(--text3); cursor: pointer; padding: 6px 8px; border-radius: 6px; transition: all 0.2s; font-size: 0.85rem; }
 .btn-icon:hover { color: var(--accent); background: #eff6ff; }
 .pgn { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: var(--surface); position: sticky; left: 0; }
-.pgi { font-size: 0.75rem; color: var(--text3); display: flex; align-items: center; }
-.pgbtns { display: flex; gap: 8px; align-items: center; }
+.pgi { font-size: 0.75rem; color: var(--text3); }
+.pgbtns { display: flex; gap: 8px; }
 .pgb { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; color: var(--text2); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
 .pgb:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); background: #f8fafc; }
 .pgb:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -380,10 +380,8 @@ tbody td {
       <div class="pgn">
         <span class="pgi" id="pgi"></span>
         <div class="pgbtns">
-          <button class="pgb" id="pbfirst" onclick="goPage('first')">«</button>
           <button class="pgb" id="pbprev" onclick="goPage(-1)">← Prev</button>
           <button class="pgb" id="pbnext" onclick="goPage(1)">Next →</button>
-          <button class="pgb" id="pblast" onclick="goPage('last')">»</button>
         </div>
       </div>
     </div>
@@ -572,8 +570,7 @@ function loadData() {
 
 function showEmpty() {
   ['k-total','k-pts','k-tte','k-tee'].forEach(function(id){ document.getElementById(id).textContent='0'; });
-  var colSpan = isSessionAdmin ? 7 : 6;
-  document.getElementById('tbody').innerHTML = '<tr><td colspan="'+colSpan+'" style="text-align:center;padding:40px;color:var(--text3)">No studies yet — use Import tab to upload your ViewPoint CSV</td></tr>';
+  document.getElementById('tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">No studies yet — use Import tab to upload your ViewPoint CSV</td></tr>';
 }
 
 function buildDash() {
@@ -702,26 +699,11 @@ function renderTable() {
     (isSessionAdmin ? '<th style="text-align:right">Action</th>' : '') +
   '</tr>';
 
-  var n = filtered.length;
-  var maxPage = Math.max(1, Math.ceil(n / PAGE));
-  if (curPage > maxPage) curPage = maxPage; // Prevent getting stuck on empty pages after deletion
-
-  var s=(curPage-1)*PAGE, e=s+PAGE, pg=filtered.slice(s,e);
-  
+  var s=(curPage-1)*PAGE, e=s+PAGE, pg=filtered.slice(s,e), n=filtered.length;
   document.getElementById('rinfo').textContent = n.toLocaleString()+' studies found';
-  
-  // UPDATE PAGINATION UI WITH DROPDOWN JUMP MENU
-  var pgiStr = 'Page <select class="fsel" style="padding:2px 6px;margin:0 6px;" onchange="goPageTo(this.value)">';
-  for(var i=1; i<=maxPage; i++) {
-     pgiStr += '<option value="'+i+'" '+(i===curPage?'selected':'')+'>'+i+'</option>';
-  }
-  pgiStr += '</select> of ' + maxPage;
-  document.getElementById('pgi').innerHTML = pgiStr;
-
-  document.getElementById('pbfirst').disabled = curPage === 1;
-  document.getElementById('pbprev').disabled = curPage === 1;
-  document.getElementById('pbnext').disabled = curPage >= maxPage;
-  document.getElementById('pblast').disabled = curPage >= maxPage;
+  document.getElementById('pgi').textContent = 'Page '+curPage+' of '+Math.max(1,Math.ceil(n/PAGE));
+  document.getElementById('pbprev').disabled = curPage===1;
+  document.getElementById('pbnext').disabled = e>=n;
   
   if(!pg.length){
     var colSpan = isSessionAdmin ? 7 : 6;
@@ -744,7 +726,7 @@ function renderTable() {
         '</td>'
       : '';
     
-    // AGE AND INDICATION COLUMNS SWAPPED
+    // AGE AND INDICATION COLUMNS HAVE BEEN SWAPPED HERE
     return '<tr>'+
       '<td style="font-weight:600;color:var(--accent);white-space:nowrap;">'+(s.pid||'—')+'</td>'+
       '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+indDisplay+'</td>'+
@@ -757,18 +739,7 @@ function renderTable() {
   }).join('');
 }
 
-function goPage(d) { 
-  var maxPage = Math.max(1, Math.ceil(filtered.length / PAGE));
-  if (d === 'first') curPage = 1;
-  else if (d === 'last') curPage = maxPage;
-  else curPage = Math.max(1, Math.min(maxPage, curPage + d));
-  renderTable(); 
-}
-
-function goPageTo(pNum) {
-  curPage = parseInt(pNum, 10);
-  renderTable();
-}
+function goPage(d) { curPage=Math.max(1,Math.min(Math.ceil(filtered.length/PAGE),curPage+d)); renderTable(); }
 
 function showTab(name, btn) {
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('active');});
@@ -816,19 +787,13 @@ function verifyPin() {
   }
 }
 
-// DELETE STUDY LOGIC (Updates locally without losing page)
+// DELETE STUDY LOGIC
 function deleteStudy(docId) {
   if (!isSessionAdmin) return;
   if (confirm("Are you sure you want to permanently delete this study? This cannot be undone.")) {
     db.collection('echo_studies').doc(docId).delete().then(function() {
       toast('Study completely deleted');
-      
-      // Update local arrays instantly without reloading
-      studies = studies.filter(function(s) { return s._docId !== docId; });
-      filtered = filtered.filter(function(s) { return s._docId !== docId; });
-      
-      buildDash(); // Silently update the dashboard KPIs
-      renderTable(); // Refresh the table UI
+      loadData(); // Refresh the data to update tables and charts
     }).catch(function(error) {
       toast('Error deleting: ' + error.message);
     });
@@ -857,17 +822,18 @@ function saveEdit() {
   if (!pendingEditId) return;
   
   var newPid = document.getElementById('edit-pid').value.trim();
+  
+  // Clean the physician name using our new normalizer engine
   var newPhys = normalizePhysicianName(document.getElementById('edit-phys').value.trim());
+  
   var newInd = document.getElementById('edit-ind').value.trim();
   
   var btn = document.getElementById('save-edit-btn');
   btn.disabled = true;
   btn.textContent = 'Saving...';
   
-  // Find study to recalculate age
-  var studyIndex = studies.findIndex(function(s) { return s._docId === pendingEditId; });
-  if (studyIndex === -1) return;
-  var study = studies[studyIndex];
+  // Recalculate age in case the PID (Civil ID) was updated
+  var study = studies.find(function(s) { return s._docId === pendingEditId; });
   var newAge = calculateAgeAtScan(study.dob, study.date, newPid);
   
   var updates = {
@@ -879,21 +845,10 @@ function saveEdit() {
   
   db.collection('echo_studies').doc(pendingEditId).update(updates).then(function() {
     toast('Study updated successfully');
-    
-    // Update local arrays instantly without losing the current page or search filters
-    Object.assign(studies[studyIndex], updates);
-    var filterIndex = filtered.findIndex(function(s) { return s._docId === pendingEditId; });
-    if (filterIndex > -1) {
-      Object.assign(filtered[filterIndex], updates);
-    }
-    
     closeEditModal();
     btn.disabled = false;
     btn.textContent = 'Save Changes';
-    
-    buildDash(); // Silently update dashboard charts if a physician was changed
-    renderTable(); // Re-render table on the exact same page
-    
+    loadData(); // Refresh the data to update tables and charts
   }).catch(function(error) {
     toast('Error updating: ' + error.message);
     btn.disabled = false;
@@ -1004,3 +959,57 @@ function parseAndImport(raw) {
     list.push({
       pid:pid,
       date:date,
+      type:type||'TTE',
+      physician:phys,
+      indication:ind,
+      dob:dob,
+      age:ageAtScan,
+      month:date?date.substring(0,2):'',
+      importedAt:new Date().toISOString()
+    });
+  }
+
+  if(!list.length){toast('No completed TTE/TEE studies found');return;}
+  toast('Found '+list.length+' studies — saving...');
+  batchSave(list);
+}
+
+function batchSave(list) {
+  var wrap=document.getElementById('prwrap'),fill=document.getElementById('prfill'),txt=document.getElementById('prtxt');
+  wrap.style.display='block';
+  var BATCH=400,done=0,batches=[];
+  for(var i=0;i<list.length;i+=BATCH)batches.push(list.slice(i,i+BATCH));
+
+  function next(idx){
+    if(idx>=batches.length){
+      fill.style.width='100%';
+      txt.textContent='Complete! '+done+' studies saved.';
+      document.getElementById('dblast').textContent=new Date().toLocaleString();
+      toast('✓ '+done+' studies imported successfully');
+      setTimeout(function(){wrap.style.display='none';loadData();},2000);
+      return;
+    }
+    var batch=db.batch();
+    batches[idx].forEach(function(s){
+      var id=s.pid+'_'+s.date.replace(/\//g,'-');
+      batch.set(db.collection('echo_studies').doc(id),s,{merge:true});
+      done++;
+    });
+    batch.commit().then(function(){
+      var p=Math.round((idx+1)/batches.length*100);
+      fill.style.width=p+'%';
+      txt.textContent='Saving '+Math.min(done,list.length)+' / '+list.length+'...';
+      next(idx+1);
+    }).catch(function(e){txt.textContent='Error: '+e.message;console.error(e);});
+  }
+  next(0);
+}
+
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  setTimeout(function(){t.style.display='none';},3500);
+}
+</script>
+</body>
+</html>

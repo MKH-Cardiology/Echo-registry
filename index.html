@@ -616,26 +616,57 @@ function normalizePhysicianName(name) {
   return cleaned;
 }
 
-// BULLETPROOF DATE PARSER (STRIPS TIMES, FORCES DD/MM/YYYY PRIORITY)
+// BULLETPROOF DATE PARSER (Fixes NaN sorting bugs, parses ALL ViewPoint formats)
 function parseDateString(ds) {
   if (!ds) return 0;
-  // Clean the string (remove any time part like "02/04/2026 14:30")
-  var cleanStr = ds.trim().split(' ')[0]; 
   
-  var p = cleanStr.replace(/[\-\.]/g, '/').split('/');
-  if (p.length === 3) {
-    // If the first block is 4 digits, it's YYYY/MM/DD
-    if (p[0].length === 4) {
-      return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10)).getTime();
-    }
-    // Otherwise strictly treat as DD/MM/YYYY
-    var d = parseInt(p[0], 10);
-    var m = parseInt(p[1], 10) - 1;
-    var y = parseInt(p[2], 10);
-    if (y < 100) y += 2000;
-    return new Date(y, m, d).getTime();
+  // 1. Strip time if present (e.g. "02/04/2026 14:30" -> "02/04/2026")
+  var cleanStr = String(ds).trim().split(' ')[0]; 
+  
+  // 2. Handle text-based dates (e.g. "02-Apr-2026") safely via native Javascript parser
+  if (/[a-zA-Z]/.test(cleanStr)) {
+     var parsedNative = Date.parse(cleanStr);
+     if (!isNaN(parsedNative)) return parsedNative;
   }
-  return new Date(ds).getTime() || 0;
+  
+  // 3. Handle strictly numeric dates
+  var parts = cleanStr.replace(/[\-\.]/g, '/').split('/');
+  if (parts.length === 3) {
+    var n0 = parseInt(parts[0], 10);
+    var n1 = parseInt(parts[1], 10);
+    var n2 = parseInt(parts[2], 10);
+    
+    // If it can't read the numbers, try one last fallback
+    if (isNaN(n0) || isNaN(n1) || isNaN(n2)) {
+        return Date.parse(ds) || 0;
+    }
+
+    var y, m, d;
+    
+    if (n0 > 1000) { 
+        // Format: YYYY/MM/DD
+        y = n0; m = n1 - 1; d = n2;
+    } else if (n2 > 1000) { 
+        // Format ends in Year
+        y = n2;
+        // Default to DD/MM/YYYY, but if the middle number is > 12, it must be MM/DD/YYYY
+        if (n1 > 12) { 
+            m = n0 - 1; d = n1; 
+        } else { 
+            d = n0; m = n1 - 1; 
+        }
+    } else {
+        // Fallback for 2-digit years (e.g., 02/04/26)
+        y = n2 + 2000;
+        if (n1 > 12) { m = n0 - 1; d = n1; }
+        else { d = n0; m = n1 - 1; }
+    }
+    
+    var resultTime = new Date(y, m, d).getTime();
+    return isNaN(resultTime) ? 0 : resultTime;
+  }
+  
+  return Date.parse(ds) || 0;
 }
 
 document.getElementById('pageLogin').style.display = 'block';
@@ -681,9 +712,9 @@ function loadData() {
       studies.push(data); 
     });
     
-    // STRICT CHRONOLOGICAL SORTING (Newest First)
+    // NEWEST FIRST: Sorting using the bulletproof parser
     studies.sort(function(a, b) {
-       return parseDateString(b.date) - parseDateString(a.date);
+      return parseDateString(b.date) - parseDateString(a.date);
     });
 
     document.getElementById('dbdot').className = 'db-dot on';
@@ -745,6 +776,7 @@ function buildDash() {
     var dTime = parseDateString(s.date);
     if (dTime > 0) dc[new Date(dTime).getDay()]++;
   });
+  
   if(dayChart) dayChart.destroy();
   dayChart = new Chart(document.getElementById('dayChart'), {
     type: 'bar',
@@ -870,7 +902,6 @@ function renderTable() {
     
     var indDisplay = tags.length ? tags.join(' ') : '<span style="color:var(--border)">—</span>';
     
-    // EDIT AND DELETE are protected by Admin status
     var adminActions = isSessionAdmin 
       ? '<button class="btn-icon" onclick="openEditModal(\''+s._docId+'\')" title="Edit Study"><i class="fa fa-pen"></i></button>' +
         '<button class="btn-icon" style="color:var(--red); margin-left:2px;" onclick="deleteStudy(\''+s._docId+'\')" title="Delete Study"><i class="fa fa-trash"></i></button>' 
@@ -1003,22 +1034,16 @@ function closeViewModal() {
   document.getElementById('viewModal').classList.remove('show');
 }
 
-// TOGGLE NORMAL STUDY AND APPEND TO DIAGNOSIS
 function toggleNormalStudy() {
   var isNormal = document.getElementById('edit-normal').checked;
   var advBox = document.getElementById('adv-box');
   var indField = document.getElementById('edit-ind');
   
   if(isNormal) {
-    // Disable Advanced Box
     advBox.classList.add('disabled');
-    
-    // Auto-add "Normal Study" to diagnosis if not already there
     if (!indField.value.toLowerCase().includes('normal')) {
       indField.value = indField.value ? indField.value + ' - Normal Study' : 'Normal Study';
     }
-
-    // Clear background data
     document.getElementById('edit-ef').value = '';
     document.getElementById('edit-lv').value = '';
     document.getElementById('edit-lavi').value = '';
@@ -1032,10 +1057,7 @@ function toggleNormalStudy() {
     var cbs = document.querySelectorAll('.v-cb');
     cbs.forEach(function(cb){ cb.checked = false; });
   } else {
-    // Re-enable box
     advBox.classList.remove('disabled');
-    
-    // Remove "Normal Study" text from diagnosis field if it was automatically added
     if (indField.value === 'Normal Study') {
       indField.value = '';
     } else if (indField.value.includes(' - Normal Study')) {
@@ -1044,14 +1066,13 @@ function toggleNormalStudy() {
   }
 }
 
-// OPEN ADD MODAL (ANYONE CAN ACCESS)
 function openAddModal() {
-  pendingEditId = null; // null means NEW study
+  pendingEditId = null; 
   document.getElementById('edit-modal-title').textContent = 'Add New Study';
   
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, '0');
-  var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); 
   var yyyy = today.getFullYear();
 
   document.getElementById('edit-date').value = dd + '/' + mm + '/' + yyyy;
@@ -1080,7 +1101,6 @@ function openAddModal() {
   document.getElementById('editModal').classList.add('show');
 }
 
-// OPEN EDIT MODAL (ADMIN ONLY)
 function openEditModal(docId) {
   var study = studies.find(function(s) { return s._docId === docId; });
   if (!study) return;
@@ -1122,7 +1142,6 @@ function closeEditModal() {
   pendingEditId = null;
 }
 
-// SAVE BOTH EDITS AND NEW MANUAL ENTRIES
 function saveEdit() {
   var newPid = document.getElementById('edit-pid').value.trim();
   if (!newPid) { toast('Patient ID is required'); return; }
@@ -1179,18 +1198,18 @@ function saveEdit() {
     valvular: isNormal ? [] : valves
   };
 
+  // Extract month mathematically for dashboard charts
+  var parsedTime = parseDateString(newDate);
+  if (parsedTime > 0) {
+      updates.month = String(new Date(parsedTime).getMonth() + 1).padStart(2, '0');
+  }
+
   if (isNewEntry) {
-    // If it's manual, we add month so graphs update correctly
-    var parts = newDate.replace(/[\-\.]/g, '/').split('/');
-    if (parts.length === 3) updates.month = parts[1];
     updates.importedAt = new Date().toISOString();
-    
     db.collection('echo_studies').doc(docId).set(updates).then(function() {
       finishSave('New study added successfully', btn);
     }).catch(function(error) { errorSave(error, btn); });
-
   } else {
-    // It's an edit
     db.collection('echo_studies').doc(docId).update(updates).then(function() {
       finishSave('Study updated successfully', btn);
     }).catch(function(error) { errorSave(error, btn); });
@@ -1213,8 +1232,10 @@ function errorSave(error, btn) {
 
 function calculateAgeAtScan(dobStr, scanDateStr, pid) {
   if (!scanDateStr) return '—';
-  let scanDate = new Date(parseDateString(scanDateStr));
-  if (isNaN(scanDate)) return '—';
+  let scanTime = parseDateString(scanDateStr);
+  if (!scanTime) return '—';
+  
+  let scanDate = new Date(scanTime);
 
   let dob;
   if (pid && pid.length === 12 && (pid.startsWith('2') || pid.startsWith('3'))) {
@@ -1296,6 +1317,10 @@ function parseAndImport(raw) {
     var ind=cAcc>=0?(r[cAcc]||'').trim():'';
     var dob=cDOB>=0?(r[cDOB]||'').trim():'';
     var ageAtScan = calculateAgeAtScan(dob, date, pid);
+    
+    // Extract Month mathematically
+    var parsedTime = parseDateString(date);
+    var extractedMonth = parsedTime > 0 ? String(new Date(parsedTime).getMonth() + 1).padStart(2, '0') : '';
 
     list.push({
       pid:pid,
@@ -1306,7 +1331,7 @@ function parseAndImport(raw) {
       indication:ind, 
       dob:dob,
       age:ageAtScan,
-      month:date?date.split('/')[1]:'',
+      month: extractedMonth,
       importedAt:new Date().toISOString()
     });
   }

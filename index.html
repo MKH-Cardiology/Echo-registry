@@ -576,29 +576,46 @@ function importCSV(e) {
   reader.readAsText(file);
 }
 
+
+function parseFullCSV(text) {
+  text = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  var records = [], current = [], field = '', inQuotes = false, i = 0;
+  while (i < text.length) {
+    var c = text[i], nx = text[i+1];
+    if (inQuotes) {
+      if (c==='"' && nx==='"') { field+='"'; i+=2; }
+      else if (c==='"') { inQuotes=false; i++; }
+      else { field+=c; i++; }
+    } else {
+      if (c==='"') { inQuotes=true; i++; }
+      else if (c===',') { current.push(field); field=''; i++; }
+      else if (c==='\n') {
+        current.push(field); field='';
+        if (current.some(function(f){return f.trim();})) records.push(current);
+        current=[]; i++;
+      } else { field+=c; i++; }
+    }
+  }
+  if (current.length>0) { current.push(field); if(current.some(function(f){return f.trim();})) records.push(current); }
+  return records;
+}
+
 function processCSV(text) {
-  // Parse CSV
-  var lines = text.trim().split('\n');
-  var headers = parseCSVLine(lines[0]);
+  var records = parseFullCSV(text);
+  if (records.length < 2) { showToast('CSV appears empty or unreadable'); return; }
+  var headers = records[0].map(function(h){ return h.replace(/^\uFEFF/,'').replace(/"/g,'').trim(); });
   var studies = [];
-
-  for(var i=1; i<lines.length; i++) {
-    if(!lines[i].trim()) continue;
-    var vals = parseCSVLine(lines[i]);
+  for (var i=1; i<records.length; i++) {
+    var vals = records[i];
     var obj = {};
-    headers.forEach(function(h,idx){ obj[h.trim().replace(/"/g,'')] = (vals[idx]||'').trim().replace(/"/g,''); });
-
+    headers.forEach(function(h,idx){ obj[h] = (vals[idx]||'').replace(/"/g,'').trim(); });
     var status = obj['Exam status']||'';
-    var type = obj['Exam type']||'';
-    var pid = (obj['Patient ID']||'').replace(/\s+/g,'');
-
-    // Only completed TTE/TEE with valid patient ID
-    if(status==='Scan started' && (type==='TTE'||type==='TEE') && pid) {
+    var type = (obj['Exam type']||'').trim();
+    var pid = (obj['Patient ID']||'').replace(/[\s\n\r]+/g,'');
+    if (status==='Scan started' && (type==='TTE'||type==='TEE') && pid && pid.length>3) {
       var date = obj['Exam date']||'';
       studies.push({
-        pid: pid,
-        date: date,
-        type: type,
+        pid: pid, date: date, type: type,
         physician: (obj['Reading physician']||obj['Performing physician']||'').trim(),
         indication: (obj['Accession No.']||'').trim(),
         month: date ? date.substring(0,2) : '',
@@ -606,28 +623,14 @@ function processCSV(text) {
       });
     }
   }
-
-  if(studies.length === 0) {
-    showToast('No completed TTE/TEE studies found in CSV');
+  if (studies.length===0) {
+    showToast('No completed TTE/TEE studies found — check CSV');
+    console.log('Headers detected:', headers);
+    console.log('Sample row:', records[1]);
     return;
   }
-
   showToast('Found '+studies.length+' studies — saving to Firebase...');
   saveToFirebase(studies);
-}
-
-function parseCSVLine(line) {
-  var result = [];
-  var current = '';
-  var inQuotes = false;
-  for(var i=0; i<line.length; i++) {
-    var c = line[i];
-    if(c==='"') { inQuotes=!inQuotes; }
-    else if(c===',' && !inQuotes) { result.push(current); current=''; }
-    else { current+=c; }
-  }
-  result.push(current);
-  return result;
 }
 
 function saveToFirebase(studies) {

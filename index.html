@@ -151,7 +151,7 @@ tbody td { padding: 9px 12px; color: var(–text); }
 .badge-tee { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.62rem; font-weight: 700; background: #fffbeb; color: var(–amber); }
 .badge-other { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.62rem; font-weight: 700; background: var(–surface2); color: var(–text2); }
 .ind-pill { display: inline-block; padding: 2px 7px; border-radius: 6px; font-size: 0.6rem; font-weight: 600; background: #f0fdf4; color: var(–green); }
-.pid-text { font-family: ‘Courier New’, monospace; font-size: 0.65rem; color: var(–text2); }
+.pid-text { font-family: ‘Courier New’, monospace; font-size: 0.62rem; color: var(–text2); }
 .pgn { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-top: 1px solid var(–border); }
 .pgi { font-size: 0.68rem; color: var(–text3); }
 .pgbtns { display: flex; gap: 6px; }
@@ -357,7 +357,6 @@ tbody td { padding: 9px 12px; color: var(–text); }
             <th>Date</th>
             <th>Type</th>
             <th>Physician</th>
-            <th>Indication</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -473,7 +472,7 @@ function loadData() {
 
 function showEmpty() {
   ['k-total','k-pts','k-tte','k-tee'].forEach(function(id){ document.getElementById(id).textContent='0'; });
-  document.getElementById('tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text3)">No studies yet — use Import tab to upload your ViewPoint CSV</td></tr>';
+  document.getElementById('tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text3)">No studies yet — use Import tab to upload your ViewPoint CSV</td></tr>';
 }
 
 function buildDash() {
@@ -608,18 +607,19 @@ function renderTable() {
   document.getElementById('pbprev').disabled = curPage===1;
   document.getElementById('pbnext').disabled = e>=n;
   if(!pg.length){
-    document.getElementById('tbody').innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text3)">No studies match your filters</td></tr>';
+    document.getElementById('tbody').innerHTML='<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text3)">No studies match your filters</td></tr>';
     return;
   }
   var typeBadge = function(t){ return t==='TTE'?'badge-tte':t==='TEE'?'badge-tee':'badge-other'; };
   document.getElementById('tbody').innerHTML = pg.map(function(s){
+    var ind = s.indication ? '<tr><td colspan="4" style="padding:0 12px 8px;color:var(--text3);font-size:0.65rem">'+
+      '<i class="fa fa-tag" style="margin-right:4px;color:var(--green)"></i>'+s.indication+'</td></tr>' : '';
     return '<tr>'+
       '<td><span class="pid-text">'+(s.pid||'—')+'</span></td>'+
-      '<td style="font-weight:500">'+s.date+'</td>'+
+      '<td style="font-weight:500;white-space:nowrap">'+s.date+'</td>'+
       '<td><span class="'+typeBadge(s.type)+'">'+s.type+'</span></td>'+
-      '<td style="color:var(--text2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.physician||'<span style="color:var(--text3)">Unassigned</span>')+'</td>'+
-      '<td>'+(s.indication?'<span class="ind-pill">'+s.indication+'</span>':'<span style="color:var(--text3)">—</span>')+'</td>'+
-    '</tr>';
+      '<td style="color:var(--text2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.68rem">'+(s.physician||'<span style="color:var(--text3)">—</span>')+'</td>'+
+    '</tr>'+ind;
   }).join('');
 }
 

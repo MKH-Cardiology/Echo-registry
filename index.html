@@ -392,12 +392,13 @@ function onFileSelect(e) {
   var reader = new FileReader();
   reader.onload = function(ev) {
     var raw = ev.target.result;
-    // Show first 200 chars for debugging
-    var preview = raw.substring(0, 200).replace(/[\r\n]/g, '|');
-    console.log('RAW CSV PREVIEW:', preview);
+    // Strip null bytes (UTF-16 artifact)
+    raw = raw.replace(/\u0000/g, '');
+    console.log('RAW PREVIEW:', raw.substring(0,200).replace(/[\r\n]/g,'|'));
     parseAndImport(raw);
   };
-  reader.readAsText(file);
+  // ViewPoint exports UTF-16 LE with BOM
+  reader.readAsText(file, 'UTF-16');
 }
 
 function parseAndImport(raw) {
@@ -473,9 +474,10 @@ function parseAndImport(raw) {
     var type   = cType >= 0 ? (r[cType]||'').trim() : '';
     var pid    = cPID >= 0 ? (r[cPID]||'').replace(/[\s\n\r]+/g,'') : '';
 
-    // Only skip rows with no patient ID and no date
+    // Filter: scan started, TTE/TEE or blank type, valid PID
+    if (status.toLowerCase().indexOf('scan') < 0) { skip++; continue; }
+    if (type !== '' && type !== 'TTE' && type !== 'TEE') { skip++; continue; }
     if (!pid || pid.length < 3) { skip++; continue; }
-    if (!date) { skip++; continue; }
 
     var date = cDate >= 0 ? (r[cDate]||'').trim() : '';
     var phys = '';

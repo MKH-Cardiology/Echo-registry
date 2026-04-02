@@ -142,7 +142,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
 .fsel:focus { border-color: var(--accent); }
 
 /* ENTERPRISE DATA TABLES */
-table { width: 100%; min-width: 700px; border-collapse: collapse; font-size: 0.75rem; }
+table { width: 100%; min-width: 750px; border-collapse: collapse; font-size: 0.75rem; }
 thead th { 
   background: transparent; 
   color: var(--text3); 
@@ -165,6 +165,8 @@ tbody td {
 .badge-tte { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; background: #eff6ff; color: var(--accent); }
 .badge-tee { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; background: #fffbeb; color: var(--amber); }
 .badge-other { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; background: var(--surface2); color: var(--text2); }
+.btn-icon { background: none; border: none; color: var(--text3); cursor: pointer; padding: 6px; border-radius: 6px; transition: all 0.2s; font-size: 0.8rem; }
+.btn-icon:hover { color: var(--accent); background: #eff6ff; }
 .pgn { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: var(--surface); position: sticky; left: 0; }
 .pgi { font-size: 0.75rem; color: var(--text3); }
 .pgbtns { display: flex; gap: 8px; }
@@ -186,6 +188,19 @@ tbody td {
 .pr-bg { background: #e0e7ff; border-radius: 8px; height: 10px; overflow: hidden; margin-bottom: 8px; }
 .pr-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 8px; transition: width 0.3s; width: 0; }
 .pr-txt { font-size: 0.75rem; color: var(--accent); text-align: center; font-weight: 600; }
+
+/* MODALS */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.2s; }
+.modal-overlay.show { display: flex; opacity: 1; }
+.modal-card { background: var(--surface); border-radius: 16px; width: 100%; max-width: 400px; box-shadow: var(--shadow-md); overflow: hidden; transform: translateY(20px); transition: transform 0.2s; }
+.modal-overlay.show .modal-card { transform: translateY(0); }
+.modal-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-header h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; color: var(--text); font-weight: 600; margin: 0; }
+.modal-close { background: none; border: none; color: var(--text3); font-size: 1.1rem; cursor: pointer; padding: 4px; border-radius: 6px; transition: all 0.2s; }
+.modal-close:hover { background: var(--surface2); color: var(--text); }
+.modal-body { padding: 24px; }
+.modal-body .lf input { padding: 11px 16px; margin-top: 4px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); background: #f8fafc; display: flex; justify-content: flex-end; gap: 10px; }
 
 /* SECTION LABEL */
 .section-label { font-size: 0.7rem; font-weight: 700; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; margin-top: 10px; }
@@ -359,6 +374,7 @@ tbody td {
             <th>Type</th>
             <th>Indication</th>
             <th>Physician</th>
+            <th style="text-align:right">Action</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -403,6 +419,54 @@ tbody td {
   </div>
 </div>
 
+<div id="pinModal" class="modal-overlay">
+  <div class="modal-card" style="max-width: 320px;">
+    <div class="modal-header">
+      <h3>Admin Access</h3>
+      <button class="modal-close" onclick="closePinModal()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="lf" style="margin-bottom:0">
+        <label>Enter Admin PIN</label>
+        <div class="iw">
+          <i class="fa fa-lock"></i>
+          <input type="password" id="admin-pin" placeholder="••••" onkeydown="if(event.key==='Enter')verifyPin()">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="import-btn" style="width:100%; padding:10px" onclick="verifyPin()">Verify & Edit</button>
+    </div>
+  </div>
+</div>
+
+<div id="editModal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Edit Study Details</h3>
+      <button class="modal-close" onclick="closeEditModal()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="lf">
+        <label>Patient ID (Civil ID)</label>
+        <input type="text" id="edit-pid">
+      </div>
+      <div class="lf">
+        <label>Physician</label>
+        <input type="text" id="edit-phys">
+      </div>
+      <div class="lf">
+        <label>Indication</label>
+        <input type="text" id="edit-ind">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="pgb" onclick="closeEditModal()">Cancel</button>
+      <button class="import-btn" id="save-edit-btn" onclick="saveEdit()" style="padding: 8px 20px;">Save Changes</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -418,6 +482,7 @@ var db = firebase.firestore();
 var auth = firebase.auth();
 var studies = [], filtered = [], curPage = 1, PAGE = 25;
 var mChart = null, tChart = null, dayChart = null;
+var pendingEditId = null;
 
 document.getElementById('pageLogin').style.display = 'block';
 
@@ -454,7 +519,11 @@ function loadData() {
   document.getElementById('dblabel').textContent = 'loading...';
   db.collection('echo_studies').get().then(function(snap) {
     studies = [];
-    snap.forEach(function(d) { studies.push(d.data()); });
+    snap.forEach(function(d) { 
+      var data = d.data();
+      data._docId = d.id; // Store the firestore document ID so we can edit it later
+      studies.push(data); 
+    });
     document.getElementById('dbdot').className = 'db-dot on';
     document.getElementById('dblabel').textContent = studies.length.toLocaleString() + ' studies';
     document.getElementById('dbtotal').textContent = studies.length.toLocaleString();
@@ -468,7 +537,7 @@ function loadData() {
 
 function showEmpty() {
   ['k-total','k-pts','k-tte','k-tee'].forEach(function(id){ document.getElementById(id).textContent='0'; });
-  document.getElementById('tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text3)">No studies yet — use Import tab to upload your ViewPoint CSV</td></tr>';
+  document.getElementById('tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">No studies yet — use Import tab to upload your ViewPoint CSV</td></tr>';
 }
 
 function buildDash() {
@@ -593,7 +662,7 @@ function renderTable() {
   document.getElementById('pbnext').disabled = e>=n;
   
   if(!pg.length){
-    document.getElementById('tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text3)">No studies match your filters</td></tr>';
+    document.getElementById('tbody').innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">No studies match your filters</td></tr>';
     return;
   }
   
@@ -612,6 +681,7 @@ function renderTable() {
       '<td><span class="'+typeBadge(s.type)+'">'+s.type+'</span></td>'+
       '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+indDisplay+'</td>'+
       '<td style="color:var(--text2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(s.physician||'—')+'</td>'+
+      '<td style="text-align:right"><button class="btn-icon" onclick="requirePin(\''+s._docId+'\')" title="Edit Study"><i class="fa fa-pen"></i></button></td>'+
     '</tr>';
   }).join('');
 }
@@ -623,6 +693,84 @@ function showTab(name, btn) {
   document.querySelectorAll('.tbtn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('tab-'+name).classList.add('active');
   if(btn) btn.classList.add('active');
+}
+
+// ADMIN PIN LOGIC
+function requirePin(docId) {
+  pendingEditId = docId;
+  document.getElementById('admin-pin').value = '';
+  document.getElementById('pinModal').classList.add('show');
+  setTimeout(function(){ document.getElementById('admin-pin').focus(); }, 100);
+}
+
+function closePinModal() {
+  document.getElementById('pinModal').classList.remove('show');
+  pendingEditId = null;
+}
+
+function verifyPin() {
+  var pin = document.getElementById('admin-pin').value;
+  if (pin === '1234') {
+    closePinModal();
+    openEditModal(pendingEditId);
+  } else {
+    toast('Incorrect Admin PIN');
+    document.getElementById('admin-pin').value = '';
+    document.getElementById('admin-pin').focus();
+  }
+}
+
+// EDIT MODAL LOGIC
+function openEditModal(docId) {
+  var study = studies.find(function(s) { return s._docId === docId; });
+  if (!study) return;
+  
+  pendingEditId = docId;
+  document.getElementById('edit-pid').value = study.pid || '';
+  document.getElementById('edit-phys').value = study.physician || '';
+  document.getElementById('edit-ind').value = study.indication || '';
+  
+  document.getElementById('editModal').classList.add('show');
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('show');
+  pendingEditId = null;
+}
+
+function saveEdit() {
+  if (!pendingEditId) return;
+  
+  var newPid = document.getElementById('edit-pid').value.trim();
+  var newPhys = document.getElementById('edit-phys').value.trim();
+  var newInd = document.getElementById('edit-ind').value.trim();
+  
+  var btn = document.getElementById('save-edit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  
+  // Recalculate age in case the PID (Civil ID) was updated
+  var study = studies.find(function(s) { return s._docId === pendingEditId; });
+  var newAge = calculateAgeAtScan(study.dob, study.date, newPid);
+  
+  var updates = {
+    pid: newPid,
+    physician: newPhys,
+    indication: newInd,
+    age: newAge
+  };
+  
+  db.collection('echo_studies').doc(pendingEditId).update(updates).then(function() {
+    toast('Study updated successfully');
+    closeEditModal();
+    btn.disabled = false;
+    btn.textContent = 'Save Changes';
+    loadData(); // Refresh the data to update tables and charts
+  }).catch(function(error) {
+    toast('Error updating: ' + error.message);
+    btn.disabled = false;
+    btn.textContent = 'Save Changes';
+  });
 }
 
 // Calculate age helper (Updated for Kuwait Civil ID)

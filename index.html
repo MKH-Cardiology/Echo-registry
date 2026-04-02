@@ -50,7 +50,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
 .lf .iw { position: relative; }
 .lf .iw i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 0.8rem; }
 .lf input, .lf select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px 11px 36px; color: var(--text); font-size: 0.85rem; font-family: 'Plus Jakarta Sans', sans-serif; outline: none; transition: border-color 0.2s; box-shadow: inset 0 1px 2px rgba(0,0,0,0.01); }
-.lf select { padding-left: 12px; } /* Dropdowns don't always need icon space */
+.lf select { padding-left: 12px; } 
 .lf input:focus, .lf select:focus { border-color: var(--accent); background: #fff; }
 .lf input::placeholder { color: var(--text3); }
 .lbtn { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 10px; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 6px; transition: background 0.2s; }
@@ -560,9 +560,8 @@ var auth = firebase.auth();
 var studies = [], filtered = [], curPage = 1, PAGE = 25;
 var mChart = null, tChart = null, dayChart = null;
 var pendingEditId = null;
-var isSessionAdmin = false; // Master toggle for Admin Mode
+var isSessionAdmin = false; 
 
-// NAME NORMALIZATION ENGINE
 function normalizePhysicianName(name) {
   if (!name || name.trim() === '') return '—';
   var lower = name.toLowerCase();
@@ -632,6 +631,17 @@ function loadData() {
       data.physician = normalizePhysicianName(data.physician); 
       studies.push(data); 
     });
+    
+    // NEW: SORT STUDIES CHRONOLOGICALLY (NEWEST FIRST)
+    // Handles both DD/MM/YYYY and MM/DD/YYYY intelligently
+    studies.sort(function(a, b) {
+      var dateA = a.date ? new Date(a.date.split('/').reverse().join('/')).getTime() : 0;
+      var dateB = b.date ? new Date(b.date.split('/').reverse().join('/')).getTime() : 0;
+      if (isNaN(dateA)) dateA = new Date(a.date).getTime() || 0;
+      if (isNaN(dateB)) dateB = new Date(b.date).getTime() || 0;
+      return dateB - dateA; 
+    });
+
     document.getElementById('dbdot').className = 'db-dot on';
     document.getElementById('dblabel').textContent = studies.length.toLocaleString() + ' studies';
     document.getElementById('dbtotal').textContent = studies.length.toLocaleString();
@@ -807,7 +817,6 @@ function renderTable() {
   
   document.getElementById('tbody').innerHTML = pg.map(function(s){
     
-    // BUILD THE DYNAMIC DIAGNOSIS & TAGS COLUMN
     var tags = [];
     if (s.diagnosis) tags.push('<span class="ind-tag" style="background:var(--surface2);color:var(--text2);margin-bottom:4px;"><i class="fa fa-tag" style="margin-right:4px;color:var(--text3)"></i>'+s.diagnosis+'</span>');
     
@@ -984,7 +993,6 @@ function openEditModal(docId) {
   document.getElementById('edit-phys').value = study.physician || '';
   document.getElementById('edit-ind').value = study.diagnosis || '';
 
-  // Advanced fields
   document.getElementById('edit-normal').checked = study.is_normal || false;
   document.getElementById('edit-ef').value = study.lvef || '';
   document.getElementById('edit-lv').value = study.lv_diam || '';
@@ -997,7 +1005,6 @@ function openEditModal(docId) {
   document.getElementById('edit-peri').value = study.pericardial || '';
   document.getElementById('edit-cong').value = study.congenital || '';
 
-  // Valvular checkboxes
   var savedValves = study.valvular || [];
   var cbs = document.querySelectorAll('.v-cb');
   cbs.forEach(function(cb) {
@@ -1020,7 +1027,6 @@ function saveEdit() {
   var newPhys = normalizePhysicianName(document.getElementById('edit-phys').value.trim());
   var newInd = document.getElementById('edit-ind').value.trim();
   
-  // Advanced fields
   var isNormal = document.getElementById('edit-normal').checked;
   var lvef = document.getElementById('edit-ef').value;
   var lv = document.getElementById('edit-lv').value;

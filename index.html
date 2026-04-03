@@ -7,7 +7,49 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Echo Lab Registry — Mubarak Al-Kabeer</title>
+<title>Echo Registry</title>
+
+<!-- PWA / Home Screen Meta Tags -->
+
+<meta name="application-name" content="Echo Registry">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Echo Registry">
+<meta name="theme-color" content="#0d9488">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- Inline SVG icon as base64 for all sizes -->
+
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxMDAiIHkyPSIxMDAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBkOTQ4OCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iIzFhNTZjOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNTYzZWIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjMwIiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC4wNCIvPgogIDxjaXJjbGUgY3g9IjgwIiBjeT0iODAiIHI9IjM1IiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC4wNCIvPgogIDxwYXRoIGQ9Ik01MCA2MiBRMzcgNTIgMzcgMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjM1Ii8+CiAgPHBhdGggZD0iTTUwIDYyIFEyOSA0OSAyOSAyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC4xOCIvPgogIDxwYXRoIGQ9Ik01MCA2MiBRNjMgNTIgNjMgMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjM1Ii8+CiAgPHBhdGggZD0iTTUwIDYyIFE3MSA0OSA3MSAyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC4xOCIvPgogIDxwYXRoIGQ9Ik01MCA3MkM1MCA3MiAyNCA1NCAyNCAzNUMyNCAyNiAzMC41IDE5LjUgMzkgMTkuNUM0NC4yIDE5LjUgNDguNSAyMi41IDUwIDI2LjVDNTEuNSAyMi41IDU1LjggMTkuNSA2MSAxOS41QzY5LjUgMTkuNSA3NiAyNiA3NiAzNUM3NiA1NCA1MCA3MiA1MCA3MloiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI0MyIgcj0iNSIgZmlsbD0idXJsKCNiZykiIG9wYWNpdHk9IjAuOSIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNDMiIHI9IjIuNSIgZmlsbD0id2hpdGUiLz4KPC9zdmc+">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjEwMCIgeTI9IjEwMCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwZDk0ODgiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNTYzZWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNiZykiLz48cGF0aCBkPSJNNTAgNjIgUTM3IDUyIDM3IDM4IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC4zNSIvPjxwYXRoIGQ9Ik01MCA2MiBRNjMgNTIgNjMgMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjM1Ii8+PHBhdGggZD0iTTUwIDcyQzUwIDcyIDI0IDU0IDI0IDM1QzI0IDI2IDMwLjUgMTkuNSAzOSAxOS41QzQ0LjIgMTkuNSA0OC41IDIyLjUgNTAgMjYuNUM1MS41IDIyLjUgNTUuOCAxOS41IDYxIDE5LjVDNjkuNSAxOS41IDc2IDI2IDc2IDM1Qzc2IDU0IDUwIDcyIDUwIDcyWiIgZmlsbD0id2hpdGUiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjQzIiByPSI0IiBmaWxsPSJ1cmwoI2JnKSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNDMiIHI9IjIiIGZpbGw9IndoaXRlIi8+PC9zdmc+">
+
+<!-- Web App Manifest (inline) -->
+
+<script>
+(function(){
+  var manifest = {
+    name: "Echo Registry",
+    short_name: "Echo Registry",
+    description: "Mubarak Al-Kabeer Hospital — Cardiology Echo Lab Registry",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#0d9488",
+    theme_color: "#0d9488",
+    orientation: "portrait",
+    icons: [
+      { src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMTAwIiB5Mj0iMTAwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBkOTQ4OCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzI1NjNlYiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ1cmwoI2JnKSIvPjxwYXRoIGQ9Ik01MCA2MiBRMzcgNTIgMzcgMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjM1Ii8+PHBhdGggZD0iTTUwIDYyIFE2MyA1MiA2MyAzOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz48cGF0aCBkPSJNNTAgNzJDNTAgNzIgMjQgNTQgMjQgMzVDMjQgMjYgMzAuNSAxOS41IDM5IDE5LjVDNDQuMiAxOS41IDQ4LjUgMjIuNSA1MCAyNi41QzUxLjUgMjIuNSA1NS44IDE5LjUgNjEgMTkuNUM2OS41IDE5LjUgNzYgMjYgNzYgMzVDNzYgNTQgNTAgNzIgNTAgNzJaIiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNDMiIHI9IjUiIGZpbGw9InVybCgjYmcpIi8+PGNpcmNsZSBjeD0iNTAiIGN5PSI0MyIgcj0iMi41IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==", sizes: "192x192", type: "image/svg+xml" },
+      { src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMTAwIiB5Mj0iMTAwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBkOTQ4OCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzI1NjNlYiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ1cmwoI2JnKSIvPjxwYXRoIGQ9Ik01MCA2MiBRMzcgNTIgMzcgMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjM1Ii8+PHBhdGggZD0iTTUwIDYyIFE2MyA1MiA2MyAzOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz48cGF0aCBkPSJNNTAgNzJDNTAgNzIgMjQgNTQgMjQgMzVDMjQgMjYgMzAuNSAxOS41IDM5IDE5LjVDNDQuMiAxOS41IDQ4LjUgMjIuNSA1MCAyNi41QzUxLjUgMjIuNSA1NS44IDE5LjUgNjEgMTkuNUM2OS41IDE5LjUgNzYgMjYgNzYgMzVDNzYgNTQgNTAgNzIgNTAgNzJaIiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNDMiIHI9IjUiIGZpbGw9InVybCgjYmcpIi8+PGNpcmNsZSBjeD0iNTAiIGN5PSI0MyIgcj0iMi41IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==", sizes: "512x512", type: "image/svg+xml" }
+    ]
+  };
+  var blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = url;
+  document.head.appendChild(link);
+})();
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -190,7 +232,17 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
 <div id="pageApp">
   <div class="header">
     <div class="header-brand">
-      <div class="brand-icon"><i class="fa fa-heart-pulse"></i></div>
+      <div class="brand-icon" style="background:none;padding:0;overflow:hidden">
+  <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="hbg" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#0d9488"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>
+    <rect width="100" height="100" rx="10" fill="url(#hbg)"/>
+    <path d="M50 62 Q37 52 37 38" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.35"/>
+    <path d="M50 62 Q63 52 63 38" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.35"/>
+    <path d="M50 72C50 72 24 54 24 35C24 26 30.5 19.5 39 19.5C44.2 19.5 48.5 22.5 50 26.5C51.5 22.5 55.8 19.5 61 19.5C69.5 19.5 76 26 76 35C76 54 50 72 50 72Z" fill="white"/>
+    <circle cx="50" cy="43" r="4.5" fill="url(#hbg)"/>
+    <circle cx="50" cy="43" r="2.2" fill="white"/>
+  </svg>
+</div>
       <div class="brand-text"><h1>Echo Registry</h1><p>Mubarak Al-Kabeer · Cardiology</p></div>
     </div>
     <div class="header-right">

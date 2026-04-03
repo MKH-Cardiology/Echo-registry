@@ -335,6 +335,40 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
       <div class="kpi"><div class="kpi-icon blue"><i class="fa fa-database" style="color:var(--accent)"></i></div><div class="kpi-label">Studies with Clinical Data</div><div class="kpi-val" id="ca-withdata">—</div><div class="kpi-sub" id="ca-withdata-sub">—</div></div>
     </div>
     <div class="card"><div class="card-header"><div class="card-title">Age Distribution</div><span class="card-badge" id="ca-age-badge">—</span></div><div class="cw"><canvas id="ageChart"></canvas></div></div>
+
+```
+<!-- ══ TIER 2: ADVANCED ANALYTICS ══ -->
+<div class="section-label" style="margin-top:8px;color:var(--accent);border-top:2px solid #eff6ff;padding-top:16px">Advanced Analytics</div>
+
+<div class="section-label">Diastolic Dysfunction by Age Group</div>
+<div class="card"><div class="card-header"><div class="card-title">DD Grade Distribution by Decade</div><span class="card-badge" id="ca-ddage-badge">—</span></div><div class="cw" style="height:260px"><canvas id="ddAgeChart"></canvas></div></div>
+
+<div class="section-label">Valvular Disease by Age Group</div>
+<div class="card"><div class="card-header"><div class="card-title">Top Valve Lesions by Age Decade</div><span class="card-badge" id="ca-vage-badge">—</span></div><div class="cw" style="height:260px"><canvas id="vAgeChart"></canvas></div></div>
+
+<div class="section-label">HFpEF Phenotype</div>
+<div class="kpi-row">
+  <div class="kpi"><div class="kpi-icon" style="background:#fdf4ff"><i class="fa fa-lungs" style="color:#9333ea"></i></div><div class="kpi-label">HFpEF Profile</div><div class="kpi-val" id="ca-hfpef-n" style="color:#9333ea">—</div><div class="kpi-sub" id="ca-hfpef-sub">LVEF≥55% + ≥2 echo criteria</div></div>
+  <div class="kpi"><div class="kpi-icon" style="background:#fdf4ff"><i class="fa fa-percent" style="color:#9333ea"></i></div><div class="kpi-label">HFpEF % of Preserved EF</div><div class="kpi-val" id="ca-hfpef-pct" style="color:#9333ea">—</div><div class="kpi-sub">of studies with LVEF≥55%</div></div>
+</div>
+<div class="card">
+  <div class="card-header"><div class="card-title">HFpEF Criteria Breakdown</div><span class="card-badge" id="ca-hfpef-badge">—</span></div>
+  <div id="ca-hfpef-body"></div>
+</div>
+
+<div class="section-label">Disease Co-occurrence</div>
+<div class="card">
+  <div class="card-header"><div class="card-title">Key Clinical Pairs</div><span class="card-badge">studies meeting both criteria</span></div>
+  <div id="ca-cooc2"></div>
+</div>
+
+<div class="section-label">Severe Valve Disease Burden</div>
+<div class="card">
+  <div class="card-header"><div class="card-title">Severe Valvular Lesions + EF Status</div><span class="card-badge" id="ca-sev-badge">—</span></div>
+  <div id="ca-sev-body"></div>
+</div>
+```
+
   </div>
 
   <div id="tab-imp" class="pg">
@@ -1347,6 +1381,7 @@ function autoFillDiagnosis() {
 
 // ── Analytics charts state ────────────────────────────────────
 var efChart=null, ddChart=null, valveChart=null, cmChart=null, ageChart=null;
+var ddAgeChart=null, vAgeChart=null;
 
 function buildClinicalAnalytics() {
   var ss = studies; // all studies
@@ -1512,6 +1547,186 @@ function buildClinicalAnalytics() {
   }).length;
   document.getElementById('ca-withdata').textContent = withData;
   document.getElementById('ca-withdata-sub').textContent = n ? Math.round(withData/n*100)+'% of all studies' : '—';
+
+  // ════════════════════════════════════════════════════════════
+  // TIER 2 ANALYTICS
+  // ════════════════════════════════════════════════════════════
+
+  var decades = ['<40','40-49','50-59','60-69','70-79','≥80'];
+  function getDecade(age) {
+    var a = parseInt(age);
+    if (isNaN(a)) return null;
+    if (a < 40)  return '<40';
+    if (a < 50)  return '40-49';
+    if (a < 60)  return '50-59';
+    if (a < 70)  return '60-69';
+    if (a < 80)  return '70-79';
+    return '≥80';
+  }
+
+  // ── 2. DD by Age Group ──────────────────────────────────────
+  var ddGrades   = ['Normal','Grade I','Grade II','Grade III'];
+  var ddAgeData  = {}; // decade -> {grade -> count}
+  decades.forEach(function(d){ ddAgeData[d]={}; ddGrades.forEach(function(g){ ddAgeData[d][g]=0; }); });
+  ss.forEach(function(s){
+    if(!s.diastolic||!s.age) return;
+    var dec = getDecade(s.age);
+    if(!dec) return;
+    if(ddAgeData[dec][s.diastolic]!==undefined) ddAgeData[dec][s.diastolic]++;
+  });
+  var ddAgeColors = ['#059669','#fbbf24','#f97316','#dc2626'];
+  var ddAgeTotal  = ss.filter(function(s){return s.diastolic&&s.age;}).length;
+  document.getElementById('ca-ddage-badge').textContent = ddAgeTotal + ' studies with both age & DD grading';
+  if(ddAgeChart) ddAgeChart.destroy();
+  ddAgeChart = new Chart(document.getElementById('ddAgeChart'),{
+    type:'bar',
+    data:{
+      labels: decades,
+      datasets: ddGrades.map(function(g,i){return {
+        label:g, data:decades.map(function(d){return ddAgeData[d][g];}),
+        backgroundColor:ddAgeColors[i], borderRadius:4, borderSkipped:false
+      };})
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#475569',font:{family:'Plus Jakarta Sans',size:11},usePointStyle:true,padding:12}}},
+      scales:{x:{stacked:true,ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}},
+              y:{stacked:true,ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}}}}
+  });
+
+  // ── 3. Valve lesions by age group ───────────────────────────
+  var topValves      = ['Severe AS','Severe MR','Moderate MR','Severe TR','Severe AR','Moderate AS'];
+  var vAgeColors     = ['#dc2626','#2563eb','#60a5fa','#f97316','#059669','#fbbf24'];
+  var vAgeDatasets   = topValves.map(function(v,i){
+    return {
+      label:v,
+      data: decades.map(function(dec){
+        return ss.filter(function(s){
+          var a=getDecade(s.age);
+          return a===dec && s.valvular && s.valvular.includes(v);
+        }).length;
+      }),
+      backgroundColor: vAgeColors[i], borderRadius:4, borderSkipped:false
+    };
+  });
+  var vAgeTotal = ss.filter(function(s){return s.valvular&&s.valvular.length&&s.age;}).length;
+  document.getElementById('ca-vage-badge').textContent = vAgeTotal + ' studies with valvular findings & age';
+  if(vAgeChart) vAgeChart.destroy();
+  vAgeChart = new Chart(document.getElementById('vAgeChart'),{
+    type:'bar',
+    data:{labels:decades, datasets:vAgeDatasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{color:'#475569',font:{family:'Plus Jakarta Sans',size:10},usePointStyle:true,padding:10}}},
+      scales:{x:{stacked:true,ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}},
+              y:{stacked:true,ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}}}}
+  });
+
+  // ── 4. HFpEF Phenotype ──────────────────────────────────────
+  // Criteria: LVEF ≥55% + ≥2 of: (E/e'>14), (LAVI>34), (TR Vmax>2.8), (DD Grade II or III)
+  var pefStudies = ss.filter(function(s){ return s.lvef && parseFloat(s.lvef)>=55; });
+  var hfpefStudies = pefStudies.filter(function(s){
+    var score = 0;
+    if(s.ee_ratio && parseFloat(s.ee_ratio)>14) score++;
+    if(s.lavi    && parseFloat(s.lavi)>34)       score++;
+    if(s.tr_vmax && parseFloat(s.tr_vmax)>2.8)   score++;
+    if(s.diastolic==='Grade II'||s.diastolic==='Grade III') score++;
+    return score >= 2;
+  });
+  var hfpefN   = hfpefStudies.length;
+  var hfpefPct = pefStudies.length ? Math.round(hfpefN/pefStudies.length*100) : 0;
+  document.getElementById('ca-hfpef-n').textContent   = hfpefN;
+  document.getElementById('ca-hfpef-pct').textContent = hfpefPct+'%';
+  document.getElementById('ca-hfpef-badge').textContent = hfpefN+' studies flagged';
+  // Criteria breakdown counts (among ALL pEF studies)
+  var crit = [
+    {label:"E/e' > 14",      n: pefStudies.filter(function(s){return s.ee_ratio&&parseFloat(s.ee_ratio)>14;}).length},
+    {label:"LAVI > 34",      n: pefStudies.filter(function(s){return s.lavi&&parseFloat(s.lavi)>34;}).length},
+    {label:"TR Vmax > 2.8",  n: pefStudies.filter(function(s){return s.tr_vmax&&parseFloat(s.tr_vmax)>2.8;}).length},
+    {label:"DD Grade II/III",n: pefStudies.filter(function(s){return s.diastolic==='Grade II'||s.diastolic==='Grade III';}).length}
+  ];
+  var maxC = Math.max.apply(null, crit.map(function(c){return c.n;}))||1;
+  var hfpefHtml = '<div style="font-size:0.75rem;color:var(--text2);margin-bottom:12px">Among '+pefStudies.length+' studies with LVEF ≥55%:</div>';
+  crit.forEach(function(c){
+    var pct = pefStudies.length ? Math.round(c.n/pefStudies.length*100) : 0;
+    hfpefHtml += '<div style="margin-bottom:10px">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.75rem;color:var(--text);font-weight:600">'+c.label+'</span><span style="font-size:0.75rem;color:#9333ea;font-weight:700">'+c.n+' ('+pct+'%)</span></div>' +
+      '<div style="background:#f3e8ff;border-radius:6px;height:8px;overflow:hidden"><div style="width:'+Math.round(c.n/maxC*100)+'%;height:100%;background:linear-gradient(90deg,#9333ea,#c084fc);border-radius:6px;transition:width 0.4s"></div></div>' +
+      '</div>';
+  });
+  document.getElementById('ca-hfpef-body').innerHTML = hfpefHtml;
+
+  // ── 5. Co-occurrence matrix ─────────────────────────────────
+  var pairs = [
+    {a:'Ischemic CM',   aKey:'cardiomyopathy', b:'Reduced EF (<50%)',  bFn:function(s){return s.lvef&&parseFloat(s.lvef)<50;}},
+    {a:'Severe AS',     aKey:'valvular',        b:'Reduced EF (<50%)',  bFn:function(s){return s.lvef&&parseFloat(s.lvef)<50;}},
+    {a:'Severe MR',     aKey:'valvular',        b:'Reduced EF (<50%)',  bFn:function(s){return s.lvef&&parseFloat(s.lvef)<50;}},
+    {a:'HCM',           aKey:'cardiomyopathy',  b:'DD Grade II/III',    bFn:function(s){return s.diastolic==='Grade II'||s.diastolic==='Grade III';}},
+    {a:'Severe AS',     aKey:'valvular',        b:'DD Grade II/III',    bFn:function(s){return s.diastolic==='Grade II'||s.diastolic==='Grade III';}},
+    {a:'Pericardial Disease', aKey:'pericardial', b:'Reduced EF (<50%)', bFn:function(s){return s.lvef&&parseFloat(s.lvef)<50;}}
+  ];
+  function hasA(s, pair) {
+    if(pair.aKey==='valvular')      return s.valvular&&s.valvular.some(function(v){return v.includes(pair.a.replace('HCM','Hypertrophic'));});
+    if(pair.aKey==='cardiomyopathy')return s.cardiomyopathy&&s.cardiomyopathy.includes(pair.a==='HCM'?'Hypertrophic':pair.a==='Ischemic CM'?'Ischemic':pair.a);
+    if(pair.aKey==='pericardial')   return !!s.pericardial;
+    return false;
+  }
+  var cooc2Html = '<div style="overflow-x:auto"><table style="min-width:auto;font-size:0.75rem;width:100%"><thead><tr>' +
+    '<th style="text-align:left;padding:10px 12px;color:var(--text3);font-size:0.65rem;border-bottom:2px solid var(--border)">Finding A</th>' +
+    '<th style="padding:10px 12px;color:var(--text3);font-size:0.65rem;border-bottom:2px solid var(--border)">Finding B</th>' +
+    '<th style="padding:10px 12px;color:var(--text3);font-size:0.65rem;border-bottom:2px solid var(--border);text-align:right">Both</th>' +
+    '<th style="padding:10px 12px;color:var(--text3);font-size:0.65rem;border-bottom:2px solid var(--border);text-align:right">A only</th>' +
+    '<th style="padding:10px 12px;color:var(--text3);font-size:0.65rem;border-bottom:2px solid var(--border);text-align:right">% co-occur</th>' +
+    '</tr></thead><tbody>';
+  pairs.forEach(function(pair, idx){
+    var aStudies    = ss.filter(function(s){return hasA(s,pair);});
+    var bothStudies = aStudies.filter(function(s){return pair.bFn(s);});
+    var pct = aStudies.length ? Math.round(bothStudies.length/aStudies.length*100) : 0;
+    var rowBg = idx%2===0 ? '' : 'background:#f8fafc';
+    var pctColor = pct>=50?'var(--red)':pct>=25?'var(--amber)':'var(--text2)';
+    cooc2Html += '<tr style="'+rowBg+'">' +
+      '<td style="padding:10px 12px;font-weight:600;color:var(--text)">'+pair.a+'</td>' +
+      '<td style="padding:10px 12px;color:var(--text2)">'+pair.b+'</td>' +
+      '<td style="padding:10px 12px;text-align:right;font-weight:700;color:var(--accent)">'+bothStudies.length+'</td>' +
+      '<td style="padding:10px 12px;text-align:right;color:var(--text3)">'+aStudies.length+'</td>' +
+      '<td style="padding:10px 12px;text-align:right;font-weight:700;color:'+pctColor+'">'+pct+'%</td>' +
+      '</tr>';
+  });
+  cooc2Html += '</tbody></table></div>';
+  document.getElementById('ca-cooc2').innerHTML = cooc2Html;
+
+  // ── 9. Severe valve burden ──────────────────────────────────
+  var sevValves = ['Severe AS','Severe AR','Severe MS','Severe MR','Severe TR'];
+  var sevAny    = ss.filter(function(s){return s.valvular&&sevValves.some(function(v){return s.valvular.includes(v);});});
+  document.getElementById('ca-sev-badge').textContent = sevAny.length + ' studies with any severe lesion';
+  var sevHtml = '';
+  if(sevAny.length){
+    var sevRows = sevValves.map(function(v){
+      var vStudies  = ss.filter(function(s){return s.valvular&&s.valvular.includes(v);});
+      var withRefEF = vStudies.filter(function(s){return s.lvef&&parseFloat(s.lvef)<50;}).length;
+      var withPreEF = vStudies.filter(function(s){return s.lvef&&parseFloat(s.lvef)>=55;}).length;
+      var noEF      = vStudies.filter(function(s){return !s.lvef;}).length;
+      return {v:v, total:vStudies.length, refEF:withRefEF, preEF:withPreEF, noEF:noEF};
+    }).filter(function(r){return r.total>0;});
+    sevHtml = '<div style="overflow-x:auto"><table style="min-width:auto;font-size:0.75rem;width:100%"><thead><tr>' +
+      '<th style="text-align:left;padding:10px 12px;color:var(--text3);font-size:0.65rem;border-bottom:2px solid var(--border)">Lesion</th>' +
+      '<th style="padding:10px 12px;color:var(--text3);font-size:0.65rem;border-bottom:2px solid var(--border);text-align:right">Total</th>' +
+      '<th style="padding:10px 12px;color:var(--text3);font-size:0.65rem;border-bottom:2px solid var(--border);text-align:right">EF &lt;50%</th>' +
+      '<th style="padding:10px 12px;color:var(--text3);font-size:0.65rem;border-bottom:2px solid var(--border);text-align:right">EF ≥55%</th>' +
+      '<th style="padding:10px 12px;color:var(--text3);font-size:0.65rem;border-bottom:2px solid var(--border);text-align:right">No EF</th>' +
+      '</tr></thead><tbody>';
+    sevRows.forEach(function(r, idx){
+      var rowBg = idx%2===0 ? '' : 'background:#f8fafc';
+      sevHtml += '<tr style="'+rowBg+'">' +
+        '<td style="padding:10px 12px;font-weight:600;color:var(--text)">'+r.v+'</td>' +
+        '<td style="padding:10px 12px;text-align:right;font-weight:700;color:var(--accent)">'+r.total+'</td>' +
+        '<td style="padding:10px 12px;text-align:right;color:var(--red);font-weight:600">'+r.refEF+'</td>' +
+        '<td style="padding:10px 12px;text-align:right;color:var(--green);font-weight:600">'+r.preEF+'</td>' +
+        '<td style="padding:10px 12px;text-align:right;color:var(--text3)">'+r.noEF+'</td>' +
+        '</tr>';
+    });
+    sevHtml += '</tbody></table></div>';
+  } else {
+    sevHtml = '<div style="color:var(--text3);font-size:0.8rem;padding:8px 0">No severe valvular lesions recorded yet</div>';
+  }
+  document.getElementById('ca-sev-body').innerHTML = sevHtml;
 }
 
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},3500);}

@@ -175,8 +175,7 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
 .modal-body{padding:24px;overflow-y:auto;flex:1;}
 .modal-body .lf input{padding:11px 16px;margin-top:4px;}
 .modal-footer{padding:16px 24px;border-top:1px solid var(--border);background:#f8fafc;display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;}
-.adv-section{border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:12px;background:#fafafa;transition:opacity 0.3s;}
-.adv-section.disabled{opacity:0.4;pointer-events:none;}
+.adv-section{border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:12px;background:#fafafa;}
 .cb-wrap{display:flex;align-items:center;gap:8px;margin-bottom:16px;font-weight:600;color:var(--green);font-size:0.85rem;cursor:pointer;}
 .cb-wrap input{width:18px;height:18px;cursor:pointer;accent-color:var(--green);}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -832,37 +831,29 @@ function openViewModal(docId){
 }
 function closeViewModal(){document.getElementById('viewModal').classList.remove('show');}
 
+function toggleNormalStudy(){
+  var isN = document.getElementById('edit-normal').checked;
+  var ind  = document.getElementById('edit-ind');
+  if(isN){
+    if(!ind.value.toLowerCase().includes('normal'))
+      ind.value = ind.value ? ind.value+' - Normal Study' : 'Normal Study';
+  } else {
+    if(ind.value==='Normal Study') ind.value='';
+    else if(ind.value.includes(' - Normal Study')) ind.value=ind.value.replace(' - Normal Study','');
+  }
+}
+
 // Show/hide AS sub-fields based on Mod AS or Severe AS checkbox state
 function toggleASFields() {
-  var modAS   = document.querySelector('.v-cb[value="Moderate AS"]').checked;
-  var sevAS   = document.querySelector('.v-cb[value="Severe AS"]').checked;
-  var asBox   = document.getElementById('as-fields');
+  var modAS = document.querySelector('.v-cb[value="Moderate AS"]').checked;
+  var sevAS = document.querySelector('.v-cb[value="Severe AS"]').checked;
+  var asBox = document.getElementById('as-fields');
   if (modAS || sevAS) {
     asBox.style.display = 'block';
   } else {
     asBox.style.display = 'none';
     document.getElementById('as-mpg').value = '';
     document.getElementById('as-ava').value  = '';
-  }
-}
-
-function toggleNormalStudy(){
-  var isN=document.getElementById('edit-normal').checked,box=document.getElementById('adv-box'),ind=document.getElementById('edit-ind');
-  if(isN){
-    box.classList.add('disabled');
-    if(!ind.value.toLowerCase().includes('normal'))ind.value=ind.value?ind.value+' - Normal Study':'Normal Study';
-    ['edit-ef','edit-lv','edit-lavi','edit-ea','edit-ee','edit-esep','edit-elat','edit-tr','edit-gls'].forEach(function(id){document.getElementById(id).value='';});
-    document.getElementById('edit-diastolic').value='';
-    document.querySelectorAll('.v-cb').forEach(function(c){c.checked=false;});
-    document.getElementById('as-fields').style.display='none';
-    document.getElementById('as-mpg').value='';
-    document.getElementById('as-ava').value='';
-    document.getElementById('dd-badge').className='dd-badge';
-    document.getElementById('dd-algo-label').textContent='';
-  }else{
-    box.classList.remove('disabled');
-    if(ind.value==='Normal Study')ind.value='';
-    else if(ind.value.includes(' - Normal Study'))ind.value=ind.value.replace(' - Normal Study','');
   }
 }
 
@@ -1066,7 +1057,6 @@ function openAddModal(){
   document.getElementById('dd-badge').className = 'dd-badge';
   document.getElementById('dd-algo-label').textContent = '';
   document.querySelectorAll('.v-cb').forEach(function(c){c.checked=false;});
-  toggleNormalStudy();
   document.getElementById('editModal').classList.add('show');
 }
 
@@ -1101,7 +1091,6 @@ function openEditModal(docId){
   document.getElementById('as-mpg').value = study.as_mpg||'';
   document.getElementById('as-ava').value  = study.as_ava||'';
   toggleASFields();
-  toggleNormalStudy();
   // Run calculator — it will detect override state from ddOverridden
   calcDiastolic();
   // If previously overridden, show the override note

@@ -428,14 +428,14 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
 
     <div class="section-label">Pathology & Structural Findings</div>
     <div class="grid-2">
-      <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm"><option value="">None</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
+      <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
       <div class="lf"><label>Pericardial Disease</label><select id="edit-peri"><option value="">None</option><option>Pericardial Effusion</option><option>Cardiac Tamponade</option><option>Constrictive Pericarditis</option></select></div>
       <div class="lf"><label>Congenital Heart Disease</label><select id="edit-cong"><option value="">None</option><option>Bicuspid Aortic Valve (BAV)</option><option>Atrial Septal Defect (ASD)</option><option>Ventricular Septal Defect (VSD)</option><option>Patent Foramen Ovale (PFO)</option><option>Patent Ductus Arteriosus (PDA)</option><option>Tetralogy of Fallot (TOF)</option><option>Coarctation of Aorta</option><option>Ebstein's Anomaly</option></select></div>
     </div>
     <div class="section-label" style="margin-top:16px">Significant Valvular Lesions</div>
     <div class="valve-grid">
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AS"> Mod AS</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS"> Severe AS</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AS" onchange="toggleASFields()"> Mod AS</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS" onchange="toggleASFields()"> Severe AS</label>
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AR"> Mod AR</label>
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AR"> Severe AR</label>
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MS"> Mod MS</label>
@@ -444,6 +444,16 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MR"> Severe MR</label>
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate TR"> Mod TR</label>
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe TR"> Severe TR</label>
+    </div>
+    <!-- AS sub-fields: appear when Mod AS or Severe AS is checked -->
+    <div id="as-fields" style="display:none;margin-top:12px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1.5px solid #fcd34d;border-radius:10px;padding:12px;">
+      <div style="font-size:0.68rem;font-weight:700;color:#92400e;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+        <i class="fa fa-circle-exclamation"></i> Aortic Stenosis Severity
+      </div>
+      <div class="grid-2">
+        <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="as-mpg" placeholder="e.g. 35" step="1"></div>
+        <div class="lf" style="margin-bottom:0"><label>AVA (cm²)</label><input type="number" id="as-ava" placeholder="e.g. 0.9" step="0.01"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -716,6 +726,11 @@ function openViewModal(docId){
       if(s.elat)h+='<div class="vc-row"><span class="vc-label">Lateral e\'</span><span class="vc-val">'+s.elat+' cm/s</span></div>';
       if(s.tr_vmax)h+='<div class="vc-row"><span class="vc-label">TR Vmax</span><span class="vc-val">'+s.tr_vmax+' m/s</span></div>';
       if(s.diastolic)h+='<div class="vc-row"><span class="vc-label">Diastolic Fn</span><span class="vc-val">'+s.diastolic+(s.dd_overridden?' <span style="font-size:0.65rem;color:var(--teal)">(physician override)</span>':'')+'</span></div>';
+      if(s.as_mpg||s.as_ava){
+        h+='<div class="section-label" style="margin-top:12px">Aortic Stenosis</div>';
+        if(s.as_mpg)h+='<div class="vc-row"><span class="vc-label">Mean PG</span><span class="vc-val">'+s.as_mpg+' mmHg</span></div>';
+        if(s.as_ava)h+='<div class="vc-row"><span class="vc-label">AVA</span><span class="vc-val">'+s.as_ava+' cm²</span></div>';
+      }
       var dt='';
       if(s.cardiomyopathy)dt+='<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">'+s.cardiomyopathy+'</span> ';
       if(s.pericardial)dt+='<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">'+s.pericardial+'</span> ';
@@ -729,6 +744,20 @@ function openViewModal(docId){
 }
 function closeViewModal(){document.getElementById('viewModal').classList.remove('show');}
 
+// Show/hide AS sub-fields based on Mod AS or Severe AS checkbox state
+function toggleASFields() {
+  var modAS   = document.querySelector('.v-cb[value="Moderate AS"]').checked;
+  var sevAS   = document.querySelector('.v-cb[value="Severe AS"]').checked;
+  var asBox   = document.getElementById('as-fields');
+  if (modAS || sevAS) {
+    asBox.style.display = 'block';
+  } else {
+    asBox.style.display = 'none';
+    document.getElementById('as-mpg').value = '';
+    document.getElementById('as-ava').value  = '';
+  }
+}
+
 function toggleNormalStudy(){
   var isN=document.getElementById('edit-normal').checked,box=document.getElementById('adv-box'),ind=document.getElementById('edit-ind');
   if(isN){
@@ -737,6 +766,9 @@ function toggleNormalStudy(){
     ['edit-ef','edit-lv','edit-lavi','edit-ea','edit-ee','edit-esep','edit-elat','edit-tr','edit-gls'].forEach(function(id){document.getElementById(id).value='';});
     document.getElementById('edit-diastolic').value='';
     document.querySelectorAll('.v-cb').forEach(function(c){c.checked=false;});
+    document.getElementById('as-fields').style.display='none';
+    document.getElementById('as-mpg').value='';
+    document.getElementById('as-ava').value='';
     document.getElementById('dd-badge').className='dd-badge';
     document.getElementById('dd-algo-label').textContent='';
   }else{
@@ -940,6 +972,9 @@ function openAddModal(){
   ['edit-cm','edit-peri','edit-cong'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('edit-diastolic').value = '';
   document.getElementById('edit-normal').checked = false;
+  document.getElementById('as-fields').style.display = 'none';
+  document.getElementById('as-mpg').value = '';
+  document.getElementById('as-ava').value  = '';
   document.getElementById('dd-badge').className = 'dd-badge';
   document.getElementById('dd-algo-label').textContent = '';
   document.querySelectorAll('.v-cb').forEach(function(c){c.checked=false;});
@@ -974,6 +1009,10 @@ function openEditModal(docId){
   document.getElementById('edit-cong').value   = study.congenital||'';
   var sv=study.valvular||[];
   document.querySelectorAll('.v-cb').forEach(function(c){c.checked=sv.includes(c.value);});
+  // AS sub-fields
+  document.getElementById('as-mpg').value = study.as_mpg||'';
+  document.getElementById('as-ava').value  = study.as_ava||'';
+  toggleASFields();
   toggleNormalStudy();
   // Run calculator — it will detect override state from ddOverridden
   calcDiastolic();
@@ -1026,7 +1065,9 @@ function saveEdit(){
     cardiomyopathy:  isN?null:document.getElementById('edit-cm').value||null,
     pericardial:     isN?null:document.getElementById('edit-peri').value||null,
     congenital:      isN?null:document.getElementById('edit-cong').value||null,
-    valvular:        isN?[]:valves
+    valvular:        isN?[]:valves,
+    as_mpg:          isN?null:document.getElementById('as-mpg').value||null,
+    as_ava:          isN?null:document.getElementById('as-ava').value||null
   };
   var op=isNew?(function(){u.importedAt=new Date().toISOString();return db.collection('echo_studies').doc(docId).set(u);}):
     (function(){return db.collection('echo_studies').doc(docId).update(u);});

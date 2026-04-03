@@ -583,7 +583,7 @@ function doFilter(){
 }
 
 function renderTable(){
-  document.getElementById('thead-row').innerHTML='<tr><th>Patient ID</th><th>Diagnosis / Findings</th><th>Date</th><th>Type</th><th>Age</th><th>Physician</th><th style="text-align:right">Action</th></tr>';
+  document.getElementById('thead-row').innerHTML='<tr><th>Patient ID</th><th>Diagnosis</th><th>Date<br><span style="font-size:0.55rem;color:var(--text3);font-weight:400;letter-spacing:0;text-transform:none">MM/DD/YYYY</span></th><th>Type</th><th>Age</th><th>Physician</th><th style="text-align:right">Action</th></tr>';
   var s=(curPage-1)*PAGE,e=s+PAGE,pg=filtered.slice(s,e),n=filtered.length;
   document.getElementById('rinfo').textContent=n.toLocaleString()+' studies found';
   document.getElementById('pgi').textContent='Page '+curPage+' of '+Math.max(1,Math.ceil(n/PAGE));

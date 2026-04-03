@@ -292,6 +292,7 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
       </div>
       <div style="display:flex;gap:10px;">
         <button class="import-btn" style="padding:6px 14px;" onclick="openAddModal()"><i class="fa fa-plus"></i> Add Study</button>
+        <button class="import-btn" style="padding:6px 14px;background:var(--teal)" onclick="exportExcel()"><i class="fa fa-file-excel"></i> Export</button>
         <button id="btn-admin-toggle" class="pgb" onclick="toggleAdmin()"><i class="fa fa-lock"></i> Admin Mode</button>
       </div>
     </div>
@@ -406,6 +407,19 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
   </div>
 </div>
 
+<!-- PATIENT TIMELINE MODAL -->
+
+<div id="ptModal" class="modal-overlay">
+  <div class="modal-card" style="max-width:560px;">
+    <div class="modal-header">
+      <h3 id="pt-title">Patient History</h3>
+      <button class="modal-close" onclick="closePtModal()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="pt-body"></div>
+    <div class="modal-footer"><button class="pgb" onclick="closePtModal()">Close</button></div>
+  </div>
+</div>
+
 <!-- PIN MODAL -->
 
 <div id="pinModal" class="modal-overlay">
@@ -471,9 +485,11 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
       <div class="lf"><label>LV Diameter (mm)</label><input type="number" id="edit-lv" placeholder="e.g. 48" inputmode="numeric"></div>
       <div class="lf"><label>GLS (%)</label><input type="number" step="0.1" id="edit-gls" placeholder="e.g. -18" inputmode="decimal"></div>
       <div class="lf"><label>LAVI (ml/m²)</label><input type="number" id="edit-lavi" placeholder="e.g. 28" inputmode="numeric" oninput="calcDiastolic()"></div>
+      <div class="lf"><label>TAPSE (mm)</label><input type="number" step="0.1" id="edit-tapse" placeholder="e.g. 20" inputmode="decimal"></div>
+      <div class="lf"><label>PASP (mmHg)</label><input type="number" id="edit-pasp" placeholder="e.g. 35" inputmode="numeric"></div>
     </div>
 
-    <!-- DIASTOLIC PARAMETERS — grouped visually -->
+    <!-- DIASTOLIC PARAMETERS -->
     <div style="background:linear-gradient(135deg,#eff6ff,#f0fdff);border:1.5px solid #bfdbfe;border-radius:12px;padding:14px;margin-top:4px;margin-bottom:12px;">
       <div style="font-size:0.68rem;font-weight:700;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
         <i class="fa fa-calculator"></i> Diastolic Parameters (ASE 2025)
@@ -485,8 +501,6 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
         <div class="lf"><label>Lateral e' (cm/s)</label><input type="number" step="0.1" id="edit-elat" placeholder="e.g. 9.0" inputmode="decimal" oninput="calcDiastolic()"></div>
         <div class="lf"><label>TR Vmax (m/s)</label><input type="number" step="0.1" id="edit-tr" placeholder="e.g. 2.6" inputmode="decimal" oninput="calcDiastolic()"></div>
       </div>
-
-      <!-- DIASTOLIC FUNCTION FIELD + AUTO BADGE -->
       <div class="lf" style="margin-bottom:0">
         <label style="display:flex;align-items:center;justify-content:space-between;">
           <span>Diastolic Function</span>
@@ -500,38 +514,83 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
           <option>Grade III</option>
           <option>Indeterminate</option>
         </select>
-        <!-- Auto-calc badge -->
         <div id="dd-badge" class="dd-badge"></div>
       </div>
     </div>
 
     <div class="section-label">Pathology & Structural Findings</div>
     <div class="grid-2">
-      <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm" onchange="autoFillDiagnosis()"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
+      <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm" onchange="toggleCMFields();autoFillDiagnosis()"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
       <div class="lf"><label>Pericardial Disease</label><select id="edit-peri" onchange="autoFillDiagnosis()"><option value="">None</option><option>Pericardial Effusion</option><option>Cardiac Tamponade</option><option>Constrictive Pericarditis</option></select></div>
       <div class="lf"><label>Congenital Heart Disease</label><select id="edit-cong" onchange="autoFillDiagnosis()"><option value="">None</option><option>Bicuspid Aortic Valve (BAV)</option><option>Atrial Septal Defect (ASD)</option><option>Ventricular Septal Defect (VSD)</option><option>Patent Foramen Ovale (PFO)</option><option>Patent Ductus Arteriosus (PDA)</option><option>Tetralogy of Fallot (TOF)</option><option>Coarctation of Aorta</option><option>Ebstein's Anomaly</option></select></div>
     </div>
-    <div class="section-label" style="margin-top:16px">Significant Valvular Lesions</div>
+
+    <!-- HCM sub-fields -->
+    <div id="hcm-fields" style="display:none;margin-top:4px;margin-bottom:12px;background:linear-gradient(135deg,#fdf4ff,#f5f3ff);border:1.5px solid #d8b4fe;border-radius:10px;padding:12px;">
+      <div style="font-size:0.68rem;font-weight:700;color:#7e22ce;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-heart"></i> HCM Parameters</div>
+      <div class="grid-2">
+        <div class="lf"><label>Max Wall Thickness (mm)</label><input type="number" step="0.1" id="hcm-wt" placeholder="e.g. 18" inputmode="decimal"></div>
+        <div class="lf"><label>LVOT Gradient Rest (mmHg)</label><input type="number" id="hcm-lvot-rest" placeholder="e.g. 20" inputmode="numeric"></div>
+        <div class="lf"><label>LVOT Gradient Valsalva (mmHg)</label><input type="number" id="hcm-lvot-val" placeholder="e.g. 50" inputmode="numeric"></div>
+        <div class="lf"><label>SAM Present</label><select id="hcm-sam"><option value="">Select...</option><option>Yes</option><option>No</option></select></div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:8px">Significant Valvular Lesions</div>
     <div class="valve-grid">
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AS" onchange="toggleASFields();autoFillDiagnosis()"> Mod AS</label>
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS" onchange="toggleASFields();autoFillDiagnosis()"> Severe AS</label>
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AR" onchange="autoFillDiagnosis()"> Mod AR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AR" onchange="autoFillDiagnosis()"> Severe AR</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe AR</label>
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MS" onchange="autoFillDiagnosis()"> Mod MS</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MS" onchange="autoFillDiagnosis()"> Severe MS</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MS" onchange="toggleValveFields();autoFillDiagnosis()"> Severe MS</label>
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MR" onchange="autoFillDiagnosis()"> Mod MR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MR" onchange="autoFillDiagnosis()"> Severe MR</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe MR</label>
       <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate TR" onchange="autoFillDiagnosis()"> Mod TR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe TR" onchange="autoFillDiagnosis()"> Severe TR</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe TR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe TR</label>
     </div>
-    <!-- AS sub-fields: appear when Mod AS or Severe AS is checked -->
-    <div id="as-fields" style="display:none;margin-top:12px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1.5px solid #fcd34d;border-radius:10px;padding:12px;">
-      <div style="font-size:0.68rem;font-weight:700;color:#92400e;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-        <i class="fa fa-circle-exclamation"></i> Aortic Stenosis Severity
-      </div>
+
+    <!-- AS sub-fields -->
+    <div id="as-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1.5px solid #fcd34d;border-radius:10px;padding:12px;">
+      <div style="font-size:0.68rem;font-weight:700;color:#92400e;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Aortic Stenosis Severity</div>
       <div class="grid-2">
         <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="as-mpg" placeholder="e.g. 35" step="1" inputmode="numeric" oninput="autoFillDiagnosis()"></div>
         <div class="lf" style="margin-bottom:0"><label>AVA (cm²)</label><input type="number" id="as-ava" placeholder="e.g. 0.9" step="0.01" inputmode="decimal"></div>
+      </div>
+    </div>
+
+    <!-- Severe MR sub-fields -->
+    <div id="mr-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fef2f2,#fff1f2);border:1.5px solid #fca5a5;border-radius:10px;padding:12px;">
+      <div style="font-size:0.68rem;font-weight:700;color:#991b1b;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe MR Parameters</div>
+      <div class="grid-2">
+        <div class="lf"><label>MR Mechanism</label><select id="mr-mech"><option value="">Select...</option><option>Functional</option><option>Degenerative</option><option>Rheumatic</option><option>Ischemic</option></select></div>
+        <div class="lf"><label>Vena Contracta (mm)</label><input type="number" step="0.1" id="mr-vc" placeholder="e.g. 7" inputmode="decimal"></div>
+        <div class="lf" style="margin-bottom:0"><label>EROA (cm²)</label><input type="number" step="0.01" id="mr-eroa" placeholder="e.g. 0.4" inputmode="decimal"></div>
+      </div>
+    </div>
+
+    <!-- Severe MS sub-fields -->
+    <div id="ms-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:10px;padding:12px;">
+      <div style="font-size:0.68rem;font-weight:700;color:#1e40af;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe MS Parameters</div>
+      <div class="grid-2">
+        <div class="lf" style="margin-bottom:0"><label>MVA (cm²)</label><input type="number" step="0.01" id="ms-mva" placeholder="e.g. 0.9" inputmode="decimal"></div>
+        <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="ms-mpg" placeholder="e.g. 12" inputmode="numeric"></div>
+      </div>
+    </div>
+
+    <!-- Severe AR sub-fields -->
+    <div id="ar-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:10px;padding:12px;">
+      <div style="font-size:0.68rem;font-weight:700;color:#166534;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe AR Parameters</div>
+      <div class="grid-2">
+        <div class="lf" style="margin-bottom:0"><label>PHT (ms)</label><input type="number" id="ar-pht" placeholder="e.g. 200" inputmode="numeric"></div>
+      </div>
+    </div>
+
+    <!-- Severe TR sub-fields -->
+    <div id="tr-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fde68a;border-radius:10px;padding:12px;">
+      <div style="font-size:0.68rem;font-weight:700;color:#92400e;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe TR Parameters</div>
+      <div class="grid-2">
+        <div class="lf" style="margin-bottom:0"><label>Vena Contracta (mm)</label><input type="number" step="0.1" id="tr-vc" placeholder="e.g. 7" inputmode="decimal"></div>
       </div>
     </div>
   </div>
@@ -764,7 +823,7 @@ function renderTable(){
     if(s.valvular&&s.valvular.length)s.valvular.forEach(function(v){tags.push('<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">'+v+'</span>');});
     var ind=tags.length?tags.join(' '):'<span style="color:var(--border)">—</span>';
     var adm=isSessionAdmin?'<button class="btn-icon" onclick="openEditModal(\''+s._docId+'\')"><i class="fa fa-pen"></i></button><button class="btn-icon" style="color:var(--red)" onclick="deleteStudy(\''+s._docId+'\')"><i class="fa fa-trash"></i></button>':'';
-    return '<tr><td style="font-weight:600;color:var(--accent);white-space:nowrap">'+(s.pid||'—')+'</td><td style="max-width:280px;padding:8px 16px">'+ind+'</td><td style="font-weight:500;white-space:nowrap">'+s.date+'</td><td><span class="'+tb(s.type)+'">'+s.type+'</span></td><td style="color:var(--text2)">'+(s.age!==undefined?s.age:'—')+'</td><td style="color:var(--text2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.physician||'—')+'</td><td style="text-align:right;white-space:nowrap"><button class="btn-icon" onclick="openViewModal(\''+s._docId+'\')"><i class="fa fa-eye"></i></button>'+adm+'</td></tr>';
+    return '<tr><td style="font-weight:600;color:var(--accent);white-space:nowrap;cursor:pointer" onclick="openPtModal(\''+s.pid+'\')">'+(s.pid||'—')+'</td><td style="max-width:280px;padding:8px 16px">'+ind+'</td><td style="font-weight:500;white-space:nowrap">'+s.date+'</td><td><span class="'+tb(s.type)+'">'+s.type+'</span></td><td style="color:var(--text2)">'+(s.age!==undefined?s.age:'—')+'</td><td style="color:var(--text2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.physician||'—')+'</td><td style="text-align:right;white-space:nowrap"><button class="btn-icon" onclick="openViewModal(\''+s._docId+'\')"><i class="fa fa-eye"></i></button>'+adm+'</td></tr>';
   }).join('');
 }
 
@@ -812,11 +871,39 @@ function openViewModal(docId){
       if(s.esep)h+='<div class="vc-row"><span class="vc-label">Septal e\'</span><span class="vc-val">'+s.esep+' cm/s</span></div>';
       if(s.elat)h+='<div class="vc-row"><span class="vc-label">Lateral e\'</span><span class="vc-val">'+s.elat+' cm/s</span></div>';
       if(s.tr_vmax)h+='<div class="vc-row"><span class="vc-label">TR Vmax</span><span class="vc-val">'+s.tr_vmax+' m/s</span></div>';
+      if(s.tapse)h+='<div class="vc-row"><span class="vc-label">TAPSE</span><span class="vc-val">'+s.tapse+' mm</span></div>';
+      if(s.pasp)h+='<div class="vc-row"><span class="vc-label">PASP</span><span class="vc-val">'+s.pasp+' mmHg</span></div>';
       if(s.diastolic)h+='<div class="vc-row"><span class="vc-label">Diastolic Fn</span><span class="vc-val">'+s.diastolic+(s.dd_overridden?' <span style="font-size:0.65rem;color:var(--teal)">(physician override)</span>':'')+'</span></div>';
       if(s.as_mpg||s.as_ava){
         h+='<div class="section-label" style="margin-top:12px">Aortic Stenosis</div>';
         if(s.as_mpg)h+='<div class="vc-row"><span class="vc-label">Mean PG</span><span class="vc-val">'+s.as_mpg+' mmHg</span></div>';
         if(s.as_ava)h+='<div class="vc-row"><span class="vc-label">AVA</span><span class="vc-val">'+s.as_ava+' cm²</span></div>';
+      }
+      if(s.mr_mech||s.mr_vc||s.mr_eroa){
+        h+='<div class="section-label" style="margin-top:12px">Severe MR</div>';
+        if(s.mr_mech)h+='<div class="vc-row"><span class="vc-label">Mechanism</span><span class="vc-val">'+s.mr_mech+'</span></div>';
+        if(s.mr_vc)h+='<div class="vc-row"><span class="vc-label">Vena Contracta</span><span class="vc-val">'+s.mr_vc+' mm</span></div>';
+        if(s.mr_eroa)h+='<div class="vc-row"><span class="vc-label">EROA</span><span class="vc-val">'+s.mr_eroa+' cm²</span></div>';
+      }
+      if(s.ms_mva||s.ms_mpg){
+        h+='<div class="section-label" style="margin-top:12px">Severe MS</div>';
+        if(s.ms_mva)h+='<div class="vc-row"><span class="vc-label">MVA</span><span class="vc-val">'+s.ms_mva+' cm²</span></div>';
+        if(s.ms_mpg)h+='<div class="vc-row"><span class="vc-label">Mean PG</span><span class="vc-val">'+s.ms_mpg+' mmHg</span></div>';
+      }
+      if(s.ar_pht){
+        h+='<div class="section-label" style="margin-top:12px">Severe AR</div>';
+        h+='<div class="vc-row"><span class="vc-label">PHT</span><span class="vc-val">'+s.ar_pht+' ms</span></div>';
+      }
+      if(s.tr_vc){
+        h+='<div class="section-label" style="margin-top:12px">Severe TR</div>';
+        h+='<div class="vc-row"><span class="vc-label">Vena Contracta</span><span class="vc-val">'+s.tr_vc+' mm</span></div>';
+      }
+      if(s.hcm_wt||s.hcm_lvot_rest||s.hcm_lvot_val||s.hcm_sam){
+        h+='<div class="section-label" style="margin-top:12px">HCM Parameters</div>';
+        if(s.hcm_wt)h+='<div class="vc-row"><span class="vc-label">Max Wall</span><span class="vc-val">'+s.hcm_wt+' mm</span></div>';
+        if(s.hcm_lvot_rest)h+='<div class="vc-row"><span class="vc-label">LVOT Rest</span><span class="vc-val">'+s.hcm_lvot_rest+' mmHg</span></div>';
+        if(s.hcm_lvot_val)h+='<div class="vc-row"><span class="vc-label">LVOT Valsalva</span><span class="vc-val">'+s.hcm_lvot_val+' mmHg</span></div>';
+        if(s.hcm_sam)h+='<div class="vc-row"><span class="vc-label">SAM</span><span class="vc-val">'+s.hcm_sam+'</span></div>';
       }
       var dt='';
       if(s.cardiomyopathy)dt+='<span class="ind-tag" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">'+s.cardiomyopathy+'</span> ';
@@ -1054,6 +1141,17 @@ function openAddModal(){
   document.getElementById('as-fields').style.display = 'none';
   document.getElementById('as-mpg').value = '';
   document.getElementById('as-ava').value  = '';
+  ['edit-tapse','edit-pasp','hcm-wt','hcm-lvot-rest','hcm-lvot-val',
+   'mr-vc','mr-eroa','ms-mva','ms-mpg','ar-pht','tr-vc'].forEach(function(id){
+    document.getElementById(id).value='';
+  });
+  document.getElementById('hcm-sam').value='';
+  document.getElementById('mr-mech').value='';
+  document.getElementById('hcm-fields').style.display='none';
+  document.getElementById('mr-fields').style.display='none';
+  document.getElementById('ms-fields').style.display='none';
+  document.getElementById('ar-fields').style.display='none';
+  document.getElementById('tr-fields').style.display='none';
   document.getElementById('dd-badge').className = 'dd-badge';
   document.getElementById('dd-algo-label').textContent = '';
   document.querySelectorAll('.v-cb').forEach(function(c){c.checked=false;});
@@ -1090,7 +1188,22 @@ function openEditModal(docId){
   // AS sub-fields
   document.getElementById('as-mpg').value = study.as_mpg||'';
   document.getElementById('as-ava').value  = study.as_ava||'';
+  document.getElementById('edit-tapse').value    = study.tapse||'';
+  document.getElementById('edit-pasp').value     = study.pasp||'';
+  document.getElementById('hcm-wt').value        = study.hcm_wt||'';
+  document.getElementById('hcm-lvot-rest').value = study.hcm_lvot_rest||'';
+  document.getElementById('hcm-lvot-val').value  = study.hcm_lvot_val||'';
+  document.getElementById('hcm-sam').value       = study.hcm_sam||'';
+  document.getElementById('mr-mech').value       = study.mr_mech||'';
+  document.getElementById('mr-vc').value         = study.mr_vc||'';
+  document.getElementById('mr-eroa').value       = study.mr_eroa||'';
+  document.getElementById('ms-mva').value        = study.ms_mva||'';
+  document.getElementById('ms-mpg').value        = study.ms_mpg||'';
+  document.getElementById('ar-pht').value        = study.ar_pht||'';
+  document.getElementById('tr-vc').value         = study.tr_vc||'';
   toggleASFields();
+  toggleValveFields();
+  toggleCMFields();
   // Run calculator — it will detect override state from ddOverridden
   calcDiastolic();
   // If previously overridden, show the override note
@@ -1145,7 +1258,20 @@ function saveEdit(){
     congenital:      isN?null:document.getElementById('edit-cong').value||null,
     valvular:        isN?[]:valves,
     as_mpg:          isN?null:document.getElementById('as-mpg').value||null,
-    as_ava:          isN?null:document.getElementById('as-ava').value||null
+    as_ava:          isN?null:document.getElementById('as-ava').value||null,
+    tapse:           isN?null:document.getElementById('edit-tapse').value||null,
+    pasp:            isN?null:document.getElementById('edit-pasp').value||null,
+    hcm_wt:          isN?null:document.getElementById('hcm-wt').value||null,
+    hcm_lvot_rest:   isN?null:document.getElementById('hcm-lvot-rest').value||null,
+    hcm_lvot_val:    isN?null:document.getElementById('hcm-lvot-val').value||null,
+    hcm_sam:         isN?null:document.getElementById('hcm-sam').value||null,
+    mr_mech:         isN?null:document.getElementById('mr-mech').value||null,
+    mr_vc:           isN?null:document.getElementById('mr-vc').value||null,
+    mr_eroa:         isN?null:document.getElementById('mr-eroa').value||null,
+    ms_mva:          isN?null:document.getElementById('ms-mva').value||null,
+    ms_mpg:          isN?null:document.getElementById('ms-mpg').value||null,
+    ar_pht:          isN?null:document.getElementById('ar-pht').value||null,
+    tr_vc:           isN?null:document.getElementById('tr-vc').value||null
   };
   var op=isNew?(function(){u.importedAt=new Date().toISOString();return db.collection('echo_studies').doc(docId).set(u);}):
     (function(){return db.collection('echo_studies').doc(docId).update(u);});
@@ -1716,6 +1842,188 @@ function buildClinicalAnalytics() {
     sevHtml = '<div style="color:var(--text3);font-size:0.8rem;padding:8px 0">No severe valvular lesions recorded yet</div>';
   }
   document.getElementById('ca-sev-body').innerHTML = sevHtml;
+}
+
+// ── Toggle severe valve sub-fields ───────────────────────────
+function toggleValveFields() {
+  var sevMR = document.querySelector('.v-cb[value="Severe MR"]').checked;
+  var sevMS = document.querySelector('.v-cb[value="Severe MS"]').checked;
+  var sevAR = document.querySelector('.v-cb[value="Severe AR"]').checked;
+  var sevTR = document.querySelector('.v-cb[value="Severe TR"]').checked;
+  document.getElementById('mr-fields').style.display = sevMR ? 'block' : 'none';
+  document.getElementById('ms-fields').style.display = sevMS ? 'block' : 'none';
+  document.getElementById('ar-fields').style.display = sevAR ? 'block' : 'none';
+  document.getElementById('tr-fields').style.display = sevTR ? 'block' : 'none';
+  if(!sevMR){['mr-mech','mr-vc','mr-eroa'].forEach(function(id){document.getElementById(id).value='';});}
+  if(!sevMS){['ms-mva','ms-mpg'].forEach(function(id){document.getElementById(id).value='';});}
+  if(!sevAR){document.getElementById('ar-pht').value='';}
+  if(!sevTR){document.getElementById('tr-vc').value='';}
+}
+
+// ── Toggle HCM sub-fields ─────────────────────────────────────
+function toggleCMFields() {
+  var isHCM = document.getElementById('edit-cm').value === 'Hypertrophic (HCM)';
+  document.getElementById('hcm-fields').style.display = isHCM ? 'block' : 'none';
+  if(!isHCM){
+    ['hcm-wt','hcm-lvot-rest','hcm-lvot-val'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('hcm-sam').value='';
+  }
+}
+
+// ── Patient Timeline Modal ────────────────────────────────────
+var ptChart = null;
+
+function openPtModal(pid) {
+  if(!pid) return;
+  var ptStudies = studies.filter(function(s){return s.pid===pid;})
+    .sort(function(a,b){return parseDateToInt(a.date)-parseDateToInt(b.date);});
+  if(!ptStudies.length){toast('No studies found for this patient');return;}
+
+  document.getElementById('pt-title').textContent = 'Patient ' + pid + ' — ' + ptStudies.length + ' stud' + (ptStudies.length===1?'y':'ies');
+
+  var withEF = ptStudies.filter(function(s){return s.lvef;});
+  var efTrend = withEF.length > 1;
+
+  var html = '';
+
+  // LVEF trend chart if multiple studies with EF
+  if(efTrend){
+    html += '<div style="margin-bottom:16px"><div style="font-size:0.7rem;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px">LVEF Trend</div><div style="position:relative;height:160px"><canvas id="ptEfChart"></canvas></div></div>';
+  }
+
+  // Studies timeline
+  html += '<div style="font-size:0.7rem;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px">Visit History</div>';
+  ptStudies.forEach(function(s, idx){
+    var ddColor = s.diastolic==='Grade III'?'#dc2626':s.diastolic==='Grade II'?'#f97316':s.diastolic==='Grade I'?'#fbbf24':s.diastolic==='Normal'?'#059669':'#94a3b8';
+    var efColor = s.lvef ? (parseFloat(s.lvef)<50?'#dc2626':parseFloat(s.lvef)<55?'#f97316':'#059669') : 'var(--text3)';
+    html += '<div style="border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;background:'+(idx%2===0?'#fff':'#fafafa')+'">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
+    html += '<span style="font-weight:700;color:var(--text);font-size:0.85rem">'+s.date+'</span>';
+    html += '<span style="font-size:0.7rem;font-weight:600;color:var(--text2)">'+s.type+'</span>';
+    html += '</div>';
+    // Key metrics row
+    html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">';
+    if(s.lvef) html += '<span class="ind-tag" style="background:#eff6ff;color:'+efColor+';font-weight:700">EF '+s.lvef+'%</span>';
+    if(s.diastolic) html += '<span class="ind-tag" style="background:#f8fafc;color:'+ddColor+';font-weight:700">'+s.diastolic+'</span>';
+    if(s.tapse) html += '<span class="ind-tag">TAPSE '+s.tapse+'mm</span>';
+    if(s.pasp) html += '<span class="ind-tag">PASP '+s.pasp+'mmHg</span>';
+    if(s.lavi) html += '<span class="ind-tag">LAVI '+s.lavi+'</span>';
+    if(s.ee_ratio) html += '<span class="ind-tag">E/e\' '+s.ee_ratio+'</span>';
+    if(s.gls) html += '<span class="ind-tag">GLS '+s.gls+'%</span>';
+    html += '</div>';
+    // Findings
+    var findings = [];
+    if(s.cardiomyopathy) findings.push(s.cardiomyopathy);
+    if(s.pericardial) findings.push(s.pericardial);
+    if(s.valvular&&s.valvular.length) findings = findings.concat(s.valvular);
+    if(s.diagnosis) findings.unshift(s.diagnosis);
+    if(findings.length) html += '<div style="font-size:0.72rem;color:var(--text2)">'+findings.join(' · ')+'</div>';
+    if(s.physician) html += '<div style="font-size:0.68rem;color:var(--text3);margin-top:4px">'+s.physician+'</div>';
+    html += '</div>';
+  });
+
+  // Delta summary if >1 study
+  if(ptStudies.length > 1 && withEF.length > 1){
+    var firstEF = parseFloat(withEF[0].lvef);
+    var lastEF  = parseFloat(withEF[withEF.length-1].lvef);
+    var delta   = lastEF - firstEF;
+    var arrow   = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
+    var dColor  = delta > 0 ? '#059669' : delta < 0 ? '#dc2626' : '#94a3b8';
+    html += '<div style="background:linear-gradient(135deg,#eff6ff,#f0fdff);border:1px solid #bfdbfe;border-radius:10px;padding:12px;margin-top:4px;font-size:0.78rem">';
+    html += '<span style="font-weight:700;color:var(--accent)">EF Change: </span>';
+    html += '<span style="color:'+dColor+';font-weight:700">'+arrow+' '+(delta>0?'+':'')+delta.toFixed(0)+'% </span>';
+    html += '<span style="color:var(--text2)">('+firstEF+'% → '+lastEF+'%)</span>';
+    html += '</div>';
+  }
+
+  document.getElementById('pt-body').innerHTML = html;
+  document.getElementById('ptModal').classList.add('show');
+
+  // Render EF chart after DOM is ready
+  if(efTrend){
+    setTimeout(function(){
+      var ctx = document.getElementById('ptEfChart');
+      if(!ctx) return;
+      if(ptChart) ptChart.destroy();
+      ptChart = new Chart(ctx, {
+        type:'line',
+        data:{
+          labels: withEF.map(function(s){return s.date;}),
+          datasets:[{
+            data: withEF.map(function(s){return parseFloat(s.lvef);}),
+            borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,0.08)',
+            pointBackgroundColor:'#2563eb', pointRadius:5, tension:0.3, fill:true
+          }]
+        },
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+          scales:{
+            x:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:10}},grid:{display:false}},
+            y:{min:0,max:80,ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11},callback:function(v){return v+'%';}},grid:{color:'#f1f5f9'}}
+          }
+        }
+      });
+    }, 80);
+  }
+}
+
+function closePtModal(){
+  document.getElementById('ptModal').classList.remove('show');
+  if(ptChart){ptChart.destroy();ptChart=null;}
+}
+
+// ── Export to Excel ───────────────────────────────────────────
+function exportExcel() {
+  var data = filtered.length ? filtered : studies;
+  if(!data.length){toast('No studies to export');return;}
+
+  var headers = [
+    'Civil ID','Date','Type','Age','Physician','Diagnosis',
+    'LVEF (%)','LV Diam (mm)','GLS (%)','LAVI (ml/m²)','TAPSE (mm)','PASP (mmHg)',
+    'E/A Ratio','Avg E/e\'','Septal e\'','Lateral e\'','TR Vmax (m/s)',
+    'Diastolic Function','DD Auto Grade','DD Overridden',
+    'Cardiomyopathy','Pericardial','Congenital','Valvular Lesions',
+    'AS Mean PG','AS AVA',
+    'MR Mechanism','MR Vena Contracta','MR EROA',
+    'MS MVA','MS Mean PG','AR PHT','TR Vena Contracta',
+    'HCM Wall Thickness','HCM LVOT Rest','HCM LVOT Valsalva','HCM SAM',
+    'Normal Study','Import Date'
+  ];
+
+  var rows = data.map(function(s){
+    return [
+      s.pid||'', s.date||'', s.type||'', s.age||'', s.physician||'', s.diagnosis||'',
+      s.lvef||'', s.lv_diam||'', s.gls||'', s.lavi||'', s.tapse||'', s.pasp||'',
+      s.ea_ratio||'', s.ee_ratio||'', s.esep||'', s.elat||'', s.tr_vmax||'',
+      s.diastolic||'', s.dd_auto_grade||'', s.dd_overridden?'Yes':'No',
+      s.cardiomyopathy||'', s.pericardial||'', s.congenital||'',
+      s.valvular&&s.valvular.length?s.valvular.join('; '):'',
+      s.as_mpg||'', s.as_ava||'',
+      s.mr_mech||'', s.mr_vc||'', s.mr_eroa||'',
+      s.ms_mva||'', s.ms_mpg||'', s.ar_pht||'', s.tr_vc||'',
+      s.hcm_wt||'', s.hcm_lvot_rest||'', s.hcm_lvot_val||'', s.hcm_sam||'',
+      s.is_normal?'Yes':'No', s.importedAt?s.importedAt.split('T')[0]:''
+    ];
+  });
+
+  // Build CSV (universal Excel compatibility)
+  var csv = [headers].concat(rows).map(function(row){
+    return row.map(function(cell){
+      var c = String(cell).replace(/"/g,'""');
+      return (c.includes(',') || c.includes('"') || c.includes('\n')) ? '"'+c+'"' : c;
+    }).join(',');
+  }).join('\r\n');
+
+  // BOM for Excel UTF-8
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href   = url;
+  a.download = 'echo_registry_'+(new Date().toISOString().split('T')[0])+'.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('✓ Exported '+data.length+' studies');
 }
 
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},3500);}

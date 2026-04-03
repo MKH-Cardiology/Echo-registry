@@ -253,6 +253,7 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
   <div class="navtabs">
     <button class="tbtn active" onclick="showTab('dash',this)"><i class="fa fa-chart-pie"></i> Dashboard</button>
     <button class="tbtn" onclick="showTab('reg',this)"><i class="fa fa-table"></i> Registry</button>
+    <button class="tbtn" onclick="showTab('clin',this)"><i class="fa fa-microscope"></i> Clinical Analytics</button>
     <button class="tbtn" onclick="showTab('imp',this)"><i class="fa fa-upload"></i> Import</button>
   </div>
 
@@ -306,6 +307,34 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- CLINICAL ANALYTICS TAB -->
+
+  <div id="tab-clin" class="pg">
+    <div class="section-label">Systolic Function</div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-icon blue"><i class="fa fa-heart-pulse" style="color:var(--accent)"></i></div><div class="kpi-label">Mean LVEF</div><div class="kpi-val" id="ca-ef-mean">—</div><div class="kpi-sub" id="ca-ef-sub">of studies with EF recorded</div></div>
+      <div class="kpi"><div class="kpi-icon" style="background:#fef2f2"><i class="fa fa-heart-crack" style="color:var(--red)"></i></div><div class="kpi-label">Reduced EF &lt;50%</div><div class="kpi-val" id="ca-ref">—</div><div class="kpi-sub" id="ca-ref-sub">—</div></div>
+      <div class="kpi"><div class="kpi-icon amber"><i class="fa fa-gauge-high" style="color:var(--amber)"></i></div><div class="kpi-label">Mildly Reduced 50-54%</div><div class="kpi-val" id="ca-mref">—</div><div class="kpi-sub" id="ca-mref-sub">—</div></div>
+      <div class="kpi"><div class="kpi-icon green"><i class="fa fa-circle-check" style="color:var(--green)"></i></div><div class="kpi-label">Preserved EF ≥55%</div><div class="kpi-val" id="ca-pef">—</div><div class="kpi-sub" id="ca-pef-sub">—</div></div>
+    </div>
+    <div class="card"><div class="card-header"><div class="card-title">LVEF Distribution</div><span class="card-badge" id="ca-ef-badge">—</span></div><div class="cw"><canvas id="efChart"></canvas></div></div>
+    <div class="section-label">Diastolic Function</div>
+    <div class="card"><div class="card-header"><div class="card-title">Diastolic Function Grading</div><span class="card-badge" id="ca-dd-badge">—</span></div><div class="cw-sm"><canvas id="ddChart"></canvas></div></div>
+    <div class="kpi-row" id="ca-dd-kpis"></div>
+    <div class="section-label">Valvular Disease</div>
+    <div class="card"><div class="card-header"><div class="card-title">Significant Valvular Lesions</div><span class="card-badge" id="ca-valve-badge">—</span></div><div class="cw"><canvas id="valveChart"></canvas></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Aortic Stenosis Detail</div><span class="card-badge" id="ca-as-badge">—</span></div><div id="ca-as-body" style="font-size:0.8rem;color:var(--text2)">No AS data recorded yet</div></div>
+    <div class="section-label">Structural Findings</div>
+    <div class="card"><div class="card-header"><div class="card-title">Cardiomyopathy Distribution</div><span class="card-badge" id="ca-cm-badge">—</span></div><div class="cw-sm"><canvas id="cmChart"></canvas></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Co-occurrence: Reduced EF + DD Grade</div><span class="card-badge">studies with both recorded</span></div><div id="ca-cooc" style="padding-bottom:8px"></div></div>
+    <div class="section-label">Demographics</div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-icon teal"><i class="fa fa-calendar" style="color:var(--teal)"></i></div><div class="kpi-label">Mean Age</div><div class="kpi-val" id="ca-age-mean">—</div><div class="kpi-sub">years at scan</div></div>
+      <div class="kpi"><div class="kpi-icon blue"><i class="fa fa-database" style="color:var(--accent)"></i></div><div class="kpi-label">Studies with Clinical Data</div><div class="kpi-val" id="ca-withdata">—</div><div class="kpi-sub" id="ca-withdata-sub">—</div></div>
+    </div>
+    <div class="card"><div class="card-header"><div class="card-title">Age Distribution</div><span class="card-badge" id="ca-age-badge">—</span></div><div class="cw"><canvas id="ageChart"></canvas></div></div>
   </div>
 
   <div id="tab-imp" class="pg">
@@ -376,10 +405,27 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
         <div class="lf"><label>Exam Type</label><select id="edit-type"><option>TTE</option><option>TEE</option></select></div>
       </div>
       <div class="grid-2">
-        <div class="lf"><label>Patient ID (Civil ID)</label><input type="text" id="edit-pid"></div>
-        <div class="lf"><label>Age at Scan</label><input type="number" id="edit-age" placeholder="e.g. 45" oninput="calcDiastolic()"></div>
+        <div class="lf"><label>Patient ID (Civil ID) <span style="color:var(--red)">*</span></label><input type="text" id="edit-pid" inputmode="numeric" maxlength="12" placeholder="12-digit Civil ID" oninput="onCivilIdInput(this)"></div>
+        <div class="lf"><label>Age at Scan</label><input type="number" id="edit-age" placeholder="auto from ID" inputmode="numeric" oninput="calcDiastolic()" readonly style="background:#f8fafc;color:var(--text2)"></div>
       </div>
-      <div class="lf"><label>Physician</label><input type="text" id="edit-phys"></div>
+      <div class="lf"><label>Physician</label>
+        <select id="edit-phys">
+          <option value="">Select physician...</option>
+          <option>Dr. Samir</option>
+          <option>Dr. Zaher</option>
+          <option>Dr. Shafie</option>
+          <option>Dr. Ashraf</option>
+          <option>Dr. Akmal</option>
+          <option>Dr. Fawzy</option>
+          <option>Dr. Ibrahim</option>
+          <option>Dr. Ihab</option>
+          <option>Dr. Maged</option>
+          <option>Dr. Hany</option>
+          <option>Dr. Farouk</option>
+          <option>Dr. Ramy</option>
+          <option>Dr. Hamza</option>
+        </select>
+      </div>
       <div class="lf"><label>Diagnosis / Indication</label><input type="text" id="edit-ind"></div>
       <label class="cb-wrap" style="margin-top:20px;margin-bottom:8px;"><input type="checkbox" id="edit-normal" onchange="toggleNormalStudy()"> Mark as Normal Study</label>
       <div class="adv-section" id="adv-box">
@@ -388,10 +434,10 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
     <!-- MEASUREMENTS -->
     <div class="section-label" style="margin-top:0">Measurements</div>
     <div class="grid-2">
-      <div class="lf"><label>LVEF (%)</label><input type="number" id="edit-ef" placeholder="e.g. 55"></div>
-      <div class="lf"><label>LV Diameter (mm)</label><input type="number" id="edit-lv" placeholder="e.g. 48"></div>
-      <div class="lf"><label>GLS (%)</label><input type="number" step="0.1" id="edit-gls" placeholder="e.g. -18"></div>
-      <div class="lf"><label>LAVI (ml/m²)</label><input type="number" id="edit-lavi" placeholder="e.g. 28" oninput="calcDiastolic()"></div>
+      <div class="lf"><label>LVEF (%)</label><input type="number" id="edit-ef" placeholder="e.g. 55" inputmode="numeric"></div>
+      <div class="lf"><label>LV Diameter (mm)</label><input type="number" id="edit-lv" placeholder="e.g. 48" inputmode="numeric"></div>
+      <div class="lf"><label>GLS (%)</label><input type="number" step="0.1" id="edit-gls" placeholder="e.g. -18" inputmode="decimal"></div>
+      <div class="lf"><label>LAVI (ml/m²)</label><input type="number" id="edit-lavi" placeholder="e.g. 28" inputmode="numeric" oninput="calcDiastolic()"></div>
     </div>
 
     <!-- DIASTOLIC PARAMETERS — grouped visually -->
@@ -400,11 +446,11 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
         <i class="fa fa-calculator"></i> Diastolic Parameters (ASE 2025)
       </div>
       <div class="grid-2">
-        <div class="lf"><label>Mitral E/A Ratio</label><input type="number" step="0.01" id="edit-ea" placeholder="e.g. 0.85" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>Average E/e' Ratio</label><input type="number" step="0.1" id="edit-ee" placeholder="e.g. 12.5" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>Septal e' (cm/s)</label><input type="number" step="0.1" id="edit-esep" placeholder="e.g. 6.5" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>Lateral e' (cm/s)</label><input type="number" step="0.1" id="edit-elat" placeholder="e.g. 9.0" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>TR Vmax (m/s)</label><input type="number" step="0.1" id="edit-tr" placeholder="e.g. 2.6" oninput="calcDiastolic()"></div>
+        <div class="lf"><label>Mitral E/A Ratio</label><input type="number" step="0.01" id="edit-ea" placeholder="e.g. 0.85" inputmode="decimal" oninput="calcDiastolic()"></div>
+        <div class="lf"><label>Average E/e' Ratio</label><input type="number" step="0.1" id="edit-ee" placeholder="e.g. 12.5" inputmode="decimal" oninput="calcDiastolic()"></div>
+        <div class="lf"><label>Septal e' (cm/s)</label><input type="number" step="0.1" id="edit-esep" placeholder="e.g. 6.5" inputmode="decimal" oninput="calcDiastolic()"></div>
+        <div class="lf"><label>Lateral e' (cm/s)</label><input type="number" step="0.1" id="edit-elat" placeholder="e.g. 9.0" inputmode="decimal" oninput="calcDiastolic()"></div>
+        <div class="lf"><label>TR Vmax (m/s)</label><input type="number" step="0.1" id="edit-tr" placeholder="e.g. 2.6" inputmode="decimal" oninput="calcDiastolic()"></div>
       </div>
 
       <!-- DIASTOLIC FUNCTION FIELD + AUTO BADGE -->
@@ -428,22 +474,22 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
 
     <div class="section-label">Pathology & Structural Findings</div>
     <div class="grid-2">
-      <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
-      <div class="lf"><label>Pericardial Disease</label><select id="edit-peri"><option value="">None</option><option>Pericardial Effusion</option><option>Cardiac Tamponade</option><option>Constrictive Pericarditis</option></select></div>
-      <div class="lf"><label>Congenital Heart Disease</label><select id="edit-cong"><option value="">None</option><option>Bicuspid Aortic Valve (BAV)</option><option>Atrial Septal Defect (ASD)</option><option>Ventricular Septal Defect (VSD)</option><option>Patent Foramen Ovale (PFO)</option><option>Patent Ductus Arteriosus (PDA)</option><option>Tetralogy of Fallot (TOF)</option><option>Coarctation of Aorta</option><option>Ebstein's Anomaly</option></select></div>
+      <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm" onchange="autoFillDiagnosis()"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
+      <div class="lf"><label>Pericardial Disease</label><select id="edit-peri" onchange="autoFillDiagnosis()"><option value="">None</option><option>Pericardial Effusion</option><option>Cardiac Tamponade</option><option>Constrictive Pericarditis</option></select></div>
+      <div class="lf"><label>Congenital Heart Disease</label><select id="edit-cong" onchange="autoFillDiagnosis()"><option value="">None</option><option>Bicuspid Aortic Valve (BAV)</option><option>Atrial Septal Defect (ASD)</option><option>Ventricular Septal Defect (VSD)</option><option>Patent Foramen Ovale (PFO)</option><option>Patent Ductus Arteriosus (PDA)</option><option>Tetralogy of Fallot (TOF)</option><option>Coarctation of Aorta</option><option>Ebstein's Anomaly</option></select></div>
     </div>
     <div class="section-label" style="margin-top:16px">Significant Valvular Lesions</div>
     <div class="valve-grid">
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AS" onchange="toggleASFields()"> Mod AS</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS" onchange="toggleASFields()"> Severe AS</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AR"> Mod AR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AR"> Severe AR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MS"> Mod MS</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MS"> Severe MS</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MR"> Mod MR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MR"> Severe MR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate TR"> Mod TR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe TR"> Severe TR</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AS" onchange="toggleASFields();autoFillDiagnosis()"> Mod AS</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS" onchange="toggleASFields();autoFillDiagnosis()"> Severe AS</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AR" onchange="autoFillDiagnosis()"> Mod AR</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AR" onchange="autoFillDiagnosis()"> Severe AR</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MS" onchange="autoFillDiagnosis()"> Mod MS</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MS" onchange="autoFillDiagnosis()"> Severe MS</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MR" onchange="autoFillDiagnosis()"> Mod MR</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MR" onchange="autoFillDiagnosis()"> Severe MR</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate TR" onchange="autoFillDiagnosis()"> Mod TR</label>
+      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe TR" onchange="autoFillDiagnosis()"> Severe TR</label>
     </div>
     <!-- AS sub-fields: appear when Mod AS or Severe AS is checked -->
     <div id="as-fields" style="display:none;margin-top:12px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1.5px solid #fcd34d;border-radius:10px;padding:12px;">
@@ -451,8 +497,8 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
         <i class="fa fa-circle-exclamation"></i> Aortic Stenosis Severity
       </div>
       <div class="grid-2">
-        <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="as-mpg" placeholder="e.g. 35" step="1"></div>
-        <div class="lf" style="margin-bottom:0"><label>AVA (cm²)</label><input type="number" id="as-ava" placeholder="e.g. 0.9" step="0.01"></div>
+        <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="as-mpg" placeholder="e.g. 35" step="1" inputmode="numeric" oninput="autoFillDiagnosis()"></div>
+        <div class="lf" style="margin-bottom:0"><label>AVA (cm²)</label><input type="number" id="as-ava" placeholder="e.g. 0.9" step="0.01" inputmode="decimal"></div>
       </div>
     </div>
   </div>
@@ -499,6 +545,8 @@ function normalizePhysicianName(name) {
   if (lower.includes('maged')) return 'Dr. Maged';
   if (lower.includes('hany')) return 'Dr. Hany';
   if (lower.includes('farouk')) return 'Dr. Farouk';
+  if (lower.includes('ramy')) return 'Dr. Ramy';
+  if (lower.includes('hamza')) return 'Dr. Hamza';
   var c = name.trim();
   if (!lower.startsWith('dr')) return 'Dr. ' + c.charAt(0).toUpperCase() + c.slice(1);
   var rest = c.replace(/^dr\.?\s*/i, '');
@@ -688,7 +736,13 @@ function renderTable(){
 }
 
 function goPage(d){curPage=Math.max(1,Math.min(Math.ceil(filtered.length/PAGE),curPage+d));renderTable();}
-function showTab(n,b){document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.tbtn').forEach(function(x){x.classList.remove('active');});document.getElementById('tab-'+n).classList.add('active');if(b)b.classList.add('active');}
+function showTab(n,b){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tbtn').forEach(function(x){x.classList.remove('active');});
+  document.getElementById('tab-'+n).classList.add('active');
+  if(b)b.classList.add('active');
+  if(n==='clin') buildClinicalAnalytics();
+}
 
 function toggleAdmin(){
   if(isSessionAdmin){isSessionAdmin=false;toast('Admin Mode Disabled');var b=document.getElementById('btn-admin-toggle');b.innerHTML='<i class="fa fa-lock"></i> Admin Mode';b.classList.remove('btn-admin-active');renderTable();}
@@ -990,7 +1044,7 @@ function openEditModal(docId){
   document.getElementById('edit-date').value   = study.date||'';
   document.getElementById('edit-type').value   = study.type||'TTE';
   document.getElementById('edit-pid').value    = study.pid||'';
-  document.getElementById('edit-age').value    = study.age!==undefined?study.age:'';
+  document.getElementById('edit-age').value    = study.age!==undefined&&study.age!=='—'?study.age:'';
   document.getElementById('edit-phys').value   = study.physician||'';
   document.getElementById('edit-ind').value    = study.diagnosis||'';
   document.getElementById('edit-normal').checked = study.is_normal||false;
@@ -1026,11 +1080,12 @@ function openEditModal(docId){
 function closeEditModal(){document.getElementById('editModal').classList.remove('show');pendingEditId=null;ddAutoGrade='';ddOverridden=false;}
 
 function saveEdit(){
-  var pid=document.getElementById('edit-pid').value.trim();
-  if(!pid){toast('Patient ID required');return;}
+  var pid=document.getElementById('edit-pid').value.replace(/\D/g,'').trim();
+  if(!pid){toast('Patient Civil ID is required');return;}
+  if(pid.length!==12){toast('Civil ID must be exactly 12 digits');return;}
   var date   = document.getElementById('edit-date').value.trim();
   var type   = document.getElementById('edit-type').value;
-  var phys   = normalizePhysicianName(document.getElementById('edit-phys').value.trim());
+  var phys   = document.getElementById('edit-phys').value||'';
   var ind    = document.getElementById('edit-ind').value.trim();
   var age    = document.getElementById('edit-age').value.trim();
   var isN    = document.getElementById('edit-normal').checked;
@@ -1073,7 +1128,18 @@ function saveEdit(){
     (function(){return db.collection('echo_studies').doc(docId).update(u);});
   op().then(function(){
     toast(isNew?'Study added':'Study updated');
-    closeEditModal();btn.disabled=false;btn.textContent='Save Changes';loadData();
+    // Immediate local update — no waiting for Firebase round-trip
+    u._docId = docId;
+    if(isNew){
+      studies.unshift(u);
+    } else {
+      var idx = studies.findIndex(function(s){return s._docId===docId;});
+      if(idx>=0) studies[idx]=u;
+    }
+    closeEditModal();
+    btn.disabled=false;btn.textContent='Save Changes';
+    doFilter(); // re-render table immediately with updated local data
+    buildDash(); // refresh dashboard KPIs
   }).catch(function(e){toast('Error: '+e.message);btn.disabled=false;btn.textContent='Save Changes';});
 }
 
@@ -1245,6 +1311,207 @@ function cleanDuplicates(){
     }
     delNext(0);
   }).catch(function(e){txt.textContent='Error loading: '+e.message;console.error(e);});
+}
+
+// ── Civil ID: auto-age on 12 digits ──────────────────────────
+function onCivilIdInput(el) {
+  el.value = el.value.replace(/\D/g,'').slice(0,12);
+  var pid = el.value;
+  if (pid.length === 12) {
+    var date = document.getElementById('edit-date').value.trim();
+    var age  = calculateAgeAtScan(null, date, pid);
+    document.getElementById('edit-age').value = (age !== '—' && age !== undefined) ? age : '';
+    calcDiastolic();
+  } else {
+    document.getElementById('edit-age').value = '';
+  }
+}
+
+// ── Auto-fill Diagnosis from structured findings (Option B) ──
+// Only fills if Diagnosis field is currently empty
+function autoFillDiagnosis() {
+  var ind = document.getElementById('edit-ind');
+  if (ind.value.trim()) return; // Option B: don't overwrite
+  var parts = [];
+  var cm   = document.getElementById('edit-cm').value;
+  var peri = document.getElementById('edit-peri').value;
+  var cong = document.getElementById('edit-cong').value;
+  var dd   = document.getElementById('edit-diastolic').value;
+  if (cm)   parts.push(cm);
+  if (peri) parts.push(peri);
+  if (cong) parts.push(cong);
+  document.querySelectorAll('.v-cb:checked').forEach(function(c){ parts.push(c.value); });
+  if (dd && dd !== 'Normal') parts.push('DD ' + dd);
+  if (parts.length) ind.value = parts.join(', ');
+}
+
+// ── Analytics charts state ────────────────────────────────────
+var efChart=null, ddChart=null, valveChart=null, cmChart=null, ageChart=null;
+
+function buildClinicalAnalytics() {
+  var ss = studies; // all studies
+  var n  = ss.length;
+  if (!n) return;
+
+  // ── LVEF ─────────────────────────────────────────────────────
+  var efStudies = ss.filter(function(s){ return s.lvef && !isNaN(parseFloat(s.lvef)); });
+  var efVals    = efStudies.map(function(s){ return parseFloat(s.lvef); });
+  var efMean    = efVals.length ? Math.round(efVals.reduce(function(a,b){return a+b;},0)/efVals.length) : null;
+  var reduced   = efVals.filter(function(v){return v<50;}).length;
+  var mildRed   = efVals.filter(function(v){return v>=50&&v<=54;}).length;
+  var preserved = efVals.filter(function(v){return v>=55;}).length;
+  document.getElementById('ca-ef-mean').textContent = efMean!==null ? efMean+'%' : '—';
+  document.getElementById('ca-ef-sub').textContent  = efVals.length + ' studies with EF recorded';
+  document.getElementById('ca-ref').textContent     = reduced;
+  document.getElementById('ca-ref-sub').textContent = efVals.length ? Math.round(reduced/efVals.length*100)+'% of recorded EFs' : '—';
+  document.getElementById('ca-mref').textContent    = mildRed;
+  document.getElementById('ca-mref-sub').textContent= efVals.length ? Math.round(mildRed/efVals.length*100)+'%' : '—';
+  document.getElementById('ca-pef').textContent     = preserved;
+  document.getElementById('ca-pef-sub').textContent = efVals.length ? Math.round(preserved/efVals.length*100)+'%' : '—';
+  document.getElementById('ca-ef-badge').textContent= efMean!==null ? 'mean '+efMean+'%' : 'no data';
+
+  // LVEF histogram bins: <30, 30-39, 40-49, 50-54, 55-59, ≥60
+  var efBins = [0,0,0,0,0,0];
+  efVals.forEach(function(v){
+    if(v<30) efBins[0]++;
+    else if(v<40) efBins[1]++;
+    else if(v<50) efBins[2]++;
+    else if(v<55) efBins[3]++;
+    else if(v<60) efBins[4]++;
+    else efBins[5]++;
+  });
+  if(efChart) efChart.destroy();
+  efChart = new Chart(document.getElementById('efChart'),{
+    type:'bar',
+    data:{labels:['<30%','30-39%','40-49%','50-54%','55-59%','≥60%'],
+      datasets:[{data:efBins,backgroundColor:['#dc2626','#f97316','#fbbf24','#a3e635','#34d399','#059669'],borderRadius:8,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}},
+              y:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}}}}
+  });
+
+  // ── DIASTOLIC ─────────────────────────────────────────────────
+  var ddCounts = {Normal:0,'Grade I':0,'Grade II':0,'Grade III':0,'Indeterminate':0};
+  var ddTotal  = 0;
+  ss.forEach(function(s){ if(s.diastolic && ddCounts[s.diastolic]!==undefined){ ddCounts[s.diastolic]++; ddTotal++; } });
+  document.getElementById('ca-dd-badge').textContent = ddTotal + ' studies graded';
+  var ddLabels = Object.keys(ddCounts);
+  var ddData   = ddLabels.map(function(k){return ddCounts[k];});
+  var ddColors = ['#059669','#fbbf24','#f97316','#dc2626','#94a3b8'];
+  if(ddChart) ddChart.destroy();
+  ddChart = new Chart(document.getElementById('ddChart'),{
+    type:'doughnut',
+    data:{labels:ddLabels,datasets:[{data:ddData,backgroundColor:ddColors,borderColor:'#fff',borderWidth:3,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+      plugins:{legend:{position:'right',labels:{color:'#475569',font:{family:'Plus Jakarta Sans',size:11},padding:14,usePointStyle:true}}}}
+  });
+  // DD KPI row
+  var ddKpiHtml = ddLabels.map(function(k,i){
+    var pct = ddTotal ? Math.round(ddCounts[k]/ddTotal*100) : 0;
+    return '<div class="kpi" style="padding:16px"><div class="kpi-label">'+k+'</div><div class="kpi-val" style="font-size:1.6rem;color:'+ddColors[i]+'">'+ddCounts[k]+'</div><div class="kpi-sub">'+pct+'% of graded</div></div>';
+  }).join('');
+  document.getElementById('ca-dd-kpis').innerHTML = ddKpiHtml;
+
+  // ── VALVULAR ──────────────────────────────────────────────────
+  var vLabels=['Mod AS','Sev AS','Mod AR','Sev AR','Mod MS','Sev MS','Mod MR','Sev MR','Mod TR','Sev TR'];
+  var vKeys  =['Moderate AS','Severe AS','Moderate AR','Severe AR','Moderate MS','Severe MS','Moderate MR','Severe MR','Moderate TR','Severe TR'];
+  var vCounts= vKeys.map(function(k){ return ss.filter(function(s){return s.valvular&&s.valvular.includes(k);}).length; });
+  var vTotal = ss.filter(function(s){return s.valvular&&s.valvular.length>0;}).length;
+  document.getElementById('ca-valve-badge').textContent = vTotal + ' studies with valvular findings';
+  if(valveChart) valveChart.destroy();
+  valveChart = new Chart(document.getElementById('valveChart'),{
+    type:'bar',
+    data:{labels:vLabels,datasets:[{data:vCounts,backgroundColor:'#bfdbfe',borderColor:'#2563eb',borderWidth:1.5,borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:10}},grid:{display:false}},
+              y:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}}}}
+  });
+
+  // ── AS DETAIL ─────────────────────────────────────────────────
+  var asStudies = ss.filter(function(s){return s.valvular&&(s.valvular.includes('Moderate AS')||s.valvular.includes('Severe AS'));});
+  var asBadge   = document.getElementById('ca-as-badge');
+  var asBody    = document.getElementById('ca-as-body');
+  asBadge.textContent = asStudies.length + ' AS studies';
+  if(asStudies.length) {
+    var modAS = asStudies.filter(function(s){return s.valvular.includes('Moderate AS');}).length;
+    var sevAS = asStudies.filter(function(s){return s.valvular.includes('Severe AS');}).length;
+    var mpgVals = asStudies.filter(function(s){return s.as_mpg;}).map(function(s){return parseFloat(s.as_mpg);});
+    var avaVals = asStudies.filter(function(s){return s.as_ava;}).map(function(s){return parseFloat(s.as_ava);});
+    var mpgMean = mpgVals.length ? (mpgVals.reduce(function(a,b){return a+b;},0)/mpgVals.length).toFixed(1) : null;
+    var avaMean = avaVals.length ? (avaVals.reduce(function(a,b){return a+b;},0)/avaVals.length).toFixed(2) : null;
+    asBody.innerHTML =
+      '<div style="display:flex;gap:16px;flex-wrap:wrap;padding:4px 0 12px">' +
+      '<span class="ind-tag md" style="background:#fffbeb;color:#92400e">Moderate AS: <b>'+modAS+'</b></span>' +
+      '<span class="ind-tag md" style="background:#fef2f2;color:#b91c1c">Severe AS: <b>'+sevAS+'</b></span>' +
+      (mpgMean?'<span class="ind-tag md">Mean PG: <b>'+mpgMean+' mmHg</b></span>':'') +
+      (avaMean?'<span class="ind-tag md">Mean AVA: <b>'+avaMean+' cm²</b></span>':'') +
+      '</div>';
+  } else { asBody.innerHTML = '<div style="color:var(--text3);font-size:0.8rem;padding:8px 0">No AS data recorded yet</div>'; }
+
+  // ── CARDIOMYOPATHY ────────────────────────────────────────────
+  var cmMap = {};
+  ss.forEach(function(s){ if(s.cardiomyopathy){cmMap[s.cardiomyopathy]=(cmMap[s.cardiomyopathy]||0)+1;} });
+  var cmEntries = Object.entries(cmMap).sort(function(a,b){return b[1]-a[1];});
+  document.getElementById('ca-cm-badge').textContent = cmEntries.reduce(function(a,b){return a+b[1];},0) + ' cases';
+  if(cmChart) cmChart.destroy();
+  if(cmEntries.length){
+    cmChart = new Chart(document.getElementById('cmChart'),{
+      type:'bar',
+      data:{labels:cmEntries.map(function(e){return e[0];}),
+        datasets:[{data:cmEntries.map(function(e){return e[1];}),backgroundColor:['#c7d2fe','#fbcfe8','#fde68a','#a7f3d0','#fed7aa','#bfdbfe'],borderRadius:6,borderSkipped:false}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},indexAxis:'y',
+        scales:{x:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}},
+                y:{ticks:{color:'#475569',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}}}}
+    });
+  } else { document.getElementById('cmChart').parentElement.innerHTML='<div style="color:var(--text3);font-size:0.8rem;padding:20px;text-align:center">No cardiomyopathy data recorded yet</div>'; }
+
+  // ── CO-OCCURRENCE: Reduced EF + DD ────────────────────────────
+  var coocStudies = ss.filter(function(s){return s.lvef&&s.diastolic&&parseFloat(s.lvef)<50;});
+  var coocMap = {};
+  coocStudies.forEach(function(s){ coocMap[s.diastolic]=(coocMap[s.diastolic]||0)+1; });
+  var coocHtml = '';
+  if(coocStudies.length){
+    coocHtml = '<div style="font-size:0.75rem;color:var(--text2);padding:8px 0 4px">'+coocStudies.length+' studies with reduced EF (<50%) + diastolic grading</div>';
+    coocHtml += '<div style="display:flex;gap:10px;flex-wrap:wrap;padding:8px 0">';
+    Object.entries(coocMap).forEach(function(e){
+      var col = e[0]==='Normal'?'#dcfce7;color:#166534':e[0]==='Grade I'?'#fef9c3;color:#854d0e':e[0]==='Grade II'?'#fee2e2;color:#b91c1c':'#fef2f2;color:#7f1d1d';
+      coocHtml += '<span class="ind-tag md" style="background:'+col.split(';')[0]+';'+col.split(';')[1]+'">'+e[0]+': <b>'+e[1]+'</b></span>';
+    });
+    coocHtml += '</div>';
+  } else { coocHtml = '<div style="color:var(--text3);font-size:0.8rem;padding:8px 0">No studies with both reduced EF and diastolic grading yet</div>'; }
+  document.getElementById('ca-cooc').innerHTML = coocHtml;
+
+  // ── AGE DISTRIBUTION ─────────────────────────────────────────
+  var ageVals = ss.filter(function(s){return s.age&&!isNaN(parseInt(s.age));}).map(function(s){return parseInt(s.age);});
+  var ageMean = ageVals.length ? Math.round(ageVals.reduce(function(a,b){return a+b;},0)/ageVals.length) : null;
+  document.getElementById('ca-age-mean').textContent = ageMean!==null ? ageMean : '—';
+  document.getElementById('ca-age-badge').textContent = ageVals.length + ' studies with age recorded';
+  var ageBins = {'<30':0,'30-39':0,'40-49':0,'50-59':0,'60-69':0,'70-79':0,'≥80':0};
+  ageVals.forEach(function(v){
+    if(v<30) ageBins['<30']++;
+    else if(v<40) ageBins['30-39']++;
+    else if(v<50) ageBins['40-49']++;
+    else if(v<60) ageBins['50-59']++;
+    else if(v<70) ageBins['60-69']++;
+    else if(v<80) ageBins['70-79']++;
+    else ageBins['≥80']++;
+  });
+  if(ageChart) ageChart.destroy();
+  ageChart = new Chart(document.getElementById('ageChart'),{
+    type:'bar',
+    data:{labels:Object.keys(ageBins),
+      datasets:[{data:Object.values(ageBins),backgroundColor:'#c7d2fe',borderColor:'#6366f1',borderWidth:1.5,borderRadius:8,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}},
+              y:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}}}}
+  });
+
+  // ── Studies with clinical data ────────────────────────────────
+  var withData = ss.filter(function(s){
+    return s.lvef||s.diastolic||s.cardiomyopathy||(s.valvular&&s.valvular.length)||(s.ea_ratio)||s.ee_ratio;
+  }).length;
+  document.getElementById('ca-withdata').textContent = withData;
+  document.getElementById('ca-withdata-sub').textContent = n ? Math.round(withData/n*100)+'% of all studies' : '—';
 }
 
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},3500);}

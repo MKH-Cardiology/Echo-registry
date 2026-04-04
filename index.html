@@ -38,6 +38,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
@@ -447,6 +448,19 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
     <div class="modal-header"><h3 id="edit-modal-title">Edit Study</h3><button class="modal-close" onclick="closeEditModal()"><i class="fa fa-times"></i></button></div>
     <div class="modal-body">
       <div class="section-label" style="margin-top:0">Basic Info</div>
+      <!-- OCR SCAN BUTTON -->
+      <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:12px;padding:12px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;color:#166534">📷 Scan ViewPoint Report</div>
+          <div style="font-size:0.68rem;color:#15803d;margin-top:2px">Photo or upload — auto-fills fields from report</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input type="file" id="ocr-file" accept="image/*" capture="environment" style="display:none" onchange="runOCR(event)">
+          <button type="button" class="import-btn" style="padding:8px 14px;font-size:0.75rem;background:#16a34a" onclick="document.getElementById('ocr-file').click()"><i class="fa fa-camera"></i> Scan</button>
+        </div>
+      </div>
+      <!-- OCR REVIEW BADGE -->
+      <div id="ocr-badge" style="display:none;margin-bottom:14px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px;font-size:0.75rem;color:#166534;line-height:1.7"></div>
       <div class="grid-2">
         <div class="lf"><label>Exam Date (DD/MM/YYYY)</label><input type="text" id="edit-date" placeholder="DD/MM/YYYY"></div>
         <div class="lf"><label>Exam Type</label><select id="edit-type"><option>TTE</option><option>TEE</option></select></div>
@@ -473,7 +487,7 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
           <option>Dr. Hamza</option>
         </select>
       </div>
-      <div class="lf"><label>Diagnosis / Indication</label><input type="text" id="edit-ind"></div>
+      <div class="lf"><label>Diagnosis / Indication</label><input type="text" id="edit-ind" oninput="onDiagnosisManualEdit()"></div>
       <label class="cb-wrap" style="margin-top:20px;margin-bottom:8px;"><input type="checkbox" id="edit-normal" onchange="toggleNormalStudy()"> Mark as Normal Study</label>
       <div class="adv-section" id="adv-box">
 
@@ -482,7 +496,7 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
     <div class="section-label" style="margin-top:0">Measurements</div>
     <div class="grid-2">
       <div class="lf"><label>LVEF (%)</label><input type="number" id="edit-ef" placeholder="e.g. 55" inputmode="numeric"></div>
-      <div class="lf"><label>LV Diameter (mm)</label><input type="number" id="edit-lv" placeholder="e.g. 48" inputmode="numeric"></div>
+      <div class="lf"><label>LVIDd (cm)</label><input type="number" step="0.1" id="edit-lv" placeholder="e.g. 5.5" inputmode="decimal"></div>
       <div class="lf"><label>GLS (%)</label><input type="number" step="0.1" id="edit-gls" placeholder="e.g. -18" inputmode="decimal"></div>
       <div class="lf"><label>LAVI (ml/m²)</label><input type="number" id="edit-lavi" placeholder="e.g. 28" inputmode="numeric" oninput="calcDiastolic()"></div>
       <div class="lf"><label>TAPSE (mm)</label><input type="number" step="0.1" id="edit-tapse" placeholder="e.g. 20" inputmode="decimal"></div>
@@ -520,7 +534,7 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
 
     <div class="section-label">Pathology & Structural Findings</div>
     <div class="grid-2">
-      <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm" onchange="toggleCMFields();autoFillDiagnosis()"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
+      <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm" onchange="toggleCMFields();autoFillDiagnosis()"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Amyloidosis</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
       <div class="lf"><label>Pericardial Disease</label><select id="edit-peri" onchange="autoFillDiagnosis()"><option value="">None</option><option>Pericardial Effusion</option><option>Cardiac Tamponade</option><option>Constrictive Pericarditis</option></select></div>
       <div class="lf"><label>Congenital Heart Disease</label><select id="edit-cong" onchange="autoFillDiagnosis()"><option value="">None</option><option>Bicuspid Aortic Valve (BAV)</option><option>Atrial Septal Defect (ASD)</option><option>Ventricular Septal Defect (VSD)</option><option>Patent Foramen Ovale (PFO)</option><option>Patent Ductus Arteriosus (PDA)</option><option>Tetralogy of Fallot (TOF)</option><option>Coarctation of Aorta</option><option>Ebstein's Anomaly</option></select></div>
     </div>
@@ -863,7 +877,7 @@ function openViewModal(docId){
     if(hm){
       h+='<div class="section-label">Measurements</div>';
       if(s.lvef)h+='<div class="vc-row"><span class="vc-label">LVEF</span><span class="vc-val">'+s.lvef+' %</span></div>';
-      if(s.lv_diam)h+='<div class="vc-row"><span class="vc-label">LV Diameter</span><span class="vc-val">'+s.lv_diam+' mm</span></div>';
+      if(s.lv_diam)h+='<div class="vc-row"><span class="vc-label">LVIDd</span><span class="vc-val">'+s.lv_diam+' cm</span></div>';
       if(s.gls)h+='<div class="vc-row"><span class="vc-label">GLS</span><span class="vc-val">'+s.gls+' %</span></div>';
       if(s.lavi)h+='<div class="vc-row"><span class="vc-label">LAVI</span><span class="vc-val">'+s.lavi+' ml/m²</span></div>';
       if(s.ea_ratio)h+='<div class="vc-row"><span class="vc-label">E/A Ratio</span><span class="vc-val">'+s.ea_ratio+'</span></div>';
@@ -1068,10 +1082,11 @@ function calcDiastolic() {
   // Store auto-grade for override tracking
   ddAutoGrade = grade;
 
-  // ── Auto-populate dropdown only if not overridden ────────
+  // Auto-populate dropdown only if not overridden
   if (!ddOverridden && grade) {
     sel.value = grade;
     lbl.textContent = '● ASE 2025 auto';
+    autoFillDiagnosis(); // update diagnosis bar with DD grade
   } else if (ddOverridden) {
     lbl.textContent = '✎ Physician override';
   }
@@ -1120,13 +1135,13 @@ function onDiastolicOverride() {
     ddOverridden = false;
     lbl.textContent = ddAutoGrade ? '● ASE 2025 auto' : '';
   }
-  // Re-render badge to show override note
+  autoFillDiagnosis();
   calcDiastolic();
 }
 
 function openAddModal(){
   pendingEditId = null;
-  ddAutoGrade = ''; ddOverridden = false;
+  ddAutoGrade = ''; ddOverridden = false; _autoGenDiag = '';
   document.getElementById('edit-modal-title').textContent = 'Add New Study';
   var today=new Date(),dd=String(today.getDate()).padStart(2,'0'),mm=String(today.getMonth()+1).padStart(2,'0');
   document.getElementById('edit-date').value = dd+'/'+mm+'/'+today.getFullYear();
@@ -1161,7 +1176,7 @@ function openAddModal(){
 function openEditModal(docId){
   var study=studies.find(function(s){return s._docId===docId;});if(!study)return;
   pendingEditId = docId;
-  ddAutoGrade = ''; ddOverridden = study.dd_overridden || false;
+  ddAutoGrade = ''; ddOverridden = study.dd_overridden || false; _autoGenDiag = '';
   document.getElementById('edit-modal-title').textContent = 'Edit Study';
   document.getElementById('edit-date').value   = study.date||'';
   document.getElementById('edit-type').value   = study.type||'TTE';
@@ -1213,7 +1228,11 @@ function openEditModal(docId){
   document.getElementById('editModal').classList.add('show');
 }
 
-function closeEditModal(){document.getElementById('editModal').classList.remove('show');pendingEditId=null;ddAutoGrade='';ddOverridden=false;}
+function closeEditModal(){
+  document.getElementById('editModal').classList.remove('show');
+  document.getElementById('ocr-badge').style.display='none';
+  pendingEditId=null;ddAutoGrade='';ddOverridden=false;_autoGenDiag='';
+}
 
 function saveEdit(){
   var pid=document.getElementById('edit-pid').value.replace(/\D/g,'').trim();
@@ -1476,22 +1495,46 @@ function onCivilIdInput(el) {
   }
 }
 
-// ── Auto-fill Diagnosis from structured findings (Option B) ──
-// Only fills if Diagnosis field is currently empty
+// ── Auto-fill Diagnosis from ALL structured findings ──────────
+// Builds diagnosis string from every ticked/selected finding
+// Option B: only fills if field is empty OR only contains auto-generated content
+var _autoGenDiag = ''; // tracks last auto-generated value
+
 function autoFillDiagnosis() {
   var ind = document.getElementById('edit-ind');
-  if (ind.value.trim()) return; // Option B: don't overwrite
+  // If operator typed something custom (not matching last auto-gen), don't overwrite
+  if (ind.value.trim() && ind.value.trim() !== _autoGenDiag) return;
+
   var parts = [];
   var cm   = document.getElementById('edit-cm').value;
   var peri = document.getElementById('edit-peri').value;
   var cong = document.getElementById('edit-cong').value;
   var dd   = document.getElementById('edit-diastolic').value;
+
   if (cm)   parts.push(cm);
   if (peri) parts.push(peri);
   if (cong) parts.push(cong);
-  document.querySelectorAll('.v-cb:checked').forEach(function(c){ parts.push(c.value); });
-  if (dd && dd !== 'Normal') parts.push('DD ' + dd);
-  if (parts.length) ind.value = parts.join(', ');
+
+  // All checked valves
+  document.querySelectorAll('.v-cb:checked').forEach(function(c){
+    parts.push(c.value);
+  });
+
+  // Diastolic grade — only if abnormal
+  if (dd && dd !== 'Normal' && dd !== '') {
+    parts.push('DD ' + dd);
+  }
+
+  _autoGenDiag = parts.join(', ');
+  ind.value = _autoGenDiag;
+}
+
+// Called when operator manually edits diagnosis — stop auto-overwriting
+function onDiagnosisManualEdit() {
+  var ind = document.getElementById('edit-ind');
+  if (ind.value !== _autoGenDiag) {
+    _autoGenDiag = ''; // release auto-fill lock
+  }
 }
 
 // ── Analytics charts state ────────────────────────────────────
@@ -1978,7 +2021,7 @@ function exportExcel() {
 
   var headers = [
     'Civil ID','Date','Type','Age','Physician','Diagnosis',
-    'LVEF (%)','LV Diam (mm)','GLS (%)','LAVI (ml/m²)','TAPSE (mm)','PASP (mmHg)',
+    'LVEF (%)','LVIDd (cm)','GLS (%)','LAVI (ml/m²)','TAPSE (mm)','PASP (mmHg)',
     'E/A Ratio','Avg E/e\'','Septal e\'','Lateral e\'','TR Vmax (m/s)',
     'Diastolic Function','DD Auto Grade','DD Overridden',
     'Cardiomyopathy','Pericardial','Congenital','Valvular Lesions',
@@ -2024,6 +2067,211 @@ function exportExcel() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   toast('✓ Exported '+data.length+' studies');
+}
+
+// ═══════════════════════════════════════════════════════════
+// OCR — ViewPoint Report Scanner (Tesseract.js)
+// Extracts structured echo values from a photo of the report
+// ═══════════════════════════════════════════════════════════
+function runOCR(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+
+  var badge = document.getElementById('ocr-badge');
+  badge.style.display = 'block';
+  badge.innerHTML = '<i class="fa fa-spinner fa-spin" style="margin-right:6px"></i>Reading report — please wait...';
+  badge.style.background = '#eff6ff';
+  badge.style.borderColor = '#93c5fd';
+  badge.style.color = '#1d4ed8';
+
+  // Reset file input so same file can be re-selected
+  event.target.value = '';
+
+  Tesseract.recognize(file, 'eng', {
+    logger: function(m) {
+      if (m.status === 'recognizing text') {
+        badge.innerHTML = '<i class="fa fa-spinner fa-spin" style="margin-right:6px"></i>Reading report... ' + Math.round(m.progress * 100) + '%';
+      }
+    }
+  }).then(function(result) {
+    var text = result.data.text;
+    parseOCRText(text);
+  }).catch(function(err) {
+    badge.style.background = '#fef2f2';
+    badge.style.borderColor = '#fca5a5';
+    badge.style.color = '#dc2626';
+    badge.innerHTML = '<i class="fa fa-circle-exclamation" style="margin-right:6px"></i>OCR failed: ' + err.message;
+  });
+}
+
+function parseOCRText(text) {
+  var badge  = document.getElementById('ocr-badge');
+  var filled = [];
+  var missed = [];
+  var flags  = [];
+
+  // Helper: extract numeric value after a label
+  function extract(pattern, text) {
+    var m = text.match(pattern);
+    return m ? m[1].trim() : null;
+  }
+
+  // ── Patient ID ───────────────────────────────────────────
+  var pid = extract(/Patient\s*Id[:\s]+(\d{10,12})/i, text);
+  if (!pid) pid = extract(/Patient\s*ID[:\s]+(\d{10,12})/i, text);
+  if (pid && pid.length === 12) {
+    document.getElementById('edit-pid').value = pid;
+    onCivilIdInput(document.getElementById('edit-pid'));
+    filled.push('Civil ID: ' + pid);
+  } else { missed.push('Civil ID'); }
+
+  // ── Date ─────────────────────────────────────────────────
+  var dateRaw = extract(/Date\s+(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{4})/i, text);
+  if (dateRaw) {
+    var dp = dateRaw.replace(/[\-\.]/g,'/').split('/');
+    if (dp.length === 3) {
+      var dd = dp[0].padStart(2,'0'), mm = dp[1].padStart(2,'0'), yy = dp[2];
+      document.getElementById('edit-date').value = dd+'/'+mm+'/'+yy;
+      filled.push('Date: ' + dd+'/'+mm+'/'+yy);
+    }
+  } else { missed.push('Date'); }
+
+  // ── LVEF — priority: 4Ch Q → EF(Teich) → summary text ──
+  var lvef = extract(/LVEF\s*4\s*Ch\s*Q\s+(\d{1,3})\s*%/i, text);
+  var efSource = 'biplane';
+  if (!lvef) {
+    lvef = extract(/EF\s*\(Teich\)\s+(\d{1,3})\s*%/i, text);
+    if (lvef) { efSource = 'Teichholz'; flags.push('⚠ LVEF from Teichholz (M-mode)'); }
+  }
+  if (!lvef) {
+    var summaryMatch = text.match(/ejection\s+fraction\s+is\s+(\d{1,3})\s*[-–]?\s*(\d{1,3})?\s*%/i);
+    if (summaryMatch) {
+      lvef = summaryMatch[2]
+        ? String(Math.round((parseInt(summaryMatch[1]) + parseInt(summaryMatch[2])) / 2))
+        : summaryMatch[1];
+      efSource = 'summary text';
+      flags.push('⚠ LVEF from summary text — confirm');
+    }
+  }
+  if (lvef) {
+    document.getElementById('edit-ef').value = lvef;
+    filled.push('LVEF: ' + lvef + '% (' + efSource + ')');
+  } else { missed.push('LVEF'); }
+
+  // ── LVIDd ────────────────────────────────────────────────
+  var lvidd = extract(/LVIDd\s+([\d\.]+)\s*cm/i, text);
+  if (!lvidd) lvidd = extract(/LVIDd\s+([\d\.]+)/i, text);
+  if (lvidd) {
+    document.getElementById('edit-lv').value = parseFloat(lvidd).toFixed(1);
+    filled.push('LVIDd: ' + lvidd + ' cm');
+  } else { missed.push('LVIDd'); }
+
+  // ── TAPSE — convert cm → mm ──────────────────────────────
+  var tapse = extract(/TAPSE\s+([\d\.]+)\s*cm/i, text);
+  if (!tapse) tapse = extract(/TAPSE\s+([\d\.]+)/i, text);
+  if (tapse) {
+    var tapseMm = Math.round(parseFloat(tapse) * 10);
+    document.getElementById('edit-tapse').value = tapseMm;
+    filled.push('TAPSE: ' + tapseMm + ' mm (converted from ' + tapse + ' cm)');
+  } else { missed.push('TAPSE'); }
+
+  // ── LAVI — priority: LAESVInd MOD BP → LAESV Index A-L ──
+  var lavi = extract(/LAESVInd\s+MOD\s+BP\s+([\d\.]+)\s*ml/i, text);
+  if (!lavi) lavi = extract(/LAESV\s*Index\s*\(A-?L\)\s+([\d\.]+)/i, text);
+  if (!lavi) lavi = extract(/LAESVInd\s+MOD\s+BP\s+([\d\.]+)/i, text);
+  if (lavi) {
+    document.getElementById('edit-lavi').value = parseFloat(lavi).toFixed(1);
+    filled.push('LAVI: ' + lavi + ' ml/m²');
+  } else { missed.push('LAVI'); }
+
+  // ── E/A Ratio ────────────────────────────────────────────
+  var ea = extract(/MV\s*E\/A\s*Ratio\s+([\d\.]+)/i, text);
+  if (!ea) ea = extract(/E\/A\s*Ratio\s+([\d\.]+)/i, text);
+  if (ea) {
+    document.getElementById('edit-ea').value = parseFloat(ea).toFixed(2);
+    filled.push('E/A: ' + ea);
+    calcDiastolic();
+  } else { missed.push('E/A Ratio'); }
+
+  // ── Septal e' — m/s → cm/s ×100 ─────────────────────────
+  var eSept = extract(/E'\s*Sept\s+([\d\.]+)\s*m\/s/i, text);
+  if (!eSept) eSept = extract(/E'\s*Sept\s+([\d\.]+)/i, text);
+  if (eSept) {
+    var eSeptCm = (parseFloat(eSept) * 100).toFixed(1);
+    document.getElementById('edit-esep').value = eSeptCm;
+    filled.push("Septal e': " + eSeptCm + ' cm/s');
+    calcDiastolic();
+  } else { missed.push("Septal e'"); }
+
+  // ── Lateral e' — m/s → cm/s ×100 ────────────────────────
+  var eLat = extract(/E'\s*Lat\s+([\d\.]+)\s*m\/s/i, text);
+  if (!eLat) eLat = extract(/E'\s*Lat\s+([\d\.]+)/i, text);
+  if (eLat) {
+    var eLatCm = (parseFloat(eLat) * 100).toFixed(1);
+    document.getElementById('edit-elat').value = eLatCm;
+    filled.push("Lateral e': " + eLatCm + ' cm/s');
+    calcDiastolic();
+  } else { missed.push("Lateral e'"); }
+
+  // ── Average E/e' ─────────────────────────────────────────
+  var ee = extract(/E\/E'\s*Avg\s+([\d\.]+)/i, text);
+  if (!ee) ee = extract(/E\/E'\s*Average\s+([\d\.]+)/i, text);
+  if (ee) {
+    document.getElementById('edit-ee').value = parseFloat(ee).toFixed(1);
+    filled.push("E/e': " + ee);
+    calcDiastolic();
+  } else { missed.push("Avg E/e'"); }
+
+  // ── TR Vmax ──────────────────────────────────────────────
+  var trv = extract(/TR\s*Vmax\s+([\d\.]+)\s*m\/s/i, text);
+  if (!trv) trv = extract(/TR\s*Vmax\s+([\d\.]+)/i, text);
+  if (trv) {
+    document.getElementById('edit-tr').value = parseFloat(trv).toFixed(2);
+    filled.push('TR Vmax: ' + trv + ' m/s');
+    calcDiastolic();
+  } else { missed.push('TR Vmax'); }
+
+  // ── PASP from TR maxPG if available ──────────────────────
+  var trPG = extract(/TR\s*maxPG\s+([\d\.]+)\s*mmHg/i, text);
+  if (!trPG) trPG = extract(/TR\s*maxPG\s+([\d\.]+)/i, text);
+  if (trPG) {
+    // PASP ≈ TR maxPG + assumed RAP 5 mmHg
+    var pasp = Math.round(parseFloat(trPG) + 5);
+    document.getElementById('edit-pasp').value = pasp;
+    filled.push('PASP: ~' + pasp + ' mmHg (TR maxPG + 5)');
+    flags.push('ℹ PASP estimated as TR maxPG + 5 mmHg (assumed RAP)');
+  }
+
+  // ── Indication from Echo Summary ─────────────────────────
+  var indication = extract(/Indication[:\s]+([A-Za-z0-9\s\,\/\-]+?)[\n\r]/i, text);
+  if (indication && indication.trim()) {
+    var indVal = indication.trim();
+    var ind = document.getElementById('edit-ind');
+    if (!ind.value.trim()) {
+      ind.value = indVal;
+      _autoGenDiag = '';
+      filled.push('Indication: ' + indVal);
+    }
+  }
+
+  // ── Build review badge ───────────────────────────────────
+  var html = '<div style="font-weight:700;margin-bottom:6px;font-size:0.78rem">✓ OCR Complete</div>';
+  if (filled.length) {
+    html += '<div style="margin-bottom:6px"><b>Extracted (' + filled.length + '):</b><br>';
+    html += filled.map(function(f){ return '✓ ' + f; }).join('<br>') + '</div>';
+  }
+  if (flags.length) {
+    html += '<div style="margin-bottom:6px;color:#92400e">' + flags.join('<br>') + '</div>';
+  }
+  if (missed.length) {
+    html += '<div style="color:#6b7280"><b>Not found (' + missed.length + '):</b> ' + missed.join(', ') + '</div>';
+  }
+  html += '<div style="margin-top:8px;font-style:italic;font-size:0.68rem;color:#6b7280">Review all fields before saving</div>';
+
+  badge.style.background = '#f0fdf4';
+  badge.style.borderColor = '#86efac';
+  badge.style.color = '#166534';
+  badge.innerHTML = html;
 }
 
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},3500);}

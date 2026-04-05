@@ -466,7 +466,7 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
         <div class="lf"><label>Exam Type</label><select id="edit-type"><option>TTE</option><option>TEE</option></select></div>
       </div>
       <div class="grid-2">
-        <div class="lf"><label>Patient ID (Civil ID) <span style="color:var(--red)">*</span></label><input type="text" id="edit-pid" inputmode="numeric" maxlength="12" placeholder="12-digit Civil ID" oninput="onCivilIdInput(this)"></div>
+        <div class="lf"><label>Patient ID <span style="color:var(--red)">*</span></label><input type="text" id="edit-pid" inputmode="numeric" maxlength="12" placeholder="12-digit Patient ID" oninput="onCivilIdInput(this)"></div>
         <div class="lf"><label>Age at Scan</label><input type="number" id="edit-age" placeholder="auto from ID" inputmode="numeric" oninput="calcDiastolic()" readonly style="background:#f8fafc;color:var(--text2)"></div>
       </div>
       <div class="lf"><label>Physician</label>
@@ -509,10 +509,10 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
         <i class="fa fa-calculator"></i> Diastolic Parameters (ASE 2025)
       </div>
       <div class="grid-2">
-        <div class="lf"><label>Mitral E/A Ratio</label><input type="number" step="0.01" id="edit-ea" placeholder="e.g. 0.85" inputmode="decimal" oninput="calcDiastolic()"></div>
+        <div class="lf"><label>MV E/A</label><input type="number" step="0.01" id="edit-ea" placeholder="e.g. 0.85" inputmode="decimal" oninput="calcDiastolic()"></div>
         <div class="lf"><label>Average E/e' Ratio</label><input type="number" step="0.1" id="edit-ee" placeholder="e.g. 12.5" inputmode="decimal" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>Septal e' (cm/s)</label><input type="number" step="0.1" id="edit-esep" placeholder="e.g. 6.5" inputmode="decimal" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>Lateral e' (cm/s)</label><input type="number" step="0.1" id="edit-elat" placeholder="e.g. 9.0" inputmode="decimal" oninput="calcDiastolic()"></div>
+        <div class="lf"><label>MV E' Sept (cm/s)</label><input type="number" step="0.1" id="edit-esep" placeholder="e.g. 6.5" inputmode="decimal" oninput="calcDiastolic()"></div>
+        <div class="lf"><label>MV E' Lat (cm/s)</label><input type="number" step="0.1" id="edit-elat" placeholder="e.g. 9.0" inputmode="decimal" oninput="calcDiastolic()"></div>
         <div class="lf"><label>TR Vmax (m/s)</label><input type="number" step="0.1" id="edit-tr" placeholder="e.g. 2.6" inputmode="decimal" oninput="calcDiastolic()"></div>
       </div>
       <div class="lf" style="margin-bottom:0">
@@ -880,10 +880,10 @@ function openViewModal(docId){
       if(s.lv_diam)h+='<div class="vc-row"><span class="vc-label">LVIDd</span><span class="vc-val">'+s.lv_diam+' cm</span></div>';
       if(s.gls)h+='<div class="vc-row"><span class="vc-label">GLS</span><span class="vc-val">'+s.gls+' %</span></div>';
       if(s.lavi)h+='<div class="vc-row"><span class="vc-label">LAVI</span><span class="vc-val">'+s.lavi+' ml/m²</span></div>';
-      if(s.ea_ratio)h+='<div class="vc-row"><span class="vc-label">E/A Ratio</span><span class="vc-val">'+s.ea_ratio+'</span></div>';
+      if(s.ea_ratio)h+='<div class="vc-row"><span class="vc-label">MV E/A</span><span class="vc-val">'+s.ea_ratio+'</span></div>';
       if(s.ee_ratio)h+='<div class="vc-row"><span class="vc-label">Avg E/e\'</span><span class="vc-val">'+s.ee_ratio+'</span></div>';
-      if(s.esep)h+='<div class="vc-row"><span class="vc-label">Septal e\'</span><span class="vc-val">'+s.esep+' cm/s</span></div>';
-      if(s.elat)h+='<div class="vc-row"><span class="vc-label">Lateral e\'</span><span class="vc-val">'+s.elat+' cm/s</span></div>';
+      if(s.esep)h+='<div class="vc-row"><span class="vc-label">MV E\' Sept</span><span class="vc-val">'+s.esep+' cm/s</span></div>';
+      if(s.elat)h+='<div class="vc-row"><span class="vc-label">MV E\' Lat</span><span class="vc-val">'+s.elat+' cm/s</span></div>';
       if(s.tr_vmax)h+='<div class="vc-row"><span class="vc-label">TR Vmax</span><span class="vc-val">'+s.tr_vmax+' m/s</span></div>';
       if(s.tapse)h+='<div class="vc-row"><span class="vc-label">TAPSE</span><span class="vc-val">'+s.tapse+' mm</span></div>';
       if(s.pasp)h+='<div class="vc-row"><span class="vc-label">PASP</span><span class="vc-val">'+s.pasp+' mmHg</span></div>';
@@ -1236,8 +1236,8 @@ function closeEditModal(){
 
 function saveEdit(){
   var pid=document.getElementById('edit-pid').value.replace(/\D/g,'').trim();
-  if(!pid){toast('Patient Civil ID is required');return;}
-  if(pid.length!==12){toast('Civil ID must be exactly 12 digits');return;}
+  if(!pid){toast('Patient ID is required');return;}
+  if(pid.length!==12){toast('Patient ID must be exactly 12 digits');return;}
   var date   = document.getElementById('edit-date').value.trim();
   var type   = document.getElementById('edit-type').value;
   var phys   = document.getElementById('edit-phys').value||'';
@@ -1481,7 +1481,7 @@ function cleanDuplicates(){
   }).catch(function(e){txt.textContent='Error loading: '+e.message;console.error(e);});
 }
 
-// ── Civil ID: auto-age on 12 digits ──────────────────────────
+// ── Civil ID / auto-age on 12 digits ──────────────────────
 function onCivilIdInput(el) {
   el.value = el.value.replace(/\D/g,'').slice(0,12);
   var pid = el.value;
@@ -2022,7 +2022,7 @@ function exportExcel() {
   var headers = [
     'Civil ID','Date','Type','Age','Physician','Diagnosis',
     'LVEF (%)','LVIDd (cm)','GLS (%)','LAVI (ml/m²)','TAPSE (mm)','PASP (mmHg)',
-    'E/A Ratio','Avg E/e\'','Septal e\'','Lateral e\'','TR Vmax (m/s)',
+    'E/A Ratio','Avg E/e\'','MV E\' Sept','MV E\' Lat','TR Vmax (m/s)',
     'Diastolic Function','DD Auto Grade','DD Overridden',
     'Cardiomyopathy','Pericardial','Congenital','Valvular Lesions',
     'AS Mean PG','AS AVA',
@@ -2119,11 +2119,12 @@ function parseOCRText(text) {
   // ── Patient ID ───────────────────────────────────────────
   var pid = extract(/Patient\s*Id[:\s]+(\d{10,12})/i, text);
   if (!pid) pid = extract(/Patient\s*ID[:\s]+(\d{10,12})/i, text);
+  if (!pid) pid = extract(/Patient[:\s]+.*?(\d{12})/i, text);
   if (pid && pid.length === 12) {
     document.getElementById('edit-pid').value = pid;
     onCivilIdInput(document.getElementById('edit-pid'));
-    filled.push('Civil ID: ' + pid);
-  } else { missed.push('Civil ID'); }
+    filled.push('Patient ID: ' + pid);
+  } else { missed.push('Patient ID'); }
 
   // ── Date ─────────────────────────────────────────────────
   var dateRaw = extract(/Date\s+(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{4})/i, text);
@@ -2136,13 +2137,34 @@ function parseOCRText(text) {
     }
   } else { missed.push('Date'); }
 
-  // ── LVEF — priority: 4Ch Q → EF(Teich) → summary text ──
-  var lvef = extract(/LVEF\s*4\s*Ch\s*Q\s+(\d{1,3})\s*%/i, text);
-  var efSource = 'biplane';
+  // ── LVEF — priority: Auto EF A4C → 4Ch Q → EF(Teich)/LVEF(Teich) → Cube → summary ──
+  var lvef = null;
+  var efSource = '';
+
+  // Priority 1: LVEF (Auto EF A4C) — biplane auto, second template
+  var m1 = text.match(/LVEF\s*\(Auto\s*EF\s*A4C\)\s+([\d\.]+)\s*%/i);
+  if (m1) { lvef = m1[1]; efSource = 'Auto EF A4C'; }
+
+  // Priority 2: LVEF 4Ch Q — first template biplane
   if (!lvef) {
-    lvef = extract(/EF\s*\(Teich\)\s+(\d{1,3})\s*%/i, text);
-    if (lvef) { efSource = 'Teichholz'; flags.push('⚠ LVEF from Teichholz (M-mode)'); }
+    var m2 = text.match(/LVEF\s*4\s*Ch\s*[_\s]*Q\s+([\d\.]+)\s*%/i);
+    if (m2) { lvef = m2[1]; efSource = 'biplane 4Ch'; }
   }
+
+  // Priority 3: LVEF (Teich) or EF(Teich) — M-mode
+  if (!lvef) {
+    var m3 = text.match(/LVEF?\s*\(Teich\)\s+([\d\.]+)\s*%/i);
+    if (!m3) m3 = text.match(/EF\s*\(Teich\)\s+([\d\.]+)\s*%/i);
+    if (m3) { lvef = m3[1]; efSource = 'M-mode Teichholz'; flags.push('⚠ LVEF from M-mode (Teichholz) — confirm with biplane'); }
+  }
+
+  // Priority 4: LVEF (Cube)
+  if (!lvef) {
+    var m4 = text.match(/LVEF\s*\(Cube\)\s+([\d\.]+)\s*%/i);
+    if (m4) { lvef = m4[1]; efSource = 'Cube'; flags.push('⚠ LVEF from Cube method — less accurate'); }
+  }
+
+  // Priority 5: Summary text
   if (!lvef) {
     var summaryMatch = text.match(/ejection\s+fraction\s+is\s+(\d{1,3})\s*[-–]?\s*(\d{1,3})?\s*%/i);
     if (summaryMatch) {
@@ -2153,6 +2175,7 @@ function parseOCRText(text) {
       flags.push('⚠ LVEF from summary text — confirm');
     }
   }
+
   if (lvef) {
     document.getElementById('edit-ef').value = lvef;
     filled.push('LVEF: ' + lvef + '% (' + efSource + ')');
@@ -2167,12 +2190,14 @@ function parseOCRText(text) {
   } else { missed.push('LVIDd'); }
 
   // ── TAPSE — convert cm → mm ──────────────────────────────
-  var tapse = extract(/TAPSE\s+([\d\.]+)\s*cm/i, text);
-  if (!tapse) tapse = extract(/TAPSE\s+([\d\.]+)/i, text);
+  var tapse = extract(/TAPSE[:\s]+([\d\.]+)\s*cm/i, text);
+  if (!tapse) tapse = extract(/TAPSE[:\s]+([\d\.]+)/i, text);
   if (tapse) {
-    var tapseMm = Math.round(parseFloat(tapse) * 10);
+    var tapseVal = parseFloat(tapse);
+    // Sanity: TAPSE in cm should be 0.5–4.0, in mm would be 5–40
+    var tapseMm = tapseVal < 10 ? Math.round(tapseVal * 10) : Math.round(tapseVal);
     document.getElementById('edit-tapse').value = tapseMm;
-    filled.push('TAPSE: ' + tapseMm + ' mm (converted from ' + tapse + ' cm)');
+    filled.push('TAPSE: ' + tapseMm + ' mm');
   } else { missed.push('TAPSE'); }
 
   // ── LAVI — priority: LAESVInd MOD BP → LAESV Index A-L ──
@@ -2184,51 +2209,68 @@ function parseOCRText(text) {
     filled.push('LAVI: ' + lavi + ' ml/m²');
   } else { missed.push('LAVI'); }
 
-  // ── E/A Ratio ────────────────────────────────────────────
+  // ── MV E/A ───────────────────────────────────────────────
   var ea = extract(/MV\s*E\/A\s*Ratio\s+([\d\.]+)/i, text);
+  if (!ea) ea = extract(/MV\s*E\s*\/\s*A\s+([\d\.]+)/i, text);
   if (!ea) ea = extract(/E\/A\s*Ratio\s+([\d\.]+)/i, text);
+  if (!ea) ea = extract(/MV\s*E\/A[:\s]+([\d\.]+)/i, text);
   if (ea) {
     document.getElementById('edit-ea').value = parseFloat(ea).toFixed(2);
-    filled.push('E/A: ' + ea);
+    filled.push('MV E/A: ' + ea);
     calcDiastolic();
-  } else { missed.push('E/A Ratio'); }
+  } else { missed.push('MV E/A'); }
 
-  // ── Septal e' — m/s → cm/s ×100 ─────────────────────────
-  var eSept = extract(/E'\s*Sept\s+([\d\.]+)\s*m\/s/i, text);
-  if (!eSept) eSept = extract(/E'\s*Sept\s+([\d\.]+)/i, text);
+  // ── MV E' Sept — m/s → cm/s ×100, or cm/s direct ───────
+  var eSept = extract(/MV\s*E'\s*Sept[:\s]+([\d\.]+)\s*m\/s/i, text);
+  if (!eSept) eSept = extract(/E'\s*Sept[:\s]+([\d\.]+)\s*m\/s/i, text);
+  if (!eSept) eSept = extract(/MV\s*E'\s*Sept[:\s]+([\d\.]+)\s*cm\/s/i, text);
+  if (!eSept) eSept = extract(/MV\s*E['′]\s*Sept[:\s]+([\d\.]+)/i, text);
+  if (!eSept) eSept = extract(/E'\s*Sept[:\s]+([\d\.]+)/i, text);
   if (eSept) {
-    var eSeptCm = (parseFloat(eSept) * 100).toFixed(1);
+    var eSeptVal = parseFloat(eSept);
+    // If value looks like m/s (< 1.0), convert to cm/s
+    var eSeptCm = eSeptVal < 2 ? (eSeptVal * 100).toFixed(1) : eSeptVal.toFixed(1);
     document.getElementById('edit-esep').value = eSeptCm;
-    filled.push("Septal e': " + eSeptCm + ' cm/s');
+    filled.push("MV E' Sept: " + eSeptCm + ' cm/s');
     calcDiastolic();
-  } else { missed.push("Septal e'"); }
+  } else { missed.push("MV E' Sept"); }
 
-  // ── Lateral e' — m/s → cm/s ×100 ────────────────────────
-  var eLat = extract(/E'\s*Lat\s+([\d\.]+)\s*m\/s/i, text);
-  if (!eLat) eLat = extract(/E'\s*Lat\s+([\d\.]+)/i, text);
+  // ── MV E' Lat — m/s → cm/s ×100, or cm/s direct ────────
+  var eLat = extract(/MV\s*E'\s*Lat[:\s]+([\d\.]+)\s*m\/s/i, text);
+  if (!eLat) eLat = extract(/E'\s*Lat[:\s]+([\d\.]+)\s*m\/s/i, text);
+  if (!eLat) eLat = extract(/MV\s*E'\s*Lat[:\s]+([\d\.]+)\s*cm\/s/i, text);
+  if (!eLat) eLat = extract(/MV\s*E['′]\s*Lat[:\s]+([\d\.]+)/i, text);
+  if (!eLat) eLat = extract(/E'\s*Lat[:\s]+([\d\.]+)/i, text);
   if (eLat) {
-    var eLatCm = (parseFloat(eLat) * 100).toFixed(1);
+    var eLatVal = parseFloat(eLat);
+    var eLatCm = eLatVal < 2 ? (eLatVal * 100).toFixed(1) : eLatVal.toFixed(1);
     document.getElementById('edit-elat').value = eLatCm;
-    filled.push("Lateral e': " + eLatCm + ' cm/s');
+    filled.push("MV E' Lat: " + eLatCm + ' cm/s');
     calcDiastolic();
-  } else { missed.push("Lateral e'"); }
+  } else { missed.push("MV E' Lat"); }
 
   // ── Average E/e' ─────────────────────────────────────────
-  var ee = extract(/E\/E'\s*Avg\s+([\d\.]+)/i, text);
-  if (!ee) ee = extract(/E\/E'\s*Average\s+([\d\.]+)/i, text);
+  var ee = extract(/MV\s*E\s*\/\s*E['′]\s*Avg[:\s]+([\d\.]+)/i, text);
+  if (!ee) ee = extract(/E\/E['′]\s*Avg[:\s]+([\d\.]+)/i, text);
+  if (!ee) ee = extract(/E\/E['′]\s*Average[:\s]+([\d\.]+)/i, text);
+  if (!ee) ee = extract(/E\/E'[:\s]+([\d\.]+)/i, text);
   if (ee) {
     document.getElementById('edit-ee').value = parseFloat(ee).toFixed(1);
-    filled.push("E/e': " + ee);
+    filled.push("Avg E/e': " + ee);
     calcDiastolic();
   } else { missed.push("Avg E/e'"); }
 
   // ── TR Vmax ──────────────────────────────────────────────
-  var trv = extract(/TR\s*Vmax\s+([\d\.]+)\s*m\/s/i, text);
-  if (!trv) trv = extract(/TR\s*Vmax\s+([\d\.]+)/i, text);
+  var trv = extract(/TR\s*Vmax[:\s]+([\d\.]+)\s*m\/s/i, text);
+  if (!trv) trv = extract(/TR\s*Vmax[:\s]+([\d\.]+)/i, text);
   if (trv) {
-    document.getElementById('edit-tr').value = parseFloat(trv).toFixed(2);
-    filled.push('TR Vmax: ' + trv + ' m/s');
-    calcDiastolic();
+    var trvVal = parseFloat(trv);
+    // Sanity check: TR Vmax should be between 1.0 and 5.0 m/s
+    if (trvVal >= 1.0 && trvVal <= 5.0) {
+      document.getElementById('edit-tr').value = trvVal.toFixed(2);
+      filled.push('TR Vmax: ' + trvVal.toFixed(2) + ' m/s');
+      calcDiastolic();
+    }
   } else { missed.push('TR Vmax'); }
 
   // ── PASP from TR maxPG if available ──────────────────────

@@ -2126,16 +2126,7 @@ function parseOCRText(text) {
     filled.push('Patient ID: ' + pid);
   } else { missed.push('Patient ID'); }
 
-  // ── Date ─────────────────────────────────────────────────
-  var dateRaw = extract(/Date\s+(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{4})/i, text);
-  if (dateRaw) {
-    var dp = dateRaw.replace(/[\-\.]/g,'/').split('/');
-    if (dp.length === 3) {
-      var dd = dp[0].padStart(2,'0'), mm = dp[1].padStart(2,'0'), yy = dp[2];
-      document.getElementById('edit-date').value = dd+'/'+mm+'/'+yy;
-      filled.push('Date: ' + dd+'/'+mm+'/'+yy);
-    }
-  } else { missed.push('Date'); }
+  // Date — not extracted by OCR (entered manually)
 
   // ── LVEF — priority: Auto EF A4C → 4Ch Q → EF(Teich)/LVEF(Teich) → Cube → summary ──
   var lvef = null;

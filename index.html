@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -42,166 +41,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-<style>
-:root {
-  --bg: #f8fafc; --surface: #ffffff; --surface2: #f1f5f9; --border: #e2e8f0;
-  --text: #0f172a; --text2: #475569; --text3: #94a3b8;
-  --accent: #2563eb; --accent2: #1d4ed8; --teal: #0d9488;
-  --green: #059669; --amber: #d97706; --red: #dc2626;
-  --shadow: 0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.03);
-  --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.05),0 4px 6px -4px rgba(0,0,0,0.025);
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;min-height:100vh;}
-#pageLogin{display:none;min-height:100vh;background:linear-gradient(135deg,#0f172a 0%,#1d4ed8 100%);position:relative;overflow:hidden;}
-#pageLogin::before{content:'';position:absolute;top:-30%;right:-20%;width:600px;height:600px;border-radius:50%;background:rgba(255,255,255,0.04);}
-#pageLogin::after{content:'';position:absolute;bottom:-20%;left:-10%;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,0.03);}
-.lc{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:30px 20px;}
-.llogo{text-align:center;margin-bottom:36px;}
-.llogo .icon{width:56px;height:56px;background:rgba(255,255,255,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.6rem;backdrop-filter:blur(10px);}
-.llogo h1{font-family:'Playfair Display',serif;color:#fff;font-size:1.5rem;font-weight:600;margin-bottom:4px;}
-.llogo p{color:rgba(255,255,255,0.6);font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;}
-.lcard{background:rgba(255,255,255,0.97);border-radius:20px;padding:32px 28px;width:100%;max-width:380px;box-shadow:0 24px 80px rgba(0,0,0,0.3);}
-.lcard h2{font-family:'Playfair Display',serif;color:var(--text);font-size:1.3rem;margin-bottom:4px;}
-.lcard .sub{color:var(--text3);font-size:0.75rem;margin-bottom:24px;}
-.lf{margin-bottom:14px;}
-.lf label{display:block;font-size:0.7rem;font-weight:600;color:var(--text2);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:5px;}
-.lf .iw{position:relative;}
-.lf .iw i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:0.8rem;}
-.lf input,.lf select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 12px 11px 36px;color:var(--text);font-size:0.85rem;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border-color 0.2s;}
-.lf select{padding-left:12px;}
-.lf input:focus,.lf select:focus{border-color:var(--accent);background:#fff;}
-.lf input::placeholder{color:var(--text3);}
-.lbtn{width:100%;padding:12px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:6px;transition:background 0.2s;}
-.lbtn:hover{background:var(--accent2);}
-.lbtn:disabled{opacity:0.6;}
-.lerr{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;color:var(--red);font-size:0.75rem;padding:9px 12px;margin-top:12px;display:none;}
-.lfoot{margin-top:24px;text-align:center;color:rgba(255,255,255,0.4);font-size:0.68rem;}
-#pageApp{display:none;max-width:1200px;margin:0 auto;}
-.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
-.header-brand{display:flex;align-items:center;gap:12px;}
-.brand-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.95rem;flex-shrink:0;}
-.brand-text h1{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:var(--text);line-height:1;}
-.brand-text p{font-size:0.68rem;color:var(--text3);margin-top:4px;letter-spacing:0.04em;}
-.header-right{display:flex;align-items:center;gap:12px;}
-.db-pill{display:flex;align-items:center;gap:6px;background:var(--surface2);border-radius:20px;padding:6px 12px;}
-.db-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);}
-.db-dot.on{background:var(--green);}
-.db-label{font-size:0.7rem;color:var(--text2);font-weight:600;}
-.btn-out{background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text2);font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
-.btn-out:hover{border-color:var(--accent);color:var(--accent);}
-.navtabs{background:var(--surface);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;padding:0 24px;}
-.navtabs::-webkit-scrollbar{display:none;}
-.tbtn{flex-shrink:0;padding:16px 20px;background:none;border:none;color:var(--text3);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
-.tbtn.active{color:var(--accent);border-bottom-color:var(--accent);}
-.pg{display:none;padding:24px;}
-.pg.active{display:block;}
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;}
-.card,.kpi,.table-card{background:var(--surface);border:1px solid #f1f5f9;border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:var(--shadow);position:relative;}
-.table-card{padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.kpi-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:12px;}
-.kpi-icon.blue{background:#eff6ff;}.kpi-icon.teal{background:#f0fdff;}.kpi-icon.green{background:#f0fdf4;}.kpi-icon.amber{background:#fffbeb;}
-.kpi-label{font-size:0.65rem;color:var(--text3);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;}
-.kpi-val{font-family:'Plus Jakarta Sans',sans-serif;font-size:2.2rem;font-weight:700;color:var(--text);line-height:1;letter-spacing:-0.03em;}
-.kpi-sub{font-size:0.68rem;color:var(--text3);margin-top:8px;}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-.card-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:600;color:var(--text);letter-spacing:-0.01em;}
-.card-badge{font-size:0.65rem;font-weight:600;padding:4px 10px;border-radius:8px;background:var(--surface2);color:var(--text2);}
-.cw{position:relative;height:220px;}.cw-sm{position:relative;height:180px;}
-.phys-list{list-style:none;}
-.phys-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
-.phys-item:last-child{border-bottom:none;}
-.phys-rank{width:24px;font-size:0.7rem;color:var(--text3);font-weight:600;flex-shrink:0;text-align:center;}
-.phys-name{font-size:0.8rem;color:var(--text);font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.phys-bar-wrap{width:100px;background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;flex-shrink:0;}
-.phys-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--teal));}
-.phys-count{font-size:0.75rem;color:var(--accent);font-weight:700;width:36px;text-align:right;flex-shrink:0;}
-.ind-cloud{display:flex;flex-wrap:wrap;gap:8px;}
-.ind-tag{padding:5px 12px;border-radius:20px;font-size:0.68rem;font-weight:500;border:none;background:var(--surface2);color:var(--text2);display:inline-flex;align-items:center;white-space:nowrap;}
-.ind-tag b{margin-left:4px;}
-.ind-tag.lg{font-size:0.85rem;padding:8px 16px;}.ind-tag.md{font-size:0.75rem;padding:6px 14px;}
-.search-bar{display:flex;gap:12px;margin-bottom:16px;}
-.search-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px 12px 40px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.85rem;outline:none;transition:all 0.2s;}
-.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
-.search-wrap{position:relative;flex:1;}
-.search-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:0.9rem;z-index:1;}
-.filter-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;justify-content:space-between;align-items:center;}
-.filter-group{display:flex;gap:10px;flex-wrap:wrap;}
-.fsel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.75rem;outline:none;cursor:pointer;}
-table{width:100%;min-width:750px;border-collapse:collapse;font-size:0.75rem;}
-thead th{background:transparent;color:var(--text3);padding:12px 16px;text-align:left;font-weight:600;font-size:0.65rem;letter-spacing:0.05em;text-transform:uppercase;border-bottom:2px solid var(--border);white-space:nowrap;}
-tbody tr{transition:background 0.15s;}
-tbody tr:hover{background:#f8fafc;}
-tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;vertical-align:middle;}
-.badge-tte{display:inline-block;padding:3px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;background:#eff6ff;color:var(--accent);}
-.badge-tee{display:inline-block;padding:3px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;background:#fffbeb;color:var(--amber);}
-.badge-other{display:inline-block;padding:3px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;background:var(--surface2);color:var(--text2);}
-.btn-icon{background:none;border:none;color:var(--text3);cursor:pointer;padding:6px 8px;border-radius:6px;transition:all 0.2s;font-size:0.85rem;}
-.btn-icon:hover{color:var(--accent);background:#eff6ff;}
-.pgn{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--surface);position:sticky;left:0;}
-.pgi{font-size:0.75rem;color:var(--text3);}
-.pgbtns{display:flex;gap:8px;}
-.pgb{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 14px;color:var(--text2);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
-.pgb:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:#f8fafc;}
-.pgb:disabled{opacity:0.4;cursor:not-allowed;}
-.btn-admin-active{border-color:var(--green)!important;color:var(--green)!important;background:#f0fdf4!important;}
-.btn-danger{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:10px 20px;color:var(--red);font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:0.82rem;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;}
-.btn-danger:hover{background:#fee2e2;}
-.import-card{background:linear-gradient(135deg,#eff6ff,#f0fdff);border:1.5px dashed #93c5fd;border-radius:16px;padding:32px;text-align:center;margin-bottom:20px;}
-.import-card h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--accent);margin-bottom:10px;}
-.import-card p{font-size:0.8rem;color:var(--text2);margin-bottom:20px;line-height:1.6;}
-.import-btn{background:var(--accent);border:none;border-radius:10px;padding:12px 28px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:0.85rem;cursor:pointer;transition:background 0.2s;box-shadow:0 4px 6px -1px rgba(37,99,235,0.2);}
-.import-btn:hover{background:var(--accent2);}
-.info-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;font-size:0.8rem;color:var(--text2);line-height:1.8;box-shadow:var(--shadow);}
-.info-card strong{color:var(--text);}
-.clean-card{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:16px;padding:20px;margin-bottom:16px;}
-.clean-card h4{font-size:0.85rem;font-weight:700;color:#c2410c;margin-bottom:6px;}
-.clean-card p{font-size:0.75rem;color:#9a3412;margin-bottom:14px;line-height:1.6;}
-.pr-wrap{margin-top:20px;display:none;}
-.pr-bg{background:#e0e7ff;border-radius:8px;height:10px;overflow:hidden;margin-bottom:8px;}
-.pr-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:8px;transition:width 0.3s;width:0;}
-.pr-txt{font-size:0.75rem;color:var(--accent);text-align:center;font-weight:600;}
-.clean-pr-wrap{margin-top:12px;display:none;}
-.clean-pr-bg{background:#fed7aa;border-radius:8px;height:8px;overflow:hidden;margin-bottom:6px;}
-.clean-pr-fill{height:100%;background:linear-gradient(90deg,#f97316,#dc2626);border-radius:8px;transition:width 0.3s;width:0;}
-.clean-pr-txt{font-size:0.72rem;color:#c2410c;text-align:center;font-weight:600;}
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.5);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity 0.2s;}
-.modal-overlay.show{display:flex;opacity:1;}
-.modal-card{background:var(--surface);border-radius:16px;width:100%;max-width:480px;box-shadow:var(--shadow-md);overflow:hidden;transform:translateY(20px);transition:transform 0.2s;max-height:90vh;display:flex;flex-direction:column;}
-.modal-overlay.show .modal-card{transform:translateY(0);}
-.modal-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.modal-header h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;color:var(--text);font-weight:600;margin:0;}
-.modal-close{background:none;border:none;color:var(--text3);font-size:1.1rem;cursor:pointer;padding:4px;border-radius:6px;transition:all 0.2s;}
-.modal-close:hover{background:var(--surface2);color:var(--text);}
-.modal-body{padding:24px;overflow-y:auto;flex:1;}
-.modal-body .lf input{padding:11px 16px;margin-top:4px;}
-.modal-footer{padding:16px 24px;border-top:1px solid var(--border);background:#f8fafc;display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;}
-.adv-section{border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:12px;background:#fafafa;}
-.cb-wrap{display:flex;align-items:center;gap:8px;margin-bottom:16px;font-weight:600;color:var(--green);font-size:0.85rem;cursor:pointer;}
-.cb-wrap input{width:18px;height:18px;cursor:pointer;accent-color:var(--green);}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.valve-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
-.valve-lb{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--text2);background:var(--surface);border:1px solid var(--border);padding:8px 10px;border-radius:8px;cursor:pointer;transition:all 0.2s;}
-.valve-lb:hover{border-color:var(--accent);background:#eff6ff;}
-.valve-lb input{accent-color:var(--accent);cursor:pointer;}
-.vc-row{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:12px 0;}
-.vc-row:last-child{border-bottom:none;}
-.vc-label{font-size:0.75rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;width:120px;flex-shrink:0;}
-.vc-val{font-size:0.85rem;color:var(--text);font-weight:500;text-align:right;flex:1;}
-.badge-normal{display:inline-block;padding:6px 12px;background:#dcfce7;color:#166534;border-radius:20px;font-size:0.75rem;font-weight:700;margin-bottom:16px;}
-.section-label{font-size:0.7rem;font-weight:700;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;margin-top:10px;}
-.dd-badge{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:0.75rem;line-height:1.7;font-weight:500;border:1px solid transparent;display:none;}
-.dd-badge.show{display:block;}
-.dd-badge-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
-.dd-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:6px;font-size:0.68rem;font-weight:600;}
-.dd-chip.ok{background:#dcfce7;color:#166534;}
-.dd-chip.ab{background:#fef2f2;color:#dc2626;}
-.dd-chip.na{background:#f1f5f9;color:#94a3b8;}
-.dd-grade{font-weight:700;font-size:0.85rem;margin-bottom:4px;}
-.dd-note{font-size:0.7rem;opacity:0.8;font-style:italic;}
-.dd-override{font-size:0.68rem;margin-top:6px;color:var(--teal);font-weight:600;}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 24px;border-radius:12px;font-size:0.8rem;font-weight:500;z-index:9999;display:none;white-space:nowrap;box-shadow:var(--shadow-md);}
-</style>
+
+<link rel="stylesheet" href="./css/styles.css">
 
 </head>
 <body>
@@ -307,8 +148,6 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
     </div>
   </div>
 
-  <!-- CLINICAL ANALYTICS TAB -->
-
   <div id="tab-clin" class="pg">
     <div class="section-label">Systolic Function</div>
     <div class="kpi-row">
@@ -334,34 +173,30 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
     </div>
     <div class="card"><div class="card-header"><div class="card-title">Age Distribution</div><span class="card-badge" id="ca-age-badge">—</span></div><div class="cw"><canvas id="ageChart"></canvas></div></div>
 
-```
-<!-- ADVANCED ANALYTICS -->
-<div class="section-label" style="margin-top:8px;color:var(--accent);border-top:2px solid #eff6ff;padding-top:16px">Advanced Analytics</div>
-<div class="section-label">Diastolic Dysfunction by Age Group</div>
-<div class="card"><div class="card-header"><div class="card-title">DD Grade Distribution by Decade</div><span class="card-badge" id="ca-ddage-badge">—</span></div><div class="cw" style="height:260px"><canvas id="ddAgeChart"></canvas></div></div>
-<div class="section-label">Valvular Disease by Age Group</div>
-<div class="card"><div class="card-header"><div class="card-title">Top Valve Lesions by Age Decade</div><span class="card-badge" id="ca-vage-badge">—</span></div><div class="cw" style="height:260px"><canvas id="vAgeChart"></canvas></div></div>
-<div class="section-label">HFpEF Phenotype</div>
-<div class="kpi-row">
-  <div class="kpi"><div class="kpi-icon" style="background:#fdf4ff"><i class="fa fa-lungs" style="color:#9333ea"></i></div><div class="kpi-label">HFpEF Profile</div><div class="kpi-val" id="ca-hfpef-n" style="color:#9333ea">—</div><div class="kpi-sub" id="ca-hfpef-sub">LVEF≥55% + ≥2 echo criteria</div></div>
-  <div class="kpi"><div class="kpi-icon" style="background:#fdf4ff"><i class="fa fa-percent" style="color:#9333ea"></i></div><div class="kpi-label">HFpEF % of Preserved EF</div><div class="kpi-val" id="ca-hfpef-pct" style="color:#9333ea">—</div><div class="kpi-sub">of studies with LVEF≥55%</div></div>
-</div>
-<div class="card">
-  <div class="card-header"><div class="card-title">HFpEF Criteria Breakdown</div><span class="card-badge" id="ca-hfpef-badge">—</span></div>
-  <div id="ca-hfpef-body"></div>
-</div>
-<div class="section-label">Disease Co-occurrence</div>
-<div class="card">
-  <div class="card-header"><div class="card-title">Key Clinical Pairs</div><span class="card-badge">studies meeting both criteria</span></div>
-  <div id="ca-cooc2"></div>
-</div>
-<div class="section-label">Severe Valve Disease Burden</div>
-<div class="card">
-  <div class="card-header"><div class="card-title">Severe Valvular Lesions + EF Status</div><span class="card-badge" id="ca-sev-badge">—</span></div>
-  <div id="ca-sev-body"></div>
-</div>
-```
-
+    <div class="section-label" style="margin-top:8px;color:var(--accent);border-top:2px solid #eff6ff;padding-top:16px">Advanced Analytics</div>
+    <div class="section-label">Diastolic Dysfunction by Age Group</div>
+    <div class="card"><div class="card-header"><div class="card-title">DD Grade Distribution by Decade</div><span class="card-badge" id="ca-ddage-badge">—</span></div><div class="cw" style="height:260px"><canvas id="ddAgeChart"></canvas></div></div>
+    <div class="section-label">Valvular Disease by Age Group</div>
+    <div class="card"><div class="card-header"><div class="card-title">Top Valve Lesions by Age Decade</div><span class="card-badge" id="ca-vage-badge">—</span></div><div class="cw" style="height:260px"><canvas id="vAgeChart"></canvas></div></div>
+    <div class="section-label">HFpEF Phenotype</div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-icon" style="background:#fdf4ff"><i class="fa fa-lungs" style="color:#9333ea"></i></div><div class="kpi-label">HFpEF Profile</div><div class="kpi-val" id="ca-hfpef-n" style="color:#9333ea">—</div><div class="kpi-sub" id="ca-hfpef-sub">LVEF≥55% + ≥2 echo criteria</div></div>
+      <div class="kpi"><div class="kpi-icon" style="background:#fdf4ff"><i class="fa fa-percent" style="color:#9333ea"></i></div><div class="kpi-label">HFpEF % of Preserved EF</div><div class="kpi-val" id="ca-hfpef-pct" style="color:#9333ea">—</div><div class="kpi-sub">of studies with LVEF≥55%</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">HFpEF Criteria Breakdown</div><span class="card-badge" id="ca-hfpef-badge">—</span></div>
+      <div id="ca-hfpef-body"></div>
+    </div>
+    <div class="section-label">Disease Co-occurrence</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Key Clinical Pairs</div><span class="card-badge">studies meeting both criteria</span></div>
+      <div id="ca-cooc2"></div>
+    </div>
+    <div class="section-label">Severe Valve Disease Burden</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Severe Valvular Lesions + EF Status</div><span class="card-badge" id="ca-sev-badge">—</span></div>
+      <div id="ca-sev-body"></div>
+    </div>
   </div>
 
   <div id="tab-imp" class="pg">
@@ -400,8 +235,6 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
   </div>
 </div>
 
-<!-- PATIENT TIMELINE MODAL -->
-
 <div id="ptModal" class="modal-overlay">
   <div class="modal-card" style="max-width:560px;">
     <div class="modal-header">
@@ -413,8 +246,6 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
   </div>
 </div>
 
-<!-- PIN MODAL -->
-
 <div id="pinModal" class="modal-overlay">
   <div class="modal-card" style="max-width:320px;">
     <div class="modal-header"><h3>Unlock Admin Mode</h3><button class="modal-close" onclick="closePinModal()"><i class="fa fa-times"></i></button></div>
@@ -422,8 +253,6 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
     <div class="modal-footer"><button class="import-btn" style="width:100%;padding:10px" onclick="verifyPin()">Unlock</button></div>
   </div>
 </div>
-
-<!-- VIEW MODAL -->
 
 <div id="viewModal" class="modal-overlay">
   <div class="modal-card">
@@ -433,14 +262,11 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
   </div>
 </div>
 
-<!-- EDIT MODAL -->
-
 <div id="editModal" class="modal-overlay">
   <div class="modal-card">
     <div class="modal-header"><h3 id="edit-modal-title">Edit Study</h3><button class="modal-close" onclick="closeEditModal()"><i class="fa fa-times"></i></button></div>
     <div class="modal-body">
       <div class="section-label" style="margin-top:0">Basic Info</div>
-      <!-- OCR SCAN BUTTON -->
       <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:12px;padding:12px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
         <div>
           <div style="font-size:0.75rem;font-weight:700;color:#166534">📷 Scan ViewPoint Report</div>
@@ -451,10 +277,8 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
           <button type="button" class="import-btn" style="padding:8px 14px;font-size:0.75rem;background:#16a34a" onclick="document.getElementById('ocr-file').click()"><i class="fa fa-camera"></i> Scan</button>
         </div>
       </div>
-      <!-- OCR REVIEW BADGE -->
       <div id="ocr-badge" style="display:none;margin-bottom:14px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px;font-size:0.75rem;color:#166534;line-height:1.7"></div>
       <div class="grid-2">
-        <!-- ✏ CHANGE 1: date label now MM/DD/YYYY -->
         <div class="lf"><label>Exam Date (MM/DD/YYYY)</label><input type="text" id="edit-date" placeholder="MM/DD/YYYY"></div>
         <div class="lf"><label>Exam Type</label><select id="edit-type"><option>TTE</option><option>TEE</option></select></div>
       </div>
@@ -485,108 +309,98 @@ tbody td{padding:12px 16px;color:var(--text);border-bottom:1px solid #f1f5f9;ver
           <div class="lf"><label>PASP (mmHg)</label><input type="number" id="edit-pasp" placeholder="e.g. 35" inputmode="numeric"></div>
         </div>
 
-```
-    <!-- DIASTOLIC PARAMETERS -->
-    <div style="background:linear-gradient(135deg,#eff6ff,#f0fdff);border:1.5px solid #bfdbfe;border-radius:12px;padding:14px;margin-top:4px;margin-bottom:12px;">
-      <div style="font-size:0.68rem;font-weight:700;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
-        <i class="fa fa-calculator"></i> Diastolic Parameters (ASE 2025)
-      </div>
-      <div class="grid-2">
-        <div class="lf"><label>MV E/A</label><input type="number" step="0.01" id="edit-ea" placeholder="e.g. 0.85" inputmode="decimal" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>Average E/e' Ratio</label><input type="number" step="0.1" id="edit-ee" placeholder="e.g. 12.5" inputmode="decimal" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>MV E' Sept (cm/s)</label><input type="number" step="0.1" id="edit-esep" placeholder="e.g. 6.5" inputmode="decimal" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>MV E' Lat (cm/s)</label><input type="number" step="0.1" id="edit-elat" placeholder="e.g. 9.0" inputmode="decimal" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>TR Vmax (m/s)</label><input type="number" step="0.1" id="edit-tr" placeholder="e.g. 2.6" inputmode="decimal" oninput="calcDiastolic()"></div>
-      </div>
-      <div class="lf" style="margin-bottom:0">
-        <label style="display:flex;align-items:center;justify-content:space-between;">
-          <span>Diastolic Function</span>
-          <span id="dd-algo-label" style="font-size:0.63rem;color:var(--teal);font-weight:600;text-transform:none;letter-spacing:0"></span>
-        </label>
-        <select id="edit-diastolic" onchange="onDiastolicOverride()">
-          <option value="">Select...</option>
-          <option>Normal</option><option>Grade I</option><option>Grade II</option>
-          <option>Grade III</option><option>Indeterminate</option>
-        </select>
-        <div id="dd-badge" class="dd-badge"></div>
-      </div>
-    </div>
+        <div style="background:linear-gradient(135deg,#eff6ff,#f0fdff);border:1.5px solid #bfdbfe;border-radius:12px;padding:14px;margin-top:4px;margin-bottom:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+            <i class="fa fa-calculator"></i> Diastolic Parameters (ASE 2025)
+          </div>
+          <div class="grid-2">
+            <div class="lf"><label>MV E/A</label><input type="number" step="0.01" id="edit-ea" placeholder="e.g. 0.85" inputmode="decimal" oninput="calcDiastolic()"></div>
+            <div class="lf"><label>Average E/e' Ratio</label><input type="number" step="0.1" id="edit-ee" placeholder="e.g. 12.5" inputmode="decimal" oninput="calcDiastolic()"></div>
+            <div class="lf"><label>MV E' Sept (cm/s)</label><input type="number" step="0.1" id="edit-esep" placeholder="e.g. 6.5" inputmode="decimal" oninput="calcDiastolic()"></div>
+            <div class="lf"><label>MV E' Lat (cm/s)</label><input type="number" step="0.1" id="edit-elat" placeholder="e.g. 9.0" inputmode="decimal" oninput="calcDiastolic()"></div>
+            <div class="lf"><label>TR Vmax (m/s)</label><input type="number" step="0.1" id="edit-tr" placeholder="e.g. 2.6" inputmode="decimal" oninput="calcDiastolic()"></div>
+          </div>
+          <div class="lf" style="margin-bottom:0">
+            <label style="display:flex;align-items:center;justify-content:space-between;">
+              <span>Diastolic Function</span>
+              <span id="dd-algo-label" style="font-size:0.63rem;color:var(--teal);font-weight:600;text-transform:none;letter-spacing:0"></span>
+            </label>
+            <select id="edit-diastolic" onchange="onDiastolicOverride()">
+              <option value="">Select...</option>
+              <option>Normal</option><option>Grade I</option><option>Grade II</option>
+              <option>Grade III</option><option>Indeterminate</option>
+            </select>
+            <div id="dd-badge" class="dd-badge"></div>
+          </div>
+        </div>
 
-    <div class="section-label">Pathology &amp; Structural Findings</div>
-    <div class="grid-2">
-      <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm" onchange="toggleCMFields();autoFillDiagnosis()"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Amyloidosis</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
-      <div class="lf"><label>Pericardial Disease</label><select id="edit-peri" onchange="autoFillDiagnosis()"><option value="">None</option><option>Pericardial Effusion</option><option>Cardiac Tamponade</option><option>Constrictive Pericarditis</option></select></div>
-      <div class="lf"><label>Congenital Heart Disease</label><select id="edit-cong" onchange="autoFillDiagnosis()"><option value="">None</option><option>Bicuspid Aortic Valve (BAV)</option><option>Atrial Septal Defect (ASD)</option><option>Ventricular Septal Defect (VSD)</option><option>Patent Foramen Ovale (PFO)</option><option>Patent Ductus Arteriosus (PDA)</option><option>Tetralogy of Fallot (TOF)</option><option>Coarctation of Aorta</option><option>Ebstein's Anomaly</option></select></div>
-    </div>
+        <div class="section-label">Pathology &amp; Structural Findings</div>
+        <div class="grid-2">
+          <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm" onchange="toggleCMFields();autoFillDiagnosis()"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Amyloidosis</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
+          <div class="lf"><label>Pericardial Disease</label><select id="edit-peri" onchange="autoFillDiagnosis()"><option value="">None</option><option>Pericardial Effusion</option><option>Cardiac Tamponade</option><option>Constrictive Pericarditis</option></select></div>
+          <div class="lf"><label>Congenital Heart Disease</label><select id="edit-cong" onchange="autoFillDiagnosis()"><option value="">None</option><option>Bicuspid Aortic Valve (BAV)</option><option>Atrial Septal Defect (ASD)</option><option>Ventricular Septal Defect (VSD)</option><option>Patent Foramen Ovale (PFO)</option><option>Patent Ductus Arteriosus (PDA)</option><option>Tetralogy of Fallot (TOF)</option><option>Coarctation of Aorta</option><option>Ebstein's Anomaly</option></select></div>
+        </div>
 
-    <!-- HCM sub-fields -->
-    <div id="hcm-fields" style="display:none;margin-top:4px;margin-bottom:12px;background:linear-gradient(135deg,#fdf4ff,#f5f3ff);border:1.5px solid #d8b4fe;border-radius:10px;padding:12px;">
-      <div style="font-size:0.68rem;font-weight:700;color:#7e22ce;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-heart"></i> HCM Parameters</div>
-      <div class="grid-2">
-        <div class="lf"><label>Max Wall Thickness (mm)</label><input type="number" step="0.1" id="hcm-wt" placeholder="e.g. 18" inputmode="decimal"></div>
-        <div class="lf"><label>LVOT Gradient Rest (mmHg)</label><input type="number" id="hcm-lvot-rest" placeholder="e.g. 20" inputmode="numeric"></div>
-        <div class="lf"><label>LVOT Gradient Valsalva (mmHg)</label><input type="number" id="hcm-lvot-val" placeholder="e.g. 50" inputmode="numeric"></div>
-        <div class="lf"><label>SAM Present</label><select id="hcm-sam"><option value="">Select...</option><option>Yes</option><option>No</option></select></div>
+        <div id="hcm-fields" style="display:none;margin-top:4px;margin-bottom:12px;background:linear-gradient(135deg,#fdf4ff,#f5f3ff);border:1.5 solid #d8b4fe;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#7e22ce;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-heart"></i> HCM Parameters</div>
+          <div class="grid-2">
+            <div class="lf"><label>Max Wall Thickness (mm)</label><input type="number" step="0.1" id="hcm-wt" placeholder="e.g. 18" inputmode="decimal"></div>
+            <div class="lf"><label>LVOT Gradient Rest (mmHg)</label><input type="number" id="hcm-lvot-rest" placeholder="e.g. 20" inputmode="numeric"></div>
+            <div class="lf"><label>LVOT Gradient Valsalva (mmHg)</label><input type="number" id="hcm-lvot-val" placeholder="e.g. 50" inputmode="numeric"></div>
+            <div class="lf"><label>SAM Present</label><select id="hcm-sam"><option value="">Select...</option><option>Yes</option><option>No</option></select></div>
+          </div>
+        </div>
+
+        <div class="section-label" style="margin-top:8px">Significant Valvular Lesions</div>
+        <div class="valve-grid">
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AS" onchange="toggleASFields();autoFillDiagnosis()"> Mod AS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS" onchange="toggleASFields();autoFillDiagnosis()"> Severe AS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AR" onchange="autoFillDiagnosis()"> Mod AR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe AR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MS" onchange="autoFillDiagnosis()"> Mod MS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MS" onchange="toggleValveFields();autoFillDiagnosis()"> Severe MS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MR" onchange="autoFillDiagnosis()"> Mod MR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe MR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate TR" onchange="autoFillDiagnosis()"> Mod TR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe TR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe TR</label>
+        </div>
+
+        <div id="as-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1.5px solid #fcd34d;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#92400e;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Aortic Stenosis Severity</div>
+          <div class="grid-2">
+            <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="as-mpg" placeholder="e.g. 35" step="1" inputmode="numeric" oninput="autoFillDiagnosis()"></div>
+            <div class="lf" style="margin-bottom:0"><label>AVA (cm²)</label><input type="number" id="as-ava" placeholder="e.g. 0.9" step="0.01" inputmode="decimal"></div>
+          </div>
+        </div>
+        <div id="mr-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fef2f2,#fff1f2);border:1.5px solid #fca5a5;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#991b1b;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe MR Parameters</div>
+          <div class="grid-2">
+            <div class="lf"><label>MR Mechanism</label><select id="mr-mech"><option value="">Select...</option><option>Functional</option><option>Degenerative</option><option>Rheumatic</option><option>Ischemic</option></select></div>
+            <div class="lf"><label>Vena Contracta (mm)</label><input type="number" step="0.1" id="mr-vc" placeholder="e.g. 7" inputmode="decimal"></div>
+            <div class="lf" style="margin-bottom:0"><label>EROA (cm²)</label><input type="number" step="0.01" id="mr-eroa" placeholder="e.g. 0.4" inputmode="decimal"></div>
+          </div>
+        </div>
+        <div id="ms-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#1e40af;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe MS Parameters</div>
+          <div class="grid-2">
+            <div class="lf" style="margin-bottom:0"><label>MVA (cm²)</label><input type="number" step="0.01" id="ms-mva" placeholder="e.g. 0.9" inputmode="decimal"></div>
+            <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="ms-mpg" placeholder="e.g. 12" inputmode="numeric"></div>
+          </div>
+        </div>
+        <div id="ar-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#166534;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe AR Parameters</div>
+          <div class="grid-2"><div class="lf" style="margin-bottom:0"><label>PHT (ms)</label><input type="number" id="ar-pht" placeholder="e.g. 200" inputmode="numeric"></div></div>
+        </div>
+        <div id="tr-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fde68a;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#92400e;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe TR Parameters</div>
+          <div class="grid-2"><div class="lf" style="margin-bottom:0"><label>Vena Contracta (mm)</label><input type="number" step="0.1" id="tr-vc" placeholder="e.g. 7" inputmode="decimal"></div></div>
+        </div>
       </div>
     </div>
-
-    <div class="section-label" style="margin-top:8px">Significant Valvular Lesions</div>
-    <div class="valve-grid">
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AS" onchange="toggleASFields();autoFillDiagnosis()"> Mod AS</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS" onchange="toggleASFields();autoFillDiagnosis()"> Severe AS</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AR" onchange="autoFillDiagnosis()"> Mod AR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe AR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MS" onchange="autoFillDiagnosis()"> Mod MS</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MS" onchange="toggleValveFields();autoFillDiagnosis()"> Severe MS</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MR" onchange="autoFillDiagnosis()"> Mod MR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe MR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate TR" onchange="autoFillDiagnosis()"> Mod TR</label>
-      <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe TR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe TR</label>
+    <div class="modal-footer">
+      <button class="pgb" onclick="closeEditModal()">Cancel</button>
+      <button class="import-btn" id="save-edit-btn" onclick="saveEdit()" style="padding:8px 20px">Save Changes</button>
     </div>
-
-    <!-- AS sub-fields -->
-    <div id="as-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1.5px solid #fcd34d;border-radius:10px;padding:12px;">
-      <div style="font-size:0.68rem;font-weight:700;color:#92400e;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Aortic Stenosis Severity</div>
-      <div class="grid-2">
-        <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="as-mpg" placeholder="e.g. 35" step="1" inputmode="numeric" oninput="autoFillDiagnosis()"></div>
-        <div class="lf" style="margin-bottom:0"><label>AVA (cm²)</label><input type="number" id="as-ava" placeholder="e.g. 0.9" step="0.01" inputmode="decimal"></div>
-      </div>
-    </div>
-    <!-- Severe MR sub-fields -->
-    <div id="mr-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fef2f2,#fff1f2);border:1.5px solid #fca5a5;border-radius:10px;padding:12px;">
-      <div style="font-size:0.68rem;font-weight:700;color:#991b1b;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe MR Parameters</div>
-      <div class="grid-2">
-        <div class="lf"><label>MR Mechanism</label><select id="mr-mech"><option value="">Select...</option><option>Functional</option><option>Degenerative</option><option>Rheumatic</option><option>Ischemic</option></select></div>
-        <div class="lf"><label>Vena Contracta (mm)</label><input type="number" step="0.1" id="mr-vc" placeholder="e.g. 7" inputmode="decimal"></div>
-        <div class="lf" style="margin-bottom:0"><label>EROA (cm²)</label><input type="number" step="0.01" id="mr-eroa" placeholder="e.g. 0.4" inputmode="decimal"></div>
-      </div>
-    </div>
-    <!-- Severe MS sub-fields -->
-    <div id="ms-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:10px;padding:12px;">
-      <div style="font-size:0.68rem;font-weight:700;color:#1e40af;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe MS Parameters</div>
-      <div class="grid-2">
-        <div class="lf" style="margin-bottom:0"><label>MVA (cm²)</label><input type="number" step="0.01" id="ms-mva" placeholder="e.g. 0.9" inputmode="decimal"></div>
-        <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="ms-mpg" placeholder="e.g. 12" inputmode="numeric"></div>
-      </div>
-    </div>
-    <!-- Severe AR sub-fields -->
-    <div id="ar-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:10px;padding:12px;">
-      <div style="font-size:0.68rem;font-weight:700;color:#166534;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe AR Parameters</div>
-      <div class="grid-2"><div class="lf" style="margin-bottom:0"><label>PHT (ms)</label><input type="number" id="ar-pht" placeholder="e.g. 200" inputmode="numeric"></div></div>
-    </div>
-    <!-- Severe TR sub-fields -->
-    <div id="tr-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fde68a;border-radius:10px;padding:12px;">
-      <div style="font-size:0.68rem;font-weight:700;color:#92400e;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe TR Parameters</div>
-      <div class="grid-2"><div class="lf" style="margin-bottom:0"><label>Vena Contracta (mm)</label><input type="number" step="0.1" id="tr-vc" placeholder="e.g. 7" inputmode="decimal"></div></div>
-    </div>
-  </div>
-</div>
-<div class="modal-footer">
-  <button class="pgb" onclick="closeEditModal()">Cancel</button>
-  <button class="import-btn" id="save-edit-btn" onclick="saveEdit()" style="padding:8px 20px">Save Changes</button>
-</div>
-```
-
   </div>
 </div>
 
@@ -698,9 +512,7 @@ function showEmpty() {
   ['k-total','k-pts','k-tte','k-tee'].forEach(function(id){ document.getElementById(id).textContent='0'; });
   document.getElementById('tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">No studies yet — use Import tab</td></tr>';
 }
-</script>
 
-<script>
 function buildDash() {
   var n = studies.length;
   var tte = studies.filter(function(s){return s.type==='TTE';}).length;
@@ -836,9 +648,7 @@ function verifyPin(){
   }else{toast('Incorrect PIN');document.getElementById('admin-pin').value='';document.getElementById('admin-pin').focus();}
 }
 function deleteStudy(id){if(!isSessionAdmin)return;if(confirm('Delete this study permanently?')){db.collection('echo_studies').doc(id).delete().then(function(){toast('Study deleted');loadData();}).catch(function(e){toast('Error: '+e.message);});}}
-</script>
 
-<script>
 function openViewModal(docId){
   var s=studies.find(function(x){return x._docId===docId;});if(!s)return;
   var h='';
@@ -897,10 +707,7 @@ function toggleASFields() {
   if (modAS || sevAS) { asBox.style.display = 'block'; }
   else { asBox.style.display = 'none'; document.getElementById('as-mpg').value = ''; document.getElementById('as-ava').value  = ''; }
 }
-</script>
 
-<script>
-// ── ASE 2025 Diastolic Function Auto-Calculator ──────────────────────────────
 function calcDiastolic() {
   var badge  = document.getElementById('dd-badge');
   var sel    = document.getElementById('edit-diastolic');
@@ -969,13 +776,11 @@ function onDiastolicOverride() {
   autoFillDiagnosis(); calcDiastolic();
 }
 
-// ── CHANGE 2: openAddModal uses MM/DD/YYYY date format ────────────────────────
 function openAddModal(){
   pendingEditId = null;
   ddAutoGrade = ''; ddOverridden = false; _autoGenDiag = '';
   document.getElementById('edit-modal-title').textContent = 'Add New Study';
   var today=new Date(),dd=String(today.getDate()).padStart(2,'0'),mm=String(today.getMonth()+1).padStart(2,'0');
-  // MM/DD/YYYY format
   document.getElementById('edit-date').value = mm+'/'+dd+'/'+today.getFullYear();
   document.getElementById('edit-type').value = 'TTE';
   ['edit-pid','edit-age','edit-phys','edit-ind','edit-ef','edit-lv','edit-lavi',
@@ -1200,9 +1005,7 @@ function toggleCMFields() {
   document.getElementById('hcm-fields').style.display = isHCM ? 'block' : 'none';
   if(!isHCM){['hcm-wt','hcm-lvot-rest','hcm-lvot-val'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('hcm-sam').value='';}
 }
-</script>
 
-<script>
 function onFile(e){
   var file=e.target.files[0];if(!file)return;
   var reader=new FileReader();
@@ -1320,7 +1123,6 @@ function cleanDuplicates(){
   }).catch(function(e){txt.textContent='Error loading: '+e.message;console.error(e);});
 }
 
-// ── Export ────────────────────────────────────────────────────────────────────
 function exportExcel() {
   var data = filtered.length ? filtered : studies;
   if(!data.length){toast('No studies to export');return;}
@@ -1334,7 +1136,6 @@ function exportExcel() {
   toast('✓ Exported '+data.length+' studies');
 }
 
-// ── Patient Timeline ──────────────────────────────────────────────────────────
 var ptChart = null;
 function openPtModal(pid) {
   if(!pid) return;
@@ -1384,13 +1185,7 @@ function openPtModal(pid) {
   }
 }
 function closePtModal(){document.getElementById('ptModal').classList.remove('show');if(ptChart){ptChart.destroy();ptChart=null;}}
-</script>
 
-<script>
-// ═══════════════════════════════════════════════════════════
-// OCR — ViewPoint Report Scanner (Tesseract.js)
-// Improved for screen photos + specific ViewPoint field labels
-// ═══════════════════════════════════════════════════════════
 function runOCR(event) {
   var file = event.target.files[0];
   if (!file) return;
@@ -1416,21 +1211,19 @@ function parseOCRText(text) {
   var badge  = document.getElementById('ocr-badge');
   var filled = [], missed = [], flags = [];
 
-  // ── Pre-process: normalise common OCR screen-photo confusions ───────────
   function preProcess(t) {
     return t
-      .replace(/E[`''′ʼ]/g, "E'")        // smart quotes on E' labels
+      .replace(/E[`''′ʼ]/g, "E")
       .replace(/e[`''′ʼ]/g, "e'")
-      .replace(/E\s*\/\s*E'/g, "E/E'")    // spaces around slash
+      .replace(/E\s*\/\s*E'/g, "E/E'")
       .replace(/E\s*\/\s*e'/g, "E/e'")
       .replace(/E\s*\/\s*A/g,  "E/A")
-      .replace(/\bl\b/g, '1')             // lone lowercase L → digit 1 in numeric contexts
+      .replace(/\bl\b/g, '1')
       .replace(/[\u00AD\u200B\u200C\u200D\uFEFF]/g, '')
       .replace(/\r\n/g, '\n').replace(/\r/g, '\n');
   }
   text = preProcess(text);
 
-  // Helper: first match from array of patterns
   function extractAny(patterns, src) {
     for (var i = 0; i < patterns.length; i++) {
       var m = src.match(patterns[i]);
@@ -1439,7 +1232,6 @@ function parseOCRText(text) {
     return null;
   }
 
-  // ── Patient ID ────────────────────────────────────────────────────────────
   var pid = extractAny([
     /Patient\s*Id[:\s]+(\d{10,12})/i,
     /Patient\s*ID[:\s]+(\d{10,12})/i,
@@ -1453,7 +1245,6 @@ function parseOCRText(text) {
     filled.push('Patient ID: ' + pid);
   } else { missed.push('Patient ID'); }
 
-  // ── LVEF — priority ladder ────────────────────────────────────────────────
   var lvef = null, efSource = '';
   var efCandidates = [
     { re: /LVEF\s*\(Auto\s*EF\s*A4C\)\s+([\d\.]+)\s*%/i,     src: 'Auto EF A4C (biplane)' },
@@ -1478,12 +1269,10 @@ function parseOCRText(text) {
   if (lvef) { document.getElementById('edit-ef').value = lvef; filled.push('LVEF: '+lvef+'% ('+efSource+')'); }
   else { missed.push('LVEF'); }
 
-  // ── LVIDd ─────────────────────────────────────────────────────────────────
   var lvidd = extractAny([/LVIDd\s+([\d\.]+)\s*cm/i, /LVID\s*d\s+([\d\.]+)\s*cm/i, /LVIDd[:\s]+([\d\.]+)/i, /LV\s+Diastolic\s+Diameter[:\s]+([\d\.]+)/i], text);
   if (lvidd) { document.getElementById('edit-lv').value = parseFloat(lvidd).toFixed(1); filled.push('LVIDd: '+lvidd+' cm'); }
   else { missed.push('LVIDd'); }
 
-  // ── TAPSE — ViewPoint in cm; field expects mm ─────────────────────────────
   var tapse = extractAny([/TAPSE[:\s]+([\d\.]+)\s*cm/i, /TAPSE[:\s]+([\d\.]+)\s*mm/i, /TAPSE[:\s]+([\d\.]+)/i, /TA\s*PSE[:\s]+([\d\.]+)/i], text);
   if (tapse) {
     var tapseVal = parseFloat(tapse);
@@ -1492,7 +1281,6 @@ function parseOCRText(text) {
     filled.push('TAPSE: '+tapseMm+' mm');
   } else { missed.push('TAPSE'); }
 
-  // ── LAVI — ViewPoint labels: LAESVInd MOD BP  |  LAESV Index (A-L)  |  LAESV Index A-L ──
   var lavi = extractAny([
     /LAESVInd\s+MOD\s+BP\s+([\d\.]+)\s*ml/i,
     /LAESVInd\s+MOD\s+BP\s+([\d\.]+)/i,
@@ -1508,12 +1296,10 @@ function parseOCRText(text) {
   if (lavi) { document.getElementById('edit-lavi').value = parseFloat(lavi).toFixed(1); filled.push('LAVI: '+lavi+' ml/m²'); calcDiastolic(); }
   else { missed.push('LAVI'); }
 
-  // ── MV E/A ────────────────────────────────────────────────────────────────
   var ea = extractAny([/MV\s*E\/A\s*Ratio\s+([\d\.]+)/i, /MV\s*E\s*\/\s*A\s+([\d\.]+)/i, /E\/A\s*Ratio[:\s]+([\d\.]+)/i, /MV\s*E\/A[:\s]+([\d\.]+)/i, /\bE\/A[:\s]+([\d\.]+)/i], text);
   if (ea) { document.getElementById('edit-ea').value = parseFloat(ea).toFixed(2); filled.push('MV E/A: '+ea); calcDiastolic(); }
   else { missed.push('MV E/A'); }
 
-  // ── Average E/e' — ViewPoint labels: "MV E/E' Avg", "E/E' Avg", "E/e' (avg)", "Avg E/e'" ──
   var ee = extractAny([
     /MV\s*E\/E'\s*Avg[:\s]+([\d\.]+)/i,
     /MV\s*E\s*\/\s*E'\s*Avg[:\s]+([\d\.]+)/i,
@@ -1531,7 +1317,6 @@ function parseOCRText(text) {
   if (ee) { document.getElementById('edit-ee').value = parseFloat(ee).toFixed(1); filled.push("Avg E/e': "+ee); calcDiastolic(); }
   else { missed.push("Avg E/e'"); }
 
-  // ── MV E' Septal ──────────────────────────────────────────────────────────
   var eSept = extractAny([
     /MV\s*E'\s*Sept[:\s]+([\d\.]+)\s*m\/s/i, /MV\s*E'\s*Sept[:\s]+([\d\.]+)\s*cm\/s/i,
     /MV\s*E'\s*Sept[:\s]+([\d\.]+)/i, /E'\s*Sept[:\s]+([\d\.]+)\s*m\/s/i,
@@ -1544,7 +1329,6 @@ function parseOCRText(text) {
     filled.push("MV E' Sept: "+eSeptCm+' cm/s'); calcDiastolic();
   } else { missed.push("MV E' Sept"); }
 
-  // ── MV E' Lateral ─────────────────────────────────────────────────────────
   var eLat = extractAny([
     /MV\s*E'\s*Lat[:\s]+([\d\.]+)\s*m\/s/i, /MV\s*E'\s*Lat[:\s]+([\d\.]+)\s*cm\/s/i,
     /MV\s*E'\s*Lat[:\s]+([\d\.]+)/i, /E'\s*Lat[:\s]+([\d\.]+)\s*m\/s/i,
@@ -1557,14 +1341,12 @@ function parseOCRText(text) {
     filled.push("MV E' Lat: "+eLatCm+' cm/s'); calcDiastolic();
   } else { missed.push("MV E' Lat"); }
 
-  // ── TR Vmax ───────────────────────────────────────────────────────────────
   var trv = extractAny([/TR\s*Vmax[:\s]+([\d\.]+)\s*m\/s/i, /TR\s*V\s*max[:\s]+([\d\.]+)\s*m\/s/i, /TR\s*Vmax[:\s]+([\d\.]+)/i, /Tricusp\w*\s*Vmax[:\s]+([\d\.]+)/i], text);
   if (trv) {
     var trvVal = parseFloat(trv);
     if (trvVal >= 1.0 && trvVal <= 5.0) { document.getElementById('edit-tr').value = trvVal.toFixed(2); filled.push('TR Vmax: '+trvVal.toFixed(2)+' m/s'); calcDiastolic(); }
   } else { missed.push('TR Vmax'); }
 
-  // ── PASP from TR maxPG ────────────────────────────────────────────────────
   var trPG = extractAny([/TR\s*maxPG\s+([\d\.]+)\s*mmHg/i, /TR\s*maxPG\s+([\d\.]+)/i, /TR\s*Max\s*PG[:\s]+([\d\.]+)/i, /TR\s*Peak\s*Gradient[:\s]+([\d\.]+)/i], text);
   if (trPG) {
     var pasp = Math.round(parseFloat(trPG) + 5);
@@ -1573,18 +1355,15 @@ function parseOCRText(text) {
     flags.push('ℹ PASP estimated as TR maxPG + 5 mmHg (assumed RAP 5 mmHg)');
   }
 
-  // ── GLS ───────────────────────────────────────────────────────────────────
   var gls = extractAny([/GLS[:\s]+(-?[\d\.]+)\s*%/i, /Global\s*Longitudinal\s*Strain[:\s]+(-?[\d\.]+)/i, /LV\s*GLS[:\s]+(-?[\d\.]+)/i], text);
   if (gls) { document.getElementById('edit-gls').value = parseFloat(gls).toFixed(1); filled.push('GLS: '+gls+'%'); }
 
-  // ── Indication ────────────────────────────────────────────────────────────
   var indication = extractAny([/Indication[:\s]+([A-Za-z0-9\s\,\/\-\.]+?)[\n\r]/i, /Reason[:\s]+([A-Za-z0-9\s\,\/\-\.]+?)[\n\r]/i, /Clinical\s*Info[:\s]+([A-Za-z0-9\s\,\/\-\.]+?)[\n\r]/i], text);
   if (indication && indication.trim()) {
     var ind = document.getElementById('edit-ind');
     if (!ind.value.trim()) { ind.value = indication.trim(); _autoGenDiag = ''; filled.push('Indication: '+indication.trim()); }
   }
 
-  // ── Build badge ───────────────────────────────────────────────────────────
   var html = '<div style="font-weight:700;margin-bottom:6px;font-size:0.78rem">✓ OCR Complete — Review all values before saving</div>';
   if (filled.length) html += '<div style="margin-bottom:6px"><b>Extracted ('+filled.length+'):</b><br>'+filled.map(function(f){return '<span style="color:#166534">✓ '+f+'</span>';}).join('<br>')+'</div>';
   if (flags.length)  html += '<div style="margin-bottom:6px;color:#92400e">'+flags.map(function(f){return '<span>'+f+'</span>';}).join('<br>')+'</div>';
@@ -1595,9 +1374,7 @@ function parseOCRText(text) {
 }
 
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},3500);}
-</script>
 
-<script>
 var efChart=null, ddChart=null, valveChart=null, cmChart=null, ageChart=null;
 var ddAgeChart=null, vAgeChart=null;
 
@@ -1606,7 +1383,6 @@ function buildClinicalAnalytics() {
   var n = s.length;
   if (!n) return;
 
-  // ── LVEF ─────────────────────────────────────────────────────────────────
   var withEF = s.filter(function(x){ return x.lvef !== undefined && x.lvef !== null && x.lvef !== ''; });
   var efVals  = withEF.map(function(x){ return parseFloat(x.lvef); }).filter(function(v){ return !isNaN(v); });
   var efMean  = efVals.length ? (efVals.reduce(function(a,b){return a+b;},0)/efVals.length).toFixed(1) : '—';
@@ -1623,8 +1399,7 @@ function buildClinicalAnalytics() {
   document.getElementById('ca-pef-sub').textContent  = efVals.length ? Math.round(pefN/efVals.length*100)+'% of studies with EF' : '—';
   document.getElementById('ca-ef-badge').textContent = efVals.length + ' studies with EF';
 
-  // LVEF histogram
-  var bins = [0,0,0,0,0,0,0,0,0,0,0]; // 0-9,10-19,...,>100 → use 10-19 to 70-79 range
+  var bins = [0,0,0,0,0,0,0,0,0,0,0];
   var binLabels=['<20','20-29','30-39','40-44','45-49','50-54','55-59','60-64','65-69','70-74','≥75'];
   efVals.forEach(function(v){
     if(v<20) bins[0]++;
@@ -1646,7 +1421,6 @@ function buildClinicalAnalytics() {
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}},y:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}}}}
   });
 
-  // ── Diastolic Function ────────────────────────────────────────────────────
   var ddMap = {Normal:0, 'Grade I':0, 'Grade II':0, 'Grade III':0, Indeterminate:0};
   s.forEach(function(x){ if(x.diastolic && ddMap.hasOwnProperty(x.diastolic)) ddMap[x.diastolic]++; });
   var ddTotal = Object.values(ddMap).reduce(function(a,b){return a+b;},0);
@@ -1662,11 +1436,9 @@ function buildClinicalAnalytics() {
   var ddKpis = document.getElementById('ca-dd-kpis');
   ddKpis.innerHTML = ddLabels.map(function(l,i){
     var c=ddMap[l]||0, pct=ddTotal?Math.round(c/ddTotal*100):0;
-    var icons=['✓','I','II','III','?'];
     return '<div class="kpi" style="padding:16px"><div class="kpi-label">'+l+'</div><div class="kpi-val" style="color:'+ddColors[i]+'">'+c+'</div><div class="kpi-sub">'+pct+'% of graded</div></div>';
   }).join('');
 
-  // ── Valvular Disease ──────────────────────────────────────────────────────
   var valveMap = {
     'Severe AS':0,'Moderate AS':0,'Severe AR':0,'Moderate AR':0,
     'Severe MS':0,'Moderate MS':0,'Severe MR':0,'Moderate MR':0,
@@ -1686,7 +1458,6 @@ function buildClinicalAnalytics() {
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}},y:{ticks:{color:'#475569',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}}}}
   });
 
-  // ── AS Detail ─────────────────────────────────────────────────────────────
   var asStudies = s.filter(function(x){ return x.valvular && (x.valvular.includes('Severe AS')||x.valvular.includes('Moderate AS')); });
   document.getElementById('ca-as-badge').textContent = asStudies.length + ' AS studies';
   if(asStudies.length){
@@ -1706,7 +1477,6 @@ function buildClinicalAnalytics() {
       '</div>';
   } else { document.getElementById('ca-as-body').textContent = 'No AS studies recorded yet'; }
 
-  // ── Cardiomyopathy ────────────────────────────────────────────────────────
   var cmMap = {};
   s.forEach(function(x){ if(x.cardiomyopathy){ var k=x.cardiomyopathy; cmMap[k]=(cmMap[k]||0)+1; } });
   var cmKeys=Object.keys(cmMap).sort(function(a,b){return cmMap[b]-cmMap[a];});
@@ -1721,7 +1491,6 @@ function buildClinicalAnalytics() {
     });
   }
 
-  // ── EF + DD Co-occurrence ─────────────────────────────────────────────────
   var coocRows = '';
   var ddGrades = ['Normal','Grade I','Grade II','Grade III','Indeterminate'];
   var efCats = [
@@ -1737,7 +1506,6 @@ function buildClinicalAnalytics() {
   });
   document.getElementById('ca-cooc').innerHTML = coocRows || '<div style="color:var(--text3);font-size:0.8rem">No studies with both EF and DD grade recorded yet</div>';
 
-  // ── Demographics ──────────────────────────────────────────────────────────
   var ageVals = s.map(function(x){return parseInt(x.age);}).filter(function(v){return !isNaN(v)&&v>0&&v<120;});
   var ageMean = ageVals.length ? (ageVals.reduce(function(a,b){return a+b;},0)/ageVals.length).toFixed(0) : '—';
   var withData = s.filter(function(x){return x.lvef||x.diastolic||x.cardiomyopathy||(x.valvular&&x.valvular.length);}).length;
@@ -1746,7 +1514,6 @@ function buildClinicalAnalytics() {
   document.getElementById('ca-withdata-sub').textContent = n ? Math.round(withData/n*100)+'% of all studies' : '—';
   document.getElementById('ca-age-badge').textContent = ageVals.length + ' studies with age';
 
-  // Age histogram
   var ageBins=[0,0,0,0,0,0,0,0,0], ageBinLabels=['<20','20-29','30-39','40-49','50-59','60-69','70-79','80-89','≥90'];
   ageVals.forEach(function(v){
     if(v<20)ageBins[0]++;else if(v<30)ageBins[1]++;else if(v<40)ageBins[2]++;else if(v<50)ageBins[3]++;
@@ -1758,7 +1525,6 @@ function buildClinicalAnalytics() {
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}},y:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}}}}
   });
 
-  // ── ADVANCED: DD Grade by Age Decade ─────────────────────────────────────
   var decades=['<40','40s','50s','60s','70s','80+'];
   function ageBin(age){if(age<40)return 0;if(age<50)return 1;if(age<60)return 2;if(age<70)return 3;if(age<80)return 4;return 5;}
   var ddAgeData = {Normal:new Array(6).fill(0),'Grade I':new Array(6).fill(0),'Grade II':new Array(6).fill(0),'Grade III':new Array(6).fill(0)};
@@ -1777,7 +1543,6 @@ function buildClinicalAnalytics() {
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#475569',font:{family:'Plus Jakarta Sans',size:11},padding:16,usePointStyle:true}}},scales:{x:{stacked:true,ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}},y:{stacked:true,ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}}}}
   });
 
-  // ── ADVANCED: Top Valve Lesions by Age Decade ─────────────────────────────
   var topValves=['Severe AS','Severe MR','Moderate MR','Moderate AS','Severe TR'];
   var vAgeDatasets = topValves.map(function(valve,i){
     var counts=new Array(6).fill(0);
@@ -1797,7 +1562,6 @@ function buildClinicalAnalytics() {
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#475569',font:{family:'Plus Jakarta Sans',size:11},padding:12,usePointStyle:true}}},scales:{x:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{display:false}},y:{ticks:{color:'#94a3b8',font:{family:'Plus Jakarta Sans',size:11}},grid:{color:'#f1f5f9'}}}}
   });
 
-  // ── HFpEF Phenotype ───────────────────────────────────────────────────────
   var pefStudies = s.filter(function(x){return x.lvef&&parseFloat(x.lvef)>=55;});
   var hfpefStudies = pefStudies.filter(function(x){
     var criteria=0;
@@ -1823,14 +1587,6 @@ function buildClinicalAnalytics() {
     '<div class="vc-row"><span class="vc-label">DD Grade ≥I</span><span class="vc-val" style="color:var(--accent)">'+c_dd_ab+' <span style="font-size:0.7rem;color:var(--text3)">/ '+pefStudies.length+' ('+Math.round(c_dd_ab/Math.max(pefStudies.length,1)*100)+'%)</span></span></div>'+
     '<div class="vc-row" style="border-top:2px solid #e2e8f0;margin-top:4px"><span class="vc-label" style="color:#9333ea;font-weight:700">HFpEF Profile (≥2)</span><span class="vc-val" style="color:#9333ea;font-weight:700">'+hfpefStudies.length+' <span style="font-size:0.7rem">('+hfpefPct+'% of pEF)</span></span></div>';
 
-  // ── Disease Co-occurrence 2 ───────────────────────────────────────────────
-  var coocPairs=[
-    {a:'Severe AS',b:'Severe MR',label:'AS+MR (combined valve)'},
-    {a:'Severe AS',b:'Severe TR',label:'AS+TR'},
-    {a:'Severe MR',b:'DD Grade II+', label:'Severe MR + DD Grade ≥II'},
-    {a:'HCM',b:'LVOTO',label:'HCM obstructive'}
-  ];
-  var cooc2Html='';
   var asMR  = s.filter(function(x){return x.valvular&&x.valvular.includes('Severe AS')&&x.valvular.includes('Severe MR');}).length;
   var asTR  = s.filter(function(x){return x.valvular&&x.valvular.includes('Severe AS')&&x.valvular.includes('Severe TR');}).length;
   var mrDD  = s.filter(function(x){return x.valvular&&x.valvular.includes('Severe MR')&&x.diastolic&&(x.diastolic==='Grade II'||x.diastolic==='Grade III');}).length;
@@ -1845,11 +1601,9 @@ function buildClinicalAnalytics() {
     {label:'Reduced EF + DD Grade ≥II', count:refDD},
     {label:'Severe valve disease + Reduced EF', count:sevValveRefEF}
   ].forEach(function(pair){
-    cooc2Html+='<div class="vc-row"><span class="vc-label" style="width:auto;flex:1;font-size:0.75rem;color:var(--text2)">'+pair.label+'</span><span style="font-weight:700;color:var(--accent);font-size:0.95rem;flex-shrink:0;width:50px;text-align:right">'+pair.count+'</span></div>';
+    document.getElementById('ca-cooc2').innerHTML+='<div class="vc-row"><span class="vc-label" style="width:auto;flex:1;font-size:0.75rem;color:var(--text2)">'+pair.label+'</span><span style="font-weight:700;color:var(--accent);font-size:0.95rem;flex-shrink:0;width:50px;text-align:right">'+pair.count+'</span></div>';
   });
-  document.getElementById('ca-cooc2').innerHTML = cooc2Html || '<div style="color:var(--text3);font-size:0.8rem">No co-occurring conditions recorded yet</div>';
 
-  // ── Severe Valve + EF ─────────────────────────────────────────────────────
   var sevKeys=['Severe AS','Severe AR','Severe MR','Severe MS','Severe TR'];
   document.getElementById('ca-sev-badge').textContent = s.filter(function(x){return x.valvular&&x.valvular.some(function(v){return v.startsWith('Severe');});}).length + ' studies';
   var sevHtml='';

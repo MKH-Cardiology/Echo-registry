@@ -2,8 +2,39 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Echo Registry</title>
+<meta name="application-name" content="Echo Registry">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Echo Registry">
+<meta name="theme-color" content="#0d9488">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxMDAiIHkyPSIxMDAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBkOTQ4OCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iIzFhNTZjOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNTYzZWIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjMwIiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC4wNCIvPgogIDxjaXJjbGUgY3g9IjgwIiBjeT0iODAiIHI9IjM1IiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC4wNCIvPgogIDxwYXRoIGQ9Ik01MCA2MiBRMzcgNTIgMzcgMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjM1Ii8+CiAgPHBhdGggZD0iTTUwIDYyIFEyOSA0OSAyOSAyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC4xOCIvPgogIDxwYXRoIGQ9Ik01MCA2MiBRNjMgNTIgNjMgMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjM1Ii8+CiAgPHBhdGggZD0iTTUwIDYyIFE3MSA0OSA3MSAyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC4xOCIvPgogIDxwYXRoIGQ9Ik01MCA3MkM1MCA3MiAyNCA1NCAyNCAzNUMyNCAyNiAzMC41IDE5LjUgMzkgMTkuNUM0NC4yIDE5LjUgNDguNSAyMi41IDUwIDI2LjVDNTEuNSAyMi41IDU1LjggMTkuNSA2MSAxOS41QzY5LjUgMTkuNSA3NiAyNiA3NiAzNUM3NiA1NCA1MCA3MiA1MCA3MloiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI0MyIgcj0iNSIgZmlsbD0idXJsKCNiZykiIG9wYWNpdHk9IjAuOSIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNDMyIHI9IjIuNSIgZmlsbD0id2hpdGUiLz4KPC9zdmc+">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjEwMCIgeTI9IjEwMCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwZDk0ODgiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNTYzZWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNiZykiLz48cGF0aCBkPSJNNTAgNjIgUTM3IDUyIDM3IDM4IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC4zNSIvPjxwYXRoIGQ9Ik01MCA2MiBRNjMgNTIgNjMgMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjM1Ii8+PHBhdGggZD0iTTUwIDcyQzUwIDcyIDI0IDU0IDI0IDM1QzI0IDI2IDMwLjUgMTkuNSAzOSAxOS41QzQ0LjIgMTkuNSA0OC41IDIyLjUgNTAgMjYuNUM1MS41IDIyLjUgNTUuOCAxOS41IDYxIDE5LjVDNjkuNSAxOS41IDc2IDI2IDc2IDM1Qzc2IDU0IDUwIDcyIDUwIDcyWiIgZmlsbD0id2hpdGUiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjQzIiByPSI0IiBmaWxsPSJ1cmwoI2JnKSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNDMiIHI9IjIiIGZpbGw9IndoaXRlIi8+PC9zdmc+">
+<script>
+(function(){
+  var manifest = {
+    name: "Echo Registry", short_name: "Echo Registry",
+    description: "Mubarak Al-Kabeer Hospital — Cardiology Echo Lab Registry",
+    start_url: "./", display: "standalone",
+    background_color: "#0d9488", theme_color: "#0d9488", orientation: "portrait",
+    icons: [
+      { src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMTAwIiB5Mj0iMTAwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBkOTQ4OCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzI1NjNlYiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ1cmwoI2JnKSIvPjxwYXRoIGQ9Ik01MCA2MiBRMzcgNTIgMzcgMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjM1Ii8+PHBhdGggZD0iTTUwIDYyIFE2MyA1MiA2MyAzOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz48cGF0aCBkPSJNNTAgNzJDNTAgNzIgMjQgNTQgMjQgMzVDMjQgMjYgMzAuNSAxOS41IDM5IDE5LjVDNDQuMiAxOS41IDQ4LjUgMjIuNSA1MCAyNi41QzUxLjUgMjIuNSA1NS44IDE5LjUgNjEgMTkuNUM2OS41IDE5LjUgNzYgMjYgNzYgMzVDNzYgNTQgNTAgNzIgNTAgNzJaIiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNDMiIHI9IjUiIGZpbGw9InVybCgjYmcpIi8+PGNpcmNsZSBjeD0iNTAiIGN5PSI0MyIHI9IjIuNSIgZmlsbD0id2hpdGUiLz48L3N2Zz4=", sizes: "192x192", type: "image/svg+xml" },
+      { src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMTAwIiB5Mj0iMTAwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBkOTQ4OCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzI1NjNlYiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ1cmwoI2JnKSIvPjxwYXRoIGQ9Ik01MCA2MiBRMzcgNTIgMzcgMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjM1Ii8+PHBhdGggZD0iTTUwIDYyIFE2MyA1MiA2MyAzOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz48cGF0aCBkPSJNNTAgNzJDNTAgNzIgMjQgNTQgMjQgMzVDMjQgMjYgMzAuNSAxOS41IDM5IDE5LjVDNDQuMiAxOS41IDQ4LjUgMjIuNSA1MCAyNi41QzUxLjUgMjIuNSA1NS44IDE5LjUgNjEgMTkuNUM2OS41IDE5LjUgNzYgMjYgNzYgMzVDNzYgNTQgNTAgNzIgNTAgNzJaIiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNDMiIHI9IjUiIGZpbGw9InVybCgjYmcpIi8+PGNpcmNsZSBjeD0iNTAiIGN5PSI0MyIHI9IjIuNSIgZmlsbD0id2hpdGUiLz48L3N2Zz4=", sizes: "512x512", type: "image/svg+xml" }
+    ]
+  };
+  var blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement('link');
+  link.rel = 'manifest'; link.href = url;
+  document.head.appendChild(link);
+})();
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,163 +43,378 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="./css/styles.css">
+<link rel="stylesheet" href="css/styles.css">
+
 </head>
 <body>
 
 <div id="pageLogin">
   <div class="lc">
-    <div class="llogo"><div class="icon">🫀</div><h1>Echo Lab Registry</h1><p>Mubarak Al-Kabeer Hospital</p></div>
+    <div class="llogo">
+      <div class="icon">🫀</div>
+      <h1>Echo Lab Registry</h1>
+      <p>Mubarak Al-Kabeer Hospital</p>
+    </div>
     <div class="lcard">
       <h2>Welcome back</h2>
-      <div class="lf"><label>Email Address</label><div class="iw"><i class="fa fa-envelope"></i><input type="email" id="lemail" placeholder="your@email.com"></div></div>
+      <p class="sub">Sign in to access the registry</p>
+      <div class="lf"><label>Email Address</label><div class="iw"><i class="fa fa-envelope"></i><input type="email" id="lemail" placeholder="your@email.com" autocomplete="email"></div></div>
       <div class="lf"><label>Password</label><div class="iw"><i class="fa fa-lock"></i><input type="password" id="lpass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div></div>
       <button class="lbtn" id="lbtn" onclick="doLogin()">Sign In</button>
       <div class="lerr" id="lerr"></div>
     </div>
-    <div class="lfoot">Ministry of Health · Kuwait</div>
+    <div class="lfoot">Ministry of Health · Kuwait · Cardiology Department</div>
   </div>
 </div>
 
 <div id="pageApp">
   <div class="header">
-    <div class="header-brand"><div class="brand-text"><h1>Echo Registry</h1><p>Mubarak Al-Kabeer · Cardiology</p></div></div>
-    <div class="header-right"><div class="db-pill"><span class="db-dot" id="dbdot"></span><span class="db-label" id="dblabel">—</span></div><button class="btn-out" onclick="doLogout()"><i class="fa fa-sign-out-alt"></i></button></div>
+    <div class="header-brand">
+      <div class="brand-icon" style="background:none;padding:0;overflow:hidden">
+        <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="hbg" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#0d9488"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>
+          <rect width="100" height="100" rx="10" fill="url(#hbg)"/>
+          <path d="M50 62 Q37 52 37 38" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.35"/>
+          <path d="M50 62 Q63 52 63 38" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.35"/>
+          <path d="M50 72C50 72 24 54 24 35C24 26 30.5 19.5 39 19.5C44.2 19.5 48.5 22.5 50 26.5C51.5 22.5 55.8 19.5 61 19.5C69.5 19.5 76 26 76 35C76 54 50 72 50 72Z" fill="white"/>
+          <circle cx="50" cy="43" r="4.5" fill="url(#hbg)"/>
+          <circle cx="50" cy="43" r="2.2" fill="white"/>
+        </svg>
+      </div>
+      <div class="brand-text"><h1>Echo Registry</h1><p>Mubarak Al-Kabeer · Cardiology</p></div>
+    </div>
+    <div class="header-right">
+      <div class="db-pill"><span class="db-dot" id="dbdot"></span><span class="db-label" id="dblabel">—</span></div>
+      <button class="btn-out" onclick="doLogout()"><i class="fa fa-sign-out-alt"></i></button>
+    </div>
   </div>
 
   <div class="navtabs">
     <button class="tbtn active" onclick="showTab('dash',this)"><i class="fa fa-chart-pie"></i> Dashboard</button>
     <button class="tbtn" onclick="showTab('reg',this)"><i class="fa fa-table"></i> Registry</button>
-    <button class="tbtn" onclick="showTab('clin',this)"><i class="fa fa-microscope"></i> Analytics</button>
+    <button class="tbtn" onclick="showTab('clin',this)"><i class="fa fa-microscope"></i> Clinical Analytics</button>
     <button class="tbtn" onclick="showTab('imp',this)"><i class="fa fa-upload"></i> Import</button>
   </div>
 
   <div id="tab-dash" class="pg active">
     <div class="section-label">Overview</div>
     <div class="kpi-row">
-      <div class="kpi"><div class="kpi-label">Total Studies</div><div class="kpi-val" id="k-total">—</div></div>
-      <div class="kpi"><div class="kpi-label">Unique Patients</div><div class="kpi-val" id="k-pts">—</div></div>
-      <div class="kpi"><div class="kpi-label">TTE Studies</div><div class="kpi-val" id="k-tte">—</div></div>
-      <div class="kpi"><div class="kpi-label">TEE Studies</div><div class="kpi-val" id="k-tee">—</div></div>
+      <div class="kpi"><div class="kpi-icon blue"><i class="fa fa-stethoscope" style="color:var(--accent)"></i></div><div class="kpi-label">Total Studies</div><div class="kpi-val" id="k-total">—</div><div class="kpi-sub">2026 YTD</div></div>
+      <div class="kpi"><div class="kpi-icon teal"><i class="fa fa-users" style="color:var(--teal)"></i></div><div class="kpi-label">Unique Patients</div><div class="kpi-val" id="k-pts">—</div><div class="kpi-sub">distinct IDs</div></div>
+      <div class="kpi"><div class="kpi-icon green"><i class="fa fa-heart" style="color:var(--green)"></i></div><div class="kpi-label">TTE Studies</div><div class="kpi-val" id="k-tte">—</div><div class="kpi-sub" id="k-tte-p">—</div></div>
+      <div class="kpi"><div class="kpi-icon amber"><i class="fa fa-eye" style="color:var(--amber)"></i></div><div class="kpi-label">TEE Studies</div><div class="kpi-val" id="k-tee">—</div><div class="kpi-sub" id="k-tee-p">—</div></div>
     </div>
-    <div class="card"><div class="card-header"><div class="card-title">Monthly Study Volume</div></div><div class="cw"><canvas id="mChart"></canvas></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">Studies by Physician</div></div><ul class="phys-list" id="physList"></ul></div>
+    <div class="section-label">Volume Analysis</div>
+    <div class="card"><div class="card-header"><div class="card-title">Monthly Study Volume</div><span class="card-badge" id="peak-month">—</span></div><div class="cw"><canvas id="mChart"></canvas></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Busiest Days of Week</div><span class="card-badge">studies per day</span></div><div class="cw-sm"><canvas id="dayChart"></canvas></div></div>
+    <div class="section-label">Exam Types</div>
+    <div class="card"><div class="card-header"><div class="card-title">TTE vs TEE Distribution</div></div><div class="cw-sm"><canvas id="tChart"></canvas></div></div>
+    <div class="section-label">Physician Workload</div>
+    <div class="card"><div class="card-header"><div class="card-title">Studies by Reading Physician</div><span class="card-badge" id="top-phys">—</span></div><ul class="phys-list" id="physList"></ul></div>
+    <div class="section-label">Clinical Diagnoses</div>
+    <div class="card"><div class="card-header"><div class="card-title">Diagnosis Distribution</div><span class="card-badge" id="ind-count">—</span></div><div class="ind-cloud" id="indCloud"></div></div>
   </div>
 
   <div id="tab-reg" class="pg">
     <div class="search-bar">
-      <div class="search-wrap"><i class="fa fa-search"></i><input type="text" class="search-input" id="srch" placeholder="Search Patient ID..." oninput="doFilter()"></div>
+      <div class="search-wrap"><i class="fa fa-search"></i><input type="text" class="search-input" id="srch" placeholder="Search Patient ID, date, physician, diagnosis..." oninput="doFilter()"></div>
     </div>
     <div class="filter-row">
-      <button class="import-btn" onclick="openAddModal()"><i class="fa fa-plus"></i> Add Study</button>
-      <button id="btn-admin-toggle" class="pgb" onclick="toggleAdmin()"><i class="fa fa-lock"></i> Admin Mode</button>
+      <div class="filter-group">
+        <select class="fsel" id="ftype" onchange="doFilter()"><option value="">All Types</option><option>TTE</option><option>TEE</option></select>
+        <select class="fsel" id="fmonth" onchange="doFilter()">
+          <option value="">All Months</option>
+          <option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option>
+          <option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option>
+          <option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>
+        </select>
+        <select class="fsel" id="fphys" onchange="doFilter()"><option value="">All Physicians</option></select>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="import-btn" style="padding:6px 14px;" onclick="openAddModal()"><i class="fa fa-plus"></i> Add Study</button>
+        <button class="import-btn" style="padding:6px 14px;background:var(--teal)" onclick="exportExcel()"><i class="fa fa-file-excel"></i> Export</button>
+        <button id="btn-admin-toggle" class="pgb" onclick="toggleAdmin()"><i class="fa fa-lock"></i> Admin Mode</button>
+      </div>
     </div>
+    <div id="rinfo" style="font-size:0.75rem;color:var(--text3);margin-bottom:12px;font-weight:600;"></div>
     <div class="table-card">
       <table><thead id="thead-row"></thead><tbody id="tbody"></tbody></table>
-      <div class="pgn"><span class="pgi" id="pgi"></span><div class="pgbtns"><button class="pgb" id="pbprev" onclick="goPage(-1)">←</button><button class="pgb" id="pbnext" onclick="goPage(1)">→</button></div></div>
+      <div class="pgn">
+        <span class="pgi" id="pgi"></span>
+        <div class="pgbtns">
+          <button class="pgb" id="pbprev" onclick="goPage(-1)">← Prev</button>
+          <button class="pgb" id="pbnext" onclick="goPage(1)">Next →</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <div id="tab-clin" class="pg">
     <div class="section-label">Systolic Function</div>
     <div class="kpi-row">
-      <div class="kpi"><div class="kpi-label">Mean LVEF</div><div class="kpi-val" id="ca-ef-mean">—</div></div>
-      <div class="kpi"><div class="kpi-label">Reduced EF</div><div class="kpi-val" id="ca-ref">—</div></div>
+      <div class="kpi"><div class="kpi-icon blue"><i class="fa fa-heart-pulse" style="color:var(--accent)"></i></div><div class="kpi-label">Mean LVEF</div><div class="kpi-val" id="ca-ef-mean">—</div><div class="kpi-sub" id="ca-ef-sub">of studies with EF recorded</div></div>
+      <div class="kpi"><div class="kpi-icon" style="background:#fef2f2"><i class="fa fa-heart-crack" style="color:var(--red)"></i></div><div class="kpi-label">Reduced EF &lt;50%</div><div class="kpi-val" id="ca-ref">—</div><div class="kpi-sub" id="ca-ref-sub">—</div></div>
+      <div class="kpi"><div class="kpi-icon amber"><i class="fa fa-gauge-high" style="color:var(--amber)"></i></div><div class="kpi-label">Mildly Reduced 50-54%</div><div class="kpi-val" id="ca-mref">—</div><div class="kpi-sub" id="ca-mref-sub">—</div></div>
+      <div class="kpi"><div class="kpi-icon green"><i class="fa fa-circle-check" style="color:var(--green)"></i></div><div class="kpi-label">Preserved EF ≥55%</div><div class="kpi-val" id="ca-pef">—</div><div class="kpi-sub" id="ca-pef-sub">—</div></div>
     </div>
-    <div class="card"><div class="cw"><canvas id="efChart"></canvas></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">LVEF Distribution</div><span class="card-badge" id="ca-ef-badge">—</span></div><div class="cw"><canvas id="efChart"></canvas></div></div>
     <div class="section-label">Diastolic Function</div>
-    <div class="card"><div class="cw-sm"><canvas id="ddChart"></canvas></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Diastolic Function Grading</div><span class="card-badge" id="ca-dd-badge">—</span></div><div class="cw-sm"><canvas id="ddChart"></canvas></div></div>
+    <div class="kpi-row" id="ca-dd-kpis"></div>
+    <div class="section-label">Valvular Disease</div>
+    <div class="card"><div class="card-header"><div class="card-title">Significant Valvular Lesions</div><span class="card-badge" id="ca-valve-badge">—</span></div><div class="cw"><canvas id="valveChart"></canvas></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Aortic Stenosis Detail</div><span class="card-badge" id="ca-as-badge">—</span></div><div id="ca-as-body" style="font-size:0.8rem;color:var(--text2)">No AS data recorded yet</div></div>
+    <div class="section-label">Structural Findings</div>
+    <div class="card"><div class="card-header"><div class="card-title">Cardiomyopathy Distribution</div><span class="card-badge" id="ca-cm-badge">—</span></div><div class="cw-sm"><canvas id="cmChart"></canvas></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Co-occurrence: Reduced EF + DD Grade</div><span class="card-badge">studies with both recorded</span></div><div id="ca-cooc" style="padding-bottom:8px"></div></div>
+    <div class="section-label">Demographics</div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-icon teal"><i class="fa fa-calendar" style="color:var(--teal)"></i></div><div class="kpi-label">Mean Age</div><div class="kpi-val" id="ca-age-mean">—</div><div class="kpi-sub">years at scan</div></div>
+      <div class="kpi"><div class="kpi-icon blue"><i class="fa fa-database" style="color:var(--accent)"></i></div><div class="kpi-label">Studies with Clinical Data</div><div class="kpi-val" id="ca-withdata">—</div><div class="kpi-sub" id="ca-withdata-sub">—</div></div>
+    </div>
+    <div class="card"><div class="card-header"><div class="card-title">Age Distribution</div><span class="card-badge" id="ca-age-badge">—</span></div><div class="cw"><canvas id="ageChart"></canvas></div></div>
+
+    <div class="section-label" style="margin-top:8px;color:var(--accent);border-top:2px solid #eff6ff;padding-top:16px">Advanced Analytics</div>
+    <div class="section-label">Diastolic Dysfunction by Age Group</div>
+    <div class="card"><div class="card-header"><div class="card-title">DD Grade Distribution by Decade</div><span class="card-badge" id="ca-ddage-badge">—</span></div><div class="cw" style="height:260px"><canvas id="ddAgeChart"></canvas></div></div>
+    <div class="section-label">Valvular Disease by Age Group</div>
+    <div class="card"><div class="card-header"><div class="card-title">Top Valve Lesions by Age Decade</div><span class="card-badge" id="ca-vage-badge">—</span></div><div class="cw" style="height:260px"><canvas id="vAgeChart"></canvas></div></div>
+    <div class="section-label">HFpEF Phenotype</div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-icon" style="background:#fdf4ff"><i class="fa fa-lungs" style="color:#9333ea"></i></div><div class="kpi-label">HFpEF Profile</div><div class="kpi-val" id="ca-hfpef-n" style="color:#9333ea">—</div><div class="kpi-sub" id="ca-hfpef-sub">LVEF≥55% + ≥2 echo criteria</div></div>
+      <div class="kpi"><div class="kpi-icon" style="background:#fdf4ff"><i class="fa fa-percent" style="color:#9333ea"></i></div><div class="kpi-label">HFpEF % of Preserved EF</div><div class="kpi-val" id="ca-hfpef-pct" style="color:#9333ea">—</div><div class="kpi-sub">of studies with LVEF≥55%</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">HFpEF Criteria Breakdown</div><span class="card-badge" id="ca-hfpef-badge">—</span></div>
+      <div id="ca-hfpef-body"></div>
+    </div>
+    <div class="section-label">Disease Co-occurrence</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Key Clinical Pairs</div><span class="card-badge">studies meeting both criteria</span></div>
+      <div id="ca-cooc2"></div>
+    </div>
+    <div class="section-label">Severe Valve Disease Burden</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Severe Valvular Lesions + EF Status</div><span class="card-badge" id="ca-sev-badge">—</span></div>
+      <div id="ca-sev-body"></div>
+    </div>
   </div>
 
   <div id="tab-imp" class="pg">
     <div class="import-card">
-      <h3>Import ViewPoint CSV</h3>
+      <h3><i class="fa fa-file-csv" style="margin-right:8px"></i>Import ViewPoint CSV</h3>
+      <p>Export from ViewPoint → Export query result → CSV with headers.<br>App automatically filters and saves to Firebase. Safe to re-import — no duplicates.</p>
+      <div class="lf" style="margin:20px auto;max-width:300px;text-align:left;">
+        <label style="color:var(--accent);">CSV Date Format</label>
+        <select id="import-date-format" style="border-color:var(--accent);">
+          <option value="MM/DD/YYYY">MM/DD/YYYY (ViewPoint Default)</option>
+          <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+        </select>
+      </div>
       <input type="file" id="csvfile" accept=".csv" style="display:none" onchange="onFile(event)">
-      <button class="import-btn" onclick="document.getElementById('csvfile').click()">Choose CSV File</button>
+      <button class="import-btn" onclick="document.getElementById('csvfile').click()"><i class="fa fa-upload" style="margin-right:8px"></i>Choose CSV File</button>
+      <div class="pr-wrap" id="prwrap">
+        <div class="pr-bg"><div class="pr-fill" id="prfill"></div></div>
+        <div class="pr-txt" id="prtxt">Importing...</div>
+      </div>
     </div>
     <div class="clean-card">
-      <button class="btn-danger" onclick="cleanDuplicates()"><i class="fa fa-broom"></i> Remove Duplicates</button>
+      <h4><i class="fa fa-broom" style="margin-right:6px"></i>Remove Duplicate Studies</h4>
+      <p>If you imported the CSV more than once, duplicates may exist. This will scan all studies and keep only one record per Patient ID + Date combination. Studies with clinical data (measurements, diagnoses) are always preserved.</p>
+      <button class="btn-danger" onclick="cleanDuplicates()"><i class="fa fa-trash-can"></i> Scan &amp; Remove Duplicates</button>
+      <div class="clean-pr-wrap" id="cleanPrWrap">
+        <div class="clean-pr-bg"><div class="clean-pr-fill" id="cleanPrFill"></div></div>
+        <div class="clean-pr-txt" id="cleanPrTxt">Scanning...</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <strong>Database status</strong><br>
+      Studies in Firebase: <span style="color:var(--accent);font-weight:700" id="dbtotal">—</span><br>
+      Last import: <span style="color:var(--green)" id="dblast">—</span><br>
+      Project: echo-registry · Collection: echo_studies
     </div>
   </div>
 </div>
 
 <div id="ptModal" class="modal-overlay">
-  <div class="modal-card"><div class="modal-header"><h3 id="pt-title">History</h3><button class="modal-close" onclick="closePtModal()">×</button></div><div class="modal-body" id="pt-body"></div></div>
+  <div class="modal-card" style="max-width:560px;">
+    <div class="modal-header">
+      <h3 id="pt-title">Patient History</h3>
+      <button class="modal-close" onclick="closePtModal()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="pt-body"></div>
+    <div class="modal-footer"><button class="pgb" onclick="closePtModal()">Close</button></div>
+  </div>
+</div>
+
+<div id="pinModal" class="modal-overlay">
+  <div class="modal-card" style="max-width:320px;">
+    <div class="modal-header"><h3>Unlock Admin Mode</h3><button class="modal-close" onclick="closePinModal()"><i class="fa fa-times"></i></button></div>
+    <div class="modal-body"><div class="lf" style="margin-bottom:0"><label>Enter Admin PIN</label><div class="iw"><i class="fa fa-lock"></i><input type="password" id="admin-pin" placeholder="••••" onkeydown="if(event.key==='Enter')verifyPin()"></div></div></div>
+    <div class="modal-footer"><button class="import-btn" style="width:100%;padding:10px" onclick="verifyPin()">Unlock</button></div>
+  </div>
 </div>
 
 <div id="viewModal" class="modal-overlay">
-  <div class="modal-card"><div class="modal-header"><h3>Summary</h3><button class="modal-close" onclick="closeViewModal()">×</button></div><div class="modal-body" id="view-body"></div></div>
+  <div class="modal-card">
+    <div class="modal-header"><h3>Patient Summary</h3><button class="modal-close" onclick="closeViewModal()"><i class="fa fa-times"></i></button></div>
+    <div class="modal-body" id="view-body"></div>
+    <div class="modal-footer"><button class="pgb" onclick="closeViewModal()">Close</button></div>
+  </div>
 </div>
 
 <div id="editModal" class="modal-overlay">
   <div class="modal-card">
-    <div class="modal-header"><h3 id="edit-modal-title">Edit Study</h3><button class="modal-close" onclick="closeEditModal()">×</button></div>
+    <div class="modal-header"><h3 id="edit-modal-title">Edit Study</h3><button class="modal-close" onclick="closeEditModal()"><i class="fa fa-times"></i></button></div>
     <div class="modal-body">
-      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:12px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-size:0.75rem;font-weight:700;color:#166534">📷 Scan Report</span>
-        <button class="import-btn" style="padding:8px 14px;background:#16a34a" onclick="document.getElementById('ocr-file').click()">Scan</button>
-        <input type="file" id="ocr-file" accept="image/*" capture="environment" style="display:none" onchange="runOCR(event)">
+      <div class="section-label" style="margin-top:0">Basic Info</div>
+      
+      <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:12px;padding:12px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;color:#166534">📷 Scan ViewPoint Report</div>
+          <div style="font-size:0.68rem;color:#15803d;margin-top:2px">Photo or upload — auto-fills fields from report</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input type="file" id="ocr-file" accept="image/*" capture="environment" style="display:none" onchange="runOCR(event)">
+          <button type="button" class="import-btn" style="padding:8px 14px;font-size:0.75rem;background:#16a34a" onclick="document.getElementById('ocr-file').click()"><i class="fa fa-camera"></i> Scan</button>
+        </div>
       </div>
-      <div id="ocr-badge" style="display:none;margin-bottom:10px;padding:10px;border-radius:8px;"></div>
+      
+      <div id="ocr-badge" style="display:none;margin-bottom:14px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px;font-size:0.75rem;color:#166534;line-height:1.7"></div>
       
       <div class="grid-2">
-        <div class="lf"><label>Date</label><input type="text" id="edit-date" placeholder="MM/DD/YYYY"></div>
-        <div class="lf"><label>Type</label><select id="edit-type"><option>TTE</option><option>TEE</option></select></div>
+        <div class="lf"><label>Exam Date (MM/DD/YYYY)</label><input type="text" id="edit-date" placeholder="MM/DD/YYYY"></div>
+        <div class="lf"><label>Exam Type</label><select id="edit-type"><option>TTE</option><option>TEE</option></select></div>
       </div>
       <div class="grid-2">
-        <div class="lf"><label>Patient ID</label><input type="text" id="edit-pid" oninput="onCivilIdInput(this)"></div>
-        <div class="lf"><label>Age</label><input type="number" id="edit-age" readonly></div>
+        <div class="lf"><label>Patient ID <span style="color:var(--red)">*</span></label><input type="text" id="edit-pid" inputmode="numeric" maxlength="12" placeholder="12-digit Patient ID" oninput="onCivilIdInput(this)"></div>
+        <div class="lf"><label>Age at Scan</label><input type="number" id="edit-age" placeholder="auto from ID" inputmode="numeric" oninput="calcDiastolic()" readonly style="background:#f8fafc;color:var(--text2)"></div>
       </div>
-      <div class="lf"><label>Diagnosis</label><input type="text" id="edit-ind" oninput="onDiagnosisManualEdit()"></div>
+      <div class="lf"><label>Physician</label>
+        <select id="edit-phys">
+          <option value="">Select physician...</option>
+          <option>Dr. Samir</option><option>Dr. Zaher</option><option>Dr. Shafie</option>
+          <option>Dr. Ashraf</option><option>Dr. Akmal</option><option>Dr. Fawzy</option>
+          <option>Dr. Ibrahim</option><option>Dr. Ihab</option><option>Dr. Maged</option>
+          <option>Dr. Hany</option><option>Dr. Farouk</option><option>Dr. Ramy</option>
+          <option>Dr. Hamza</option>
+        </select>
+      </div>
+      <div class="lf"><label>Diagnosis / Indication</label><input type="text" id="edit-ind" oninput="onDiagnosisManualEdit()"></div>
+      <label class="cb-wrap" style="margin-top:20px;margin-bottom:8px;"><input type="checkbox" id="edit-normal" onchange="toggleNormalStudy()"> Mark as Normal Study</label>
       
-      <div class="section-label">Measurements</div>
-      <div class="grid-2">
-        <div class="lf"><label>LVEF (%)</label><input type="number" id="edit-ef"></div>
-        <div class="lf"><label>LVIDd (cm)</label><input type="number" step="0.1" id="edit-lv"></div>
-        <div class="lf"><label>LAVI</label><input type="number" id="edit-lavi" oninput="calcDiastolic()"></div>
-        <div class="lf"><label>GLS (%)</label><input type="number" step="0.1" id="edit-gls"></div>
-      </div>
-
-      <div style="background:#eff6ff;padding:12px;border-radius:12px;margin-bottom:12px;">
+      <div class="adv-section" id="adv-box">
+        <div class="section-label" style="margin-top:0">Measurements</div>
         <div class="grid-2">
-          <div class="lf"><label>MV E/A</label><input type="number" step="0.1" id="edit-ea" oninput="calcDiastolic()"></div>
-          <div class="lf"><label>Avg E/e'</label><input type="number" step="0.1" id="edit-ee" oninput="calcDiastolic()"></div>
-          <div class="lf"><label>E' Sept</label><input type="number" step="0.1" id="edit-esep" oninput="calcDiastolic()"></div>
-          <div class="lf"><label>E' Lat</label><input type="number" step="0.1" id="edit-elat" oninput="calcDiastolic()"></div>
+          <div class="lf"><label>LVEF (%)</label><input type="number" id="edit-ef" placeholder="e.g. 55" inputmode="numeric"></div>
+          <div class="lf"><label>LVIDd (cm)</label><input type="number" step="0.1" id="edit-lv" placeholder="e.g. 5.5" inputmode="decimal"></div>
+          <div class="lf"><label>GLS (%)</label><input type="number" step="0.1" id="edit-gls" placeholder="e.g. -18" inputmode="decimal"></div>
+          <div class="lf"><label>LAVI (ml/m²)</label><input type="number" id="edit-lavi" placeholder="e.g. 28" inputmode="numeric" oninput="calcDiastolic()"></div>
+          <div class="lf"><label>TAPSE (mm)</label><input type="number" step="0.1" id="edit-tapse" placeholder="e.g. 20" inputmode="decimal"></div>
+          <div class="lf"><label>PASP (mmHg)</label><input type="number" id="edit-pasp" placeholder="e.g. 35" inputmode="numeric"></div>
         </div>
-        <div class="lf"><label>TR Vmax</label><input type="number" step="0.1" id="edit-tr" oninput="calcDiastolic()"></div>
-        <div class="lf">
-            <label>DD Grade <span id="dd-algo-label" style="font-size:0.6rem;color:var(--teal)"></span></label>
-            <select id="edit-diastolic" onchange="onDiastolicOverride()"><option value="">Select...</option><option>Normal</option><option>Grade I</option><option>Grade II</option><option>Grade III</option><option>Indeterminate</option></select>
-        </div>
-        <div id="dd-badge" class="dd-badge"></div>
-      </div>
 
-      <div class="section-label">Findings</div>
-      <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm" onchange="toggleCMFields();autoFillDiagnosis()"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Amyloidosis</option></select></div>
-      
-      <div id="hcm-fields" style="display:none;background:#f5f3ff;padding:10px;border-radius:10px;margin-bottom:10px;">
+        <div style="background:linear-gradient(135deg,#eff6ff,#f0fdff);border:1.5px solid #bfdbfe;border-radius:12px;padding:14px;margin-top:4px;margin-bottom:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+            <i class="fa fa-calculator"></i> Diastolic Parameters (ASE 2025)
+          </div>
+          <div class="grid-2">
+            <div class="lf"><label>MV E/A</label><input type="number" step="0.01" id="edit-ea" placeholder="e.g. 0.85" inputmode="decimal" oninput="calcDiastolic()"></div>
+            <div class="lf"><label>Average E/e' Ratio</label><input type="number" step="0.1" id="edit-ee" placeholder="e.g. 12.5" inputmode="decimal" oninput="calcDiastolic()"></div>
+            <div class="lf"><label>MV E' Sept (cm/s)</label><input type="number" step="0.1" id="edit-esep" placeholder="e.g. 6.5" inputmode="decimal" oninput="calcDiastolic()"></div>
+            <div class="lf"><label>MV E' Lat (cm/s)</label><input type="number" step="0.1" id="edit-elat" placeholder="e.g. 9.0" inputmode="decimal" oninput="calcDiastolic()"></div>
+            <div class="lf"><label>TR Vmax (m/s)</label><input type="number" step="0.1" id="edit-tr" placeholder="e.g. 2.6" inputmode="decimal" oninput="calcDiastolic()"></div>
+          </div>
+          <div class="lf" style="margin-bottom:0">
+            <label style="display:flex;align-items:center;justify-content:space-between;">
+              <span>Diastolic Function</span>
+              <span id="dd-algo-label" style="font-size:0.63rem;color:var(--teal);font-weight:600;text-transform:none;letter-spacing:0"></span>
+            </label>
+            <select id="edit-diastolic" onchange="onDiastolicOverride()">
+              <option value="">Select...</option>
+              <option>Normal</option><option>Grade I</option><option>Grade II</option>
+              <option>Grade III</option><option>Indeterminate</option>
+            </select>
+            <div id="dd-badge" class="dd-badge"></div>
+          </div>
+        </div>
+
+        <div class="section-label">Pathology &amp; Structural Findings</div>
         <div class="grid-2">
-            <div class="lf"><label>Wall Thickness</label><input type="number" id="hcm-wt"></div>
-            <div class="lf"><label>SAM</label><select id="hcm-sam"><option value="">No</option><option>Yes</option></select></div>
+          <div class="lf"><label>Cardiomyopathy</label><select id="edit-cm" onchange="toggleCMFields();autoFillDiagnosis()"><option value="">None</option><option>Ischemic CM</option><option>Hypertrophic (HCM)</option><option>Dilated (DCM)</option><option>Restrictive CM</option><option>Amyloidosis</option><option>Takotsubo</option><option>Non-compaction</option></select></div>
+          <div class="lf"><label>Pericardial Disease</label><select id="edit-peri" onchange="autoFillDiagnosis()"><option value="">None</option><option>Pericardial Effusion</option><option>Cardiac Tamponade</option><option>Constrictive Pericarditis</option></select></div>
+          <div class="lf"><label>Congenital Heart Disease</label><select id="edit-cong" onchange="autoFillDiagnosis()"><option value="">None</option><option>Bicuspid Aortic Valve (BAV)</option><option>Atrial Septal Defect (ASD)</option><option>Ventricular Septal Defect (VSD)</option><option>Patent Foramen Ovale (PFO)</option><option>Patent Ductus Arteriosus (PDA)</option><option>Tetralogy of Fallot (TOF)</option><option>Coarctation of Aorta</option><option>Ebstein's Anomaly</option></select></div>
         </div>
-      </div>
 
-      <div class="valve-grid">
-        <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS" onchange="autoFillDiagnosis()"> Sev AS</label>
-        <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MR" onchange="autoFillDiagnosis()"> Sev MR</label>
-        <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MS" onchange="autoFillDiagnosis()"> Sev MS</label>
-        <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AR" onchange="autoFillDiagnosis()"> Sev AR</label>
+        <div id="hcm-fields" style="display:none;margin-top:4px;margin-bottom:12px;background:linear-gradient(135deg,#fdf4ff,#f5f3ff);border:1.5px solid #d8b4fe;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#7e22ce;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-heart"></i> HCM Parameters</div>
+          <div class="grid-2">
+            <div class="lf"><label>Max Wall Thickness (mm)</label><input type="number" step="0.1" id="hcm-wt" placeholder="e.g. 18" inputmode="decimal"></div>
+            <div class="lf"><label>LVOT Gradient Rest (mmHg)</label><input type="number" id="hcm-lvot-rest" placeholder="e.g. 20" inputmode="numeric"></div>
+            <div class="lf"><label>LVOT Gradient Valsalva (mmHg)</label><input type="number" id="hcm-lvot-val" placeholder="e.g. 50" inputmode="numeric"></div>
+            <div class="lf"><label>SAM Present</label><select id="hcm-sam"><option value="">Select...</option><option>Yes</option><option>No</option></select></div>
+          </div>
+        </div>
+
+        <div class="section-label" style="margin-top:8px">Significant Valvular Lesions</div>
+        <div class="valve-grid">
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AS" onchange="toggleASFields();autoFillDiagnosis()"> Mod AS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AS" onchange="toggleASFields();autoFillDiagnosis()"> Severe AS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate AR" onchange="autoFillDiagnosis()"> Mod AR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe AR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe AR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MS" onchange="autoFillDiagnosis()"> Mod MS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MS" onchange="toggleValveFields();autoFillDiagnosis()"> Severe MS</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate MR" onchange="autoFillDiagnosis()"> Mod MR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe MR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe MR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Moderate TR" onchange="autoFillDiagnosis()"> Mod TR</label>
+          <label class="valve-lb"><input type="checkbox" class="v-cb" value="Severe TR" onchange="toggleValveFields();autoFillDiagnosis()"> Severe TR</label>
+        </div>
+
+        <div id="as-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1.5px solid #fcd34d;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#92400e;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Aortic Stenosis Severity</div>
+          <div class="grid-2">
+            <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="as-mpg" placeholder="e.g. 35" step="1" inputmode="numeric" oninput="autoFillDiagnosis()"></div>
+            <div class="lf" style="margin-bottom:0"><label>AVA (cm²)</label><input type="number" id="as-ava" placeholder="e.g. 0.9" step="0.01" inputmode="decimal"></div>
+          </div>
+        </div>
+        <div id="mr-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fef2f2,#fff1f2);border:1.5px solid #fca5a5;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#991b1b;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe MR Parameters</div>
+          <div class="grid-2">
+            <div class="lf"><label>MR Mechanism</label><select id="mr-mech"><option value="">Select...</option><option>Functional</option><option>Degenerative</option><option>Rheumatic</option><option>Ischemic</option></select></div>
+            <div class="lf"><label>Vena Contracta (mm)</label><input type="number" step="0.1" id="mr-vc" placeholder="e.g. 7" inputmode="decimal"></div>
+            <div class="lf" style="margin-bottom:0"><label>EROA (cm²)</label><input type="number" step="0.01" id="mr-eroa" placeholder="e.g. 0.4" inputmode="decimal"></div>
+          </div>
+        </div>
+        <div id="ms-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#1e40af;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe MS Parameters</div>
+          <div class="grid-2">
+            <div class="lf" style="margin-bottom:0"><label>MVA (cm²)</label><input type="number" step="0.01" id="ms-mva" placeholder="e.g. 0.9" inputmode="decimal"></div>
+            <div class="lf" style="margin-bottom:0"><label>Mean PG (mmHg)</label><input type="number" id="ms-mpg" placeholder="e.g. 12" inputmode="numeric"></div>
+          </div>
+        </div>
+        <div id="ar-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#166534;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe AR Parameters</div>
+          <div class="grid-2"><div class="lf" style="margin-bottom:0"><label>PHT (ms)</label><input type="number" id="ar-pht" placeholder="e.g. 200" inputmode="numeric"></div></div>
+        </div>
+        <div id="tr-fields" style="display:none;margin-top:10px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fde68a;border-radius:10px;padding:12px;">
+          <div style="font-size:0.68rem;font-weight:700;color:#92400e;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="fa fa-circle-exclamation"></i> Severe TR Parameters</div>
+          <div class="grid-2"><div class="lf" style="margin-bottom:0"><label>Vena Contracta (mm)</label><input type="number" step="0.1" id="tr-vc" placeholder="e.g. 7" inputmode="decimal"></div></div>
+        </div>
       </div>
     </div>
-    <div class="modal-footer"><button class="pgb" onclick="closeEditModal()">Cancel</button><button class="import-btn" onclick="saveEdit()">Save Changes</button></div>
+    <div class="modal-footer">
+      <button class="pgb" onclick="closeEditModal()">Cancel</button>
+      <button class="import-btn" id="save-edit-btn" onclick="saveEdit()" style="padding:8px 20px">Save Changes</button>
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script src="./js/auth.js"></script>
-<script src="./js/app.js"></script>
+<script src="js/firebase-init.js"></script>
+<script src="js/app.js"></script>
+<script src="js/import-export.js"></script>
+<script src="js/ocr.js"></script>
 
 </body>
 </html>
